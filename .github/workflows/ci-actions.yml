@@ -25,6 +25,26 @@ jobs:
     - run: yarn install
     - run: yarn run build
     - run: yarn test
+  
+  end2end:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chrome, firefox]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - run: yarn install  
+    # Install NPM dependencies, cache them correctly
+    # and run all Cypress tests
+    - name: Cypress run
+      uses: cypress-io/github-action@v2
+      with:
+        start: yarn start
+        wait-on: 'http://localhost:3000'
+        wait-on-timeout: 120
+        config: pageLoadTimeout=100000,baseUrl=http://localhost:3000
+        browser: ${{ matrix.node-version }}
 
   test-coverage:
     runs-on: ubuntu-latest    
