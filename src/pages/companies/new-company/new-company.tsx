@@ -1,7 +1,7 @@
 import React from "react";
 
-export interface NewCompanyProps {}
+export interface CompanyListProps {}
 
-export const NewCompany: React.FC<NewCompanyProps> = () => {
-  return <p>New company</p>;
+export const NewCompany: React.FC<CompanyListProps> = () => {
+  return <p>Companies list</p>;
 };
