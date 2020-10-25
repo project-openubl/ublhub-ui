@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 
+import { AppPlaceholder } from "components";
 import { Paths } from "./Paths";
 
 const Companies = lazy(() => import("./pages/companies"));
@@ -11,7 +12,7 @@ export const AppRoutes = () => {
   ];
 
   return (
-    <Suspense fallback={<p>loading...</p>}>
+    <Suspense fallback={<AppPlaceholder />}>
       <Switch>
         {routes.map(({ path, component, ...rest }, index) => (
           <Route key={index} path={path} component={component} {...rest} />
