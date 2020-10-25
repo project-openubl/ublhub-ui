@@ -16,7 +16,12 @@ exports[`Test snapshot 1`] = `
         ariaRightScroll="Scroll right"
       >
         <NavItem>
-          Companies
+          <NavLink
+            activeClassName="pf-m-current"
+            to="/companies"
+          >
+            Companies
+          </NavLink>
         </NavItem>
         <NavItem>
           Documents
