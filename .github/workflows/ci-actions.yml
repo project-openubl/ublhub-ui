@@ -8,7 +8,7 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
-  test:
+  unit-test:
 
     runs-on: ubuntu-latest
 
@@ -23,10 +23,30 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: yarn install
-    - run: yarn run build
+    - run: yarn build
     - run: yarn test
+  
+  e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chrome, firefox]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - run: yarn install  
+    # Install NPM dependencies, cache them correctly
+    # and run all Cypress tests
+    - name: Cypress run
+      uses: cypress-io/github-action@v2
+      with:
+        start: yarn start
+        wait-on: 'http://localhost:3000'
+        wait-on-timeout: 120
+        config: pageLoadTimeout=100000,baseUrl=http://localhost:3000
+        browser: ${{ matrix.node-version }}
 
-  test-coverage:
+  unit-test-coverage:
     runs-on: ubuntu-latest    
     steps:
     - uses: actions/checkout@v2
@@ -35,6 +55,7 @@ jobs:
       with:
         node-version: 12.x
     - run: yarn install
+    - run: yarn build
     - run: yarn test --coverage --watchAll=false
     - uses: codecov/codecov-action@v1
   
