@@ -45,7 +45,6 @@ jobs:
         wait-on-timeout: 120
         config: pageLoadTimeout=100000,baseUrl=http://localhost:3000
         browser: ${{ matrix.node-version }}
-        record: true
 
   unit-test-coverage:
     runs-on: ubuntu-latest    
