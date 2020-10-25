@@ -8,7 +8,7 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
-  test:
+  unit-test:
 
     runs-on: ubuntu-latest
 
@@ -23,10 +23,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: yarn install
-    - run: yarn run build
+    - run: yarn build
     - run: yarn test
   
-  end2end:
+  e2e:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -45,8 +45,9 @@ jobs:
         wait-on-timeout: 120
         config: pageLoadTimeout=100000,baseUrl=http://localhost:3000
         browser: ${{ matrix.node-version }}
+        record: true
 
-  test-coverage:
+  unit-test-coverage:
     runs-on: ubuntu-latest    
     steps:
     - uses: actions/checkout@v2
@@ -55,6 +56,7 @@ jobs:
       with:
         node-version: 12.x
     - run: yarn install
+    - run: yarn build
     - run: yarn test --coverage --watchAll=false
     - uses: codecov/codecov-action@v1
   
