@@ -1,3 +1,6 @@
+![CI](https://github.com/project-openubl/xsender-server-ui/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/project-openubl/xsender-server-ui/branch/master/graph/badge.svg)](https://codecov.io/gh/project-openubl/xsender-server-ui)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
