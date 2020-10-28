@@ -11,7 +11,7 @@ export const SidebarApp: React.FC = () => {
       <Nav id="nav-primary-simple" aria-label="Nav" theme={LayoutTheme}>
         <NavList>
           <NavItem>
-            <NavLink to={Paths.companies} activeClassName="pf-m-current">
+            <NavLink to={Paths.companyList} activeClassName="pf-m-current">
               Companies
             </NavLink>
           </NavItem>

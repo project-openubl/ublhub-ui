@@ -12,7 +12,7 @@ export const Projects: React.FC = () => {
     <>
       <Suspense fallback={<AppPlaceholder />}>
         <Switch>
-          <Route path={Paths.companies} component={CommpanyList} exact />
+          <Route path={Paths.companyList} component={CommpanyList} exact />
           <Route path={Paths.newCompany} component={NewCompany} />
         </Switch>
       </Suspense>
