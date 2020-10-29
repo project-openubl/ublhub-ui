@@ -1,4 +1,3 @@
-import { Dispatch } from "redux";
 const frontendComponentsNotifications = require("@redhat-cloud-services/frontend-components-notifications/cjs/actions");
 const addNotification = frontendComponentsNotifications.addNotification;
 
@@ -9,13 +8,9 @@ export const addAlert = (
   title: string,
   description: string
 ) => {
-  return (dispatch: Dispatch) => {
-    dispatch(
-      addNotification({
-        variant,
-        title,
-        description,
-      })
-    );
-  };
+  return addNotification({
+    variant,
+    title,
+    description,
+  });
 };
