@@ -1,5 +1,4 @@
-const frontendComponentsNotifications = require("@redhat-cloud-services/frontend-components-notifications/cjs/actions");
-const addNotification = frontendComponentsNotifications.addNotification;
+import { addNotification } from "@redhat-cloud-services/frontend-components-notifications/cjs/actions";
 
 type Variant = "danger" | "success";
 
