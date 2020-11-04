@@ -46,6 +46,8 @@ jobs:
         wait-on-timeout: 120
         config: pageLoadTimeout=100000,baseUrl=http://localhost:3000
         browser: ${{ matrix.node-version }}
+      env:
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
 
   unit-test-coverage:
     runs-on: ubuntu-latest    
