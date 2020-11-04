@@ -48,6 +48,7 @@ jobs:
         browser: ${{ matrix.node-version }}
       env:
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   unit-test-coverage:
     runs-on: ubuntu-latest    
