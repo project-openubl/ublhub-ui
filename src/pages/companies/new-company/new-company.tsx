@@ -16,6 +16,19 @@ import { createCompany } from "api/rest";
 import { AxiosError } from "axios";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 
+export interface NewCompanyFormValues {
+  name: string;
+  webServices: {
+    factura: string;
+    guia: string;
+    retenciones: string;
+  };
+  credentials: {
+    username: string;
+    password: string;
+  };
+}
+
 export interface CompanyListProps extends RouteComponentProps {}
 
 export const NewCompany: React.FC<CompanyListProps> = ({ history }) => {

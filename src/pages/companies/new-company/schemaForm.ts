@@ -47,8 +47,6 @@ const newCompanySchema = {
               type: "url",
             },
           ],
-          initialValue:
-            "https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl",
         },
         {
           component: "text-field",
@@ -68,8 +66,6 @@ const newCompanySchema = {
               type: "url",
             },
           ],
-          initialValue:
-            "https://e-beta.sunat.gob.pe/ol-ti-itemision-guia-gem-beta/billService?wsdl",
         },
         {
           component: "text-field",
@@ -89,8 +85,6 @@ const newCompanySchema = {
               type: "url",
             },
           ],
-          initialValue:
-            "https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService?wsdl",
         },
       ],
     },
@@ -114,7 +108,6 @@ const newCompanySchema = {
               threshold: 3,
             },
           ],
-          initialValue: "12345678912MODDATOS",
         },
         {
           component: "text-field",
@@ -131,7 +124,6 @@ const newCompanySchema = {
               threshold: 3,
             },
           ],
-          initialValue: "MODDATOS",
         },
       ],
     },
