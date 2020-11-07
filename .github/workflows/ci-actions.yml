@@ -42,7 +42,7 @@ jobs:
       uses: cypress-io/github-action@v2
       with:
         record: true
-        tag: browser-${{ matrix.os }}-${{ matrix.browser }}
+        tag: ${{ matrix.os }}-${{ matrix.browser }}
         start: yarn start
         wait-on: 'http://localhost:3000'
         wait-on-timeout: 120
@@ -66,16 +66,15 @@ jobs:
         path: cypress/videos
   
   e2e-edge:
-    runs-on: windows-latest
+    runs-on: macos-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - run: yarn install
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
         record: true
-        tag: browser-windows-edge
+        tag: macos-edge
         start: yarn start
         wait-on: 'http://localhost:3000'
         wait-on-timeout: 120
