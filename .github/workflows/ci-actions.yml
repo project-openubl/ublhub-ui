@@ -38,7 +38,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - run: yarn install
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
@@ -58,12 +57,12 @@ jobs:
     - uses: actions/upload-artifact@v1
       if: failure()
       with:
-        name: cypress-screenshots-${{ matrix.os }}-${{ matrix.browser }}
+        name: e2e-screenshots-${{ matrix.os }}-${{ matrix.browser }}
         path: cypress/screenshots
     - uses: actions/upload-artifact@v1
       if: always()
       with:
-        name: cypress-videos-chrome-${{ matrix.os }}-${{ matrix.browser }}
+        name: e2e-videos-${{ matrix.os }}-${{ matrix.browser }}
         path: cypress/videos
   
   e2e-edge:
@@ -76,7 +75,7 @@ jobs:
       uses: cypress-io/github-action@v2
       with:
         record: true
-        tag: browser-windows-latest-edge
+        tag: browser-windows-edge
         start: yarn start
         wait-on: 'http://localhost:3000'
         wait-on-timeout: 120
@@ -88,10 +87,10 @@ jobs:
     - uses: actions/upload-artifact@v1
       if: failure()
       with:
-        name: cypress-screenshots-windows-latest-edge
+        name: e2e-screenshots-windows-edge
         path: cypress/screenshots
     - uses: actions/upload-artifact@v1
       if: always()
       with:
-        name: cypress-videos-chrome-windows-latest-edge
+        name: e2e-videos-chrome-windows-edge
         path: cypress/videos
