@@ -33,12 +33,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         browser: [chrome, firefox]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - run: yarn install --network-timeout 1000000
+    - run: yarn install
     - run: yarn build:instrumentation
     - name: Cypress run
       uses: cypress-io/github-action@v2
@@ -66,34 +66,3 @@ jobs:
     - uses: codecov/codecov-action@v1
       with:
         flags: e2etests
-  
-  e2e-edge:
-    runs-on: windows-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - run: yarn install --network-timeout 1000000
-    - run: yarn build:instrumentation
-    - name: Cypress run
-      uses: cypress-io/github-action@v2
-      with:
-        record: true
-        tag: windows-edge
-        start: yarn run xsender:all
-        wait-on: 'http://localhost:3000'
-        wait-on-timeout: 120
-        config: pageLoadTimeout=100000
-        browser: edge
-      env:
-        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: e2e-screenshots-windows-edge
-        path: cypress/screenshots
-    - uses: actions/upload-artifact@v1
-      if: always()
-      with:
-        name: e2e-videos-chrome-windows-edge
-        path: cypress/videos
