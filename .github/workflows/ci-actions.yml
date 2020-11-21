@@ -33,7 +33,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]
         browser: [chrome, firefox]
     steps:
     - name: Checkout
@@ -68,7 +68,7 @@ jobs:
         flags: e2etests
   
   e2e-edge:
-    runs-on: macos-latest
+    runs-on: windows-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -78,7 +78,7 @@ jobs:
       uses: cypress-io/github-action@v2
       with:
         record: true
-        tag: macos-edge
+        tag: windows-edge
         start: yarn run xsender:all
         wait-on: 'http://localhost:3000'
         wait-on-timeout: 120
