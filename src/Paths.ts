@@ -12,8 +12,10 @@ export enum Paths {
   base = "/",
   notFound = "/not-found",
 
-  companies = "/companies",
+  companyList = "/companies",
   newCompany = "/companies/~new",
+
+  editCompany = "/companies/:company",
 }
 
 export interface OptionalCompanyRoute {

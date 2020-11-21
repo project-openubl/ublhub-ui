@@ -8,7 +8,7 @@ const Companies = lazy(() => import("./pages/companies"));
 
 export const AppRoutes = () => {
   const routes = [
-    { component: Companies, path: Paths.companies, exact: false },
+    { component: Companies, path: Paths.companyList, exact: false },
   ];
 
   return (
@@ -17,7 +17,7 @@ export const AppRoutes = () => {
         {routes.map(({ path, component, ...rest }, index) => (
           <Route key={index} path={path} component={component} {...rest} />
         ))}
-        <Redirect from={Paths.base} to={Paths.companies} exact />
+        <Redirect from={Paths.base} to={Paths.companyList} exact />
       </Switch>
     </Suspense>
   );
