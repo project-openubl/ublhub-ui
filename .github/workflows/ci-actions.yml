@@ -38,22 +38,21 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    - run: yarn install
+    - run: yarn build:instrumentation
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
         record: true
         tag: ${{ matrix.os }}-${{ matrix.browser }}
-        start: yarn start
+        start: yarn run xsender:all
         wait-on: 'http://localhost:3000'
         wait-on-timeout: 120
-        config: pageLoadTimeout=100000,baseUrl=http://localhost:3000
+        config: pageLoadTimeout=100000
         browser: ${{ matrix.browser }}
       env:
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - uses: codecov/codecov-action@v1
-      with:
-        flags: e2etests
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
     - uses: actions/upload-artifact@v1
       if: failure()
       with:
@@ -64,21 +63,26 @@ jobs:
       with:
         name: e2e-videos-${{ matrix.os }}-${{ matrix.browser }}
         path: cypress/videos
+    - uses: codecov/codecov-action@v1
+      with:
+        flags: e2etests
   
   e2e-edge:
     runs-on: macos-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    - run: yarn install
+    - run: yarn build:instrumentation
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
         record: true
         tag: macos-edge
-        start: yarn start
+        start: yarn run xsender:all
         wait-on: 'http://localhost:3000'
         wait-on-timeout: 120
-        config: pageLoadTimeout=100000,baseUrl=http://localhost:3000
+        config: pageLoadTimeout=100000
         browser: edge
       env:
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
