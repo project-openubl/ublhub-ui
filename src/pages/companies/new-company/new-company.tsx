@@ -37,9 +37,18 @@ export const NewCompany: React.FC<CompanyListProps> = ({ history }) => {
 
   const handleOnSubmit = (formValues: any) => {
     return createCompany(formValues)
-      .then(() => {})
+      .then(() => {
+        history.push(Paths.companyList);
+        dispatch(
+          alertActions.addAlert(
+            "success",
+            "Success",
+            "Company successfully created."
+          )
+        );
+      })
       .catch((error: AxiosError) => {
-        if (error.code === "409") {
+        if (error.response?.status === 409) {
           setConflictErrorMsg(
             `The name '${formValues.name}' is already taken.`
           );
