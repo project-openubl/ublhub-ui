@@ -8,6 +8,17 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
+  maven:
+    name: "Maven"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 8
+      - name: Build
+        run: mvn clean install
+
   unit-test:
 
     runs-on: ubuntu-latest
@@ -28,7 +39,7 @@ jobs:
     - uses: codecov/codecov-action@v1
       with:
         flags: unitests
-  
+
   e2e:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -52,7 +63,7 @@ jobs:
         browser: ${{ matrix.browser }}
       env:
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/upload-artifact@v1
       if: failure()
       with:
