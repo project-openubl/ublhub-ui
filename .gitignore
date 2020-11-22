@@ -29,3 +29,5 @@ cypress/screenshots
 
 # IntellJ
 .idea
+/node
+/target
