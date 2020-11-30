@@ -29,3 +29,6 @@ cypress/screenshots
 
 # IntellJ
 .idea
+
+# Electron
+/out

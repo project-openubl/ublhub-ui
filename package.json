@@ -1,9 +1,13 @@
 {
-  "name": "xsender-server-ui",
+  "name": "xsender",
   "version": "0.1.0",
+  "description": "XSender console",
+  "author": "Carlos Feria <carlosthe19916@gmail.com> (https://github.com/carlosthe19916)",
+  "main": "electron/main.js",
   "private": true,
   "proxy": "http://localhost:8080",
   "homepage": "./",
+  "license": "EPL-2.0",
   "dependencies": {
     "@data-driven-forms/pf4-component-mapper": "^2.15.1",
     "@data-driven-forms/react-form-renderer": "^2.15.1",
@@ -19,6 +23,8 @@
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
     "axios": "^0.21.0",
+    "electron-is-dev": "^1.2.0",
+    "electron-squirrel-startup": "^1.0.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
     "formik": "^2.2.1",
@@ -45,12 +51,16 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "start": "react-scripts -r @cypress/instrument-cra start",
+    "dev": "concurrently -k \"BROWSER=none npm start\" \"npm:electron\"",
+    "electron": "wait-on tcp:3000 && electron-forge start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "build:instrumentation": "CYPRESS_INSTRUMENT_PRODUCTION=true react-scripts -r @cypress/instrument-cra build",
     "test": "react-scripts test",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",
+    "package": "react-scripts build && electron-forge package",
+    "make": "react-scripts build && electron-forge make",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "xsender:all": "npm-run-all --parallel xsender:backend xsender:ui",
@@ -89,6 +99,11 @@
     "@babel/core": "^7.12.3",
     "@cypress/code-coverage": "^3.8.3",
     "@cypress/instrument-cra": "^1.4.0",
+    "@electron-forge/cli": "^6.0.0-beta.54",
+    "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "@storybook/addon-actions": "^6.0.27",
     "@storybook/addon-essentials": "^6.0.27",
     "@storybook/addon-links": "^6.0.27",
@@ -105,11 +120,45 @@
     "@types/redux-logger": "^3.0.8",
     "@types/yup": "^0.29.8",
     "babel-loader": "^8.1.0",
+    "concurrently": "^5.3.0",
     "cypress": "^5.4.0",
+    "electron": "^11.0.2",
+    "electron-devtools-installer": "^3.1.1",
     "http-proxy-middleware": "^1.0.6",
     "node-sass": "^4.14.1",
     "npm-run-all": "^4.1.5",
     "react-is": "^16.13.1",
-    "redux-devtools-extension": "^2.13.8"
+    "redux-devtools-extension": "^2.13.8",
+    "wait-on": "^5.2.0"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "icon": "electron/icons/mac/icon.icns",
+        "name": "xsender"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "xsender"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }
