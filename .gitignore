@@ -29,5 +29,6 @@ cypress/screenshots
 
 # IntellJ
 .idea
-/node
-/target
+
+# Electron
+/out

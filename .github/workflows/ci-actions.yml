@@ -8,17 +8,6 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
-  maven:
-    name: "Maven"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
-        with:
-          java-version: 8
-      - name: Build
-        run: mvn clean install
-
   unit-test:
 
     runs-on: ubuntu-latest
@@ -77,3 +66,28 @@ jobs:
     - uses: codecov/codecov-action@v1
       with:
         flags: e2etests
+
+  electron-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: yarn install
+    - run: yarn run make
+    - name: Rename distribution
+      run: |
+        mv out/make/deb/x64/xsender*.deb xsender.amd64.deb
+        mv out/make/rpm/x64/xsender*.rpm xsender.x86_64.rpm
+    - name: Upload .deb
+      uses: actions/upload-artifact@v1
+      with:
+        name: xsender.amd64.deb
+        path: 'xsender.amd64.deb'
+    - name: Upload .rpm
+      uses: actions/upload-artifact@v1
+      with:
+        name: xsender.x86_64.rpm
+        path: 'xsender.x86_64.rpm'
