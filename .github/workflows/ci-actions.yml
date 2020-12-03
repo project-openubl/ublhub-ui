@@ -31,13 +31,13 @@ jobs:
 
   visual-test:
     runs-on: ubuntu-latest
+    if: env.CHROMATIC_PROJECT_TOKEN != null
+    env:
+      CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     steps:
     - uses: actions/checkout@v1
     - run: yarn install
-    - uses: chromaui/action@v1
-      if: env.CHROMATIC_PROJECT_TOKEN != null
-      env:
-        CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+    - uses: chromaui/action@v1            
       with:          
         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
         token: ${{ secrets.GITHUB_TOKEN }}
