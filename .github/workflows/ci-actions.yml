@@ -8,78 +8,89 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
-  # unit-test:
+  unit-test:
 
-  #   runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  #   strategy:
-  #     matrix:
-  #       node-version: [10.x, 12.x, 14.x]
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
 
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Use Node.js ${{ matrix.node-version }}
-  #     uses: actions/setup-node@v1
-  #     with:
-  #       node-version: ${{ matrix.node-version }}
-  #   - run: yarn install
-  #   - run: yarn build
-  #   - run: yarn test --coverage --watchAll=false
-  #   - uses: codecov/codecov-action@v1
-  #     with:
-  #       flags: unitests
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: yarn install
+    - run: yarn build
+    - run: yarn test --coverage --watchAll=false
+    - uses: codecov/codecov-action@v1
+      with:
+        flags: unitests
 
   visual-test:
     runs-on: ubuntu-latest
-    if: env.CHROMATIC_PROJECT_TOKEN != null
-    env:
-      CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+    if: ${{ github.repository_owner == 'project-openubl' }}
     steps:
     - uses: actions/checkout@v1
     - run: yarn install
-    - uses: chromaui/action@v1            
+    - uses: chromaui/action@v1      
       with:          
         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
         token: ${{ secrets.GITHUB_TOKEN }}
 
-  # e2e:
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     matrix:
-  #       os: [ubuntu-latest]
-  #       browser: [chrome, firefox]
-  #   steps:
-  #   - name: Checkout
-  #     uses: actions/checkout@v2
-  #   - run: yarn install
-  #   - run: yarn build:instrumentation
-  #   - name: Cypress run
-  #     uses: cypress-io/github-action@v2
-  #     if: env.CYPRESS_RECORD_KEY != null
-  #     with:
-  #       record: true
-  #       tag: ${{ matrix.os }}-${{ matrix.browser }}
-  #       start: yarn run xsender:all
-  #       wait-on: 'http://localhost:3000'
-  #       wait-on-timeout: 120
-  #       config: pageLoadTimeout=100000
-  #       browser: ${{ matrix.browser }}
-  #     env:
-  #       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #   - uses: actions/upload-artifact@v1
-  #     if: failure()
-  #     with:
-  #       name: e2e-screenshots-${{ matrix.os }}-${{ matrix.browser }}
-  #       path: cypress/screenshots
-  #   - uses: actions/upload-artifact@v1
-  #     if: always()
-  #     with:
-  #       name: e2e-videos-${{ matrix.os }}-${{ matrix.browser }}
-  #       path: cypress/videos
-  #   - uses: codecov/codecov-action@v1
-  #     with:
-  #       flags: e2etests
+  e2e:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        browser: [chrome, firefox]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - run: yarn install
+    - run: yarn build:instrumentation
+    - name: Cypress run
+      uses: cypress-io/github-action@v2
+      if: ${{ github.repository_owner != 'project-openubl' }}
+      with:
+        record: false
+        start: yarn run xsender:all
+        wait-on: 'http://localhost:3000'
+        wait-on-timeout: 120
+        config: pageLoadTimeout=100000
+        browser: ${{ matrix.browser }}
+      env:
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Cypress run
+      uses: cypress-io/github-action@v2
+      if: ${{ github.repository_owner == 'project-openubl' }}
+      with:
+        record: true
+        tag: ${{ matrix.os }}-${{ matrix.browser }}
+        start: yarn run xsender:all
+        wait-on: 'http://localhost:3000'
+        wait-on-timeout: 120
+        config: pageLoadTimeout=100000
+        browser: ${{ matrix.browser }}
+      env:
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: e2e-screenshots-${{ matrix.os }}-${{ matrix.browser }}
+        path: cypress/screenshots
+    - uses: actions/upload-artifact@v1
+      if: always()
+      with:
+        name: e2e-videos-${{ matrix.os }}-${{ matrix.browser }}
+        path: cypress/videos
+    - uses: codecov/codecov-action@v1
+      with:
+        flags: e2etests
 
   # electron-linux:
   #   runs-on: ubuntu-latest
