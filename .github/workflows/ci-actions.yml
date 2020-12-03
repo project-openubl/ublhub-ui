@@ -30,8 +30,8 @@ jobs:
         flags: unitests
 
   visual-test:
-    runs-on: ubuntu-latest
-    if: ${{ github.repository_owner == 'project-openubl' }}
+    runs-on: ubuntu-latest   
+    if: github.event_name != 'pull_request'
     steps:
     - uses: actions/checkout@v1
     - run: yarn install
@@ -53,7 +53,7 @@ jobs:
     - run: yarn build:instrumentation
     - name: Cypress run
       uses: cypress-io/github-action@v2
-      if: ${{ github.repository_owner != 'project-openubl' }}
+      if: github.event_name == 'pull_request'
       with:
         record: false
         start: yarn run xsender:all
@@ -66,7 +66,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Cypress run
       uses: cypress-io/github-action@v2
-      if: ${{ github.repository_owner == 'project-openubl' }}
+      if: github.event_name != 'pull_request'
       with:
         record: true
         tag: ${{ matrix.os }}-${{ matrix.browser }}
@@ -92,27 +92,27 @@ jobs:
       with:
         flags: e2etests
 
-  # electron-linux:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Use Node.js
-  #     uses: actions/setup-node@v1
-  #     with:
-  #       node-version: 12.x
-  #   - run: yarn install
-  #   - run: yarn run make
-  #   - name: Rename distribution
-  #     run: |
-  #       mv out/make/deb/x64/xsender*.deb xsender.amd64.deb
-  #       mv out/make/rpm/x64/xsender*.rpm xsender.x86_64.rpm
-  #   - name: Upload .deb
-  #     uses: actions/upload-artifact@v1
-  #     with:
-  #       name: xsender.amd64.deb
-  #       path: 'xsender.amd64.deb'
-  #   - name: Upload .rpm
-  #     uses: actions/upload-artifact@v1
-  #     with:
-  #       name: xsender.x86_64.rpm
-  #       path: 'xsender.x86_64.rpm'
+  electron-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: yarn install
+    - run: yarn run make
+    - name: Rename distribution
+      run: |
+        mv out/make/deb/x64/xsender*.deb xsender.amd64.deb
+        mv out/make/rpm/x64/xsender*.rpm xsender.x86_64.rpm
+    - name: Upload .deb
+      uses: actions/upload-artifact@v1
+      with:
+        name: xsender.amd64.deb
+        path: 'xsender.amd64.deb'
+    - name: Upload .rpm
+      uses: actions/upload-artifact@v1
+      with:
+        name: xsender.x86_64.rpm
+        path: 'xsender.x86_64.rpm'
