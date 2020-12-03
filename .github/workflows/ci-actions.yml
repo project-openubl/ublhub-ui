@@ -8,26 +8,26 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
-  unit-test:
+  # unit-test:
 
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x]
+  #   strategy:
+  #     matrix:
+  #       node-version: [10.x, 12.x, 14.x]
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: yarn install
-    - run: yarn build
-    - run: yarn test --coverage --watchAll=false
-    - uses: codecov/codecov-action@v1
-      with:
-        flags: unitests
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Use Node.js ${{ matrix.node-version }}
+  #     uses: actions/setup-node@v1
+  #     with:
+  #       node-version: ${{ matrix.node-version }}
+  #   - run: yarn install
+  #   - run: yarn build
+  #   - run: yarn test --coverage --watchAll=false
+  #   - uses: codecov/codecov-action@v1
+  #     with:
+  #       flags: unitests
 
   visual-test:
     runs-on: ubuntu-latest
@@ -35,71 +35,71 @@ jobs:
     - uses: actions/checkout@v1
     - run: yarn install
     - uses: chromaui/action@v1
-      if: env.CHROMATIC_PROJECT_TOKEN != null
+      if: ${{ env.CHROMATIC_PROJECT_TOKEN }} != null
       with:          
         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
         token: ${{ secrets.GITHUB_TOKEN }}
 
-  e2e:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        browser: [chrome, firefox]
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - run: yarn install
-    - run: yarn build:instrumentation
-    - name: Cypress run
-      uses: cypress-io/github-action@v2
-      if: env.CYPRESS_RECORD_KEY != null
-      with:
-        record: true
-        tag: ${{ matrix.os }}-${{ matrix.browser }}
-        start: yarn run xsender:all
-        wait-on: 'http://localhost:3000'
-        wait-on-timeout: 120
-        config: pageLoadTimeout=100000
-        browser: ${{ matrix.browser }}
-      env:
-        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: e2e-screenshots-${{ matrix.os }}-${{ matrix.browser }}
-        path: cypress/screenshots
-    - uses: actions/upload-artifact@v1
-      if: always()
-      with:
-        name: e2e-videos-${{ matrix.os }}-${{ matrix.browser }}
-        path: cypress/videos
-    - uses: codecov/codecov-action@v1
-      with:
-        flags: e2etests
+  # e2e:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest]
+  #       browser: [chrome, firefox]
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v2
+  #   - run: yarn install
+  #   - run: yarn build:instrumentation
+  #   - name: Cypress run
+  #     uses: cypress-io/github-action@v2
+  #     if: env.CYPRESS_RECORD_KEY != null
+  #     with:
+  #       record: true
+  #       tag: ${{ matrix.os }}-${{ matrix.browser }}
+  #       start: yarn run xsender:all
+  #       wait-on: 'http://localhost:3000'
+  #       wait-on-timeout: 120
+  #       config: pageLoadTimeout=100000
+  #       browser: ${{ matrix.browser }}
+  #     env:
+  #       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   - uses: actions/upload-artifact@v1
+  #     if: failure()
+  #     with:
+  #       name: e2e-screenshots-${{ matrix.os }}-${{ matrix.browser }}
+  #       path: cypress/screenshots
+  #   - uses: actions/upload-artifact@v1
+  #     if: always()
+  #     with:
+  #       name: e2e-videos-${{ matrix.os }}-${{ matrix.browser }}
+  #       path: cypress/videos
+  #   - uses: codecov/codecov-action@v1
+  #     with:
+  #       flags: e2etests
 
-  electron-linux:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12.x
-    - run: yarn install
-    - run: yarn run make
-    - name: Rename distribution
-      run: |
-        mv out/make/deb/x64/xsender*.deb xsender.amd64.deb
-        mv out/make/rpm/x64/xsender*.rpm xsender.x86_64.rpm
-    - name: Upload .deb
-      uses: actions/upload-artifact@v1
-      with:
-        name: xsender.amd64.deb
-        path: 'xsender.amd64.deb'
-    - name: Upload .rpm
-      uses: actions/upload-artifact@v1
-      with:
-        name: xsender.x86_64.rpm
-        path: 'xsender.x86_64.rpm'
+  # electron-linux:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Use Node.js
+  #     uses: actions/setup-node@v1
+  #     with:
+  #       node-version: 12.x
+  #   - run: yarn install
+  #   - run: yarn run make
+  #   - name: Rename distribution
+  #     run: |
+  #       mv out/make/deb/x64/xsender*.deb xsender.amd64.deb
+  #       mv out/make/rpm/x64/xsender*.rpm xsender.x86_64.rpm
+  #   - name: Upload .deb
+  #     uses: actions/upload-artifact@v1
+  #     with:
+  #       name: xsender.amd64.deb
+  #       path: 'xsender.amd64.deb'
+  #   - name: Upload .rpm
+  #     uses: actions/upload-artifact@v1
+  #     with:
+  #       name: xsender.x86_64.rpm
+  #       path: 'xsender.x86_64.rpm'
