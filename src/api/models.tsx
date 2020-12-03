@@ -27,7 +27,9 @@ export interface Links {
   last: string;
 }
 export interface Company {
+  id?: string;
   name: string;
+  description?: string;
   sunatWsUrls: SUNATWsUrls;
   sunatCredentials: SUNATCredentials;
 }

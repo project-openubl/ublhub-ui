@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useCallback, useReducer } from "react";
 import { AxiosError } from "axios";
+import { ActionType, createAsyncAction, getType } from "typesafe-actions";
 
 import { getCompanies } from "api/rest";
 import {
@@ -9,42 +10,104 @@ import {
   SortByQuery,
 } from "api/models";
 
+export const {
+  request: fetchRequest,
+  success: fetchSuccess,
+  failure: fetchFailure,
+} = createAsyncAction(
+  "useFetchCompany/fetch/request",
+  "useFetchCompany/fetch/success",
+  "useFetchCompany/fetch/failure"
+)<void, PageRepresentation<Company>, AxiosError>();
+
+type State = Readonly<{
+  isFetching: boolean;
+  companies?: PageRepresentation<Company>;
+  fetchError?: AxiosError;
+  fetchCount: number;
+}>;
+
+const defaultState: State = {
+  isFetching: false,
+  companies: undefined,
+  fetchError: undefined,
+  fetchCount: 0,
+};
+
+type Action = ActionType<
+  typeof fetchRequest | typeof fetchSuccess | typeof fetchFailure
+>;
+
+const initReducer = (isFetching: boolean): State => {
+  return {
+    ...defaultState,
+    isFetching,
+  };
+};
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case getType(fetchRequest):
+      return {
+        ...state,
+        isFetching: true,
+      };
+    case getType(fetchSuccess):
+      return {
+        ...state,
+        isFetching: false,
+        fetchError: undefined,
+        companies: action.payload,
+        fetchCount: state.fetchCount + 1,
+      };
+    case getType(fetchFailure):
+      return {
+        ...state,
+        isFetching: false,
+        fetchError: action.payload,
+        fetchCount: state.fetchCount + 1,
+      };
+    default:
+      return state;
+  }
+};
+
 export interface IState {
   companies?: PageRepresentation<Company>;
   isFetching: boolean;
   fetchError?: AxiosError;
-  refresh: (page: PageQuery, sortBy?: SortByQuery, filterText?: string) => void;
+  fetchCount: number;
+  fetchCompanies: (
+    page: PageQuery,
+    sortBy?: SortByQuery,
+    filterText?: string
+  ) => void;
 }
 
-export const useFetchCompany = (): IState => {
-  const [companies, setCompanies] = useState<PageRepresentation<Company>>();
-  const [isFetching, setIsFetching] = useState(false);
-  const [fetchError, setFetchError] = useState<AxiosError>();
+export const useFetchCompany = (defaultIsFetching: boolean = false): IState => {
+  const [state, dispatch] = useReducer(reducer, defaultIsFetching, initReducer);
 
-  const refresh = useCallback(
+  const fetchCompanies = useCallback(
     (page: PageQuery, sortBy?: SortByQuery, filterText?: string) => {
-      setIsFetching(true);
+      dispatch(fetchRequest());
 
       getCompanies(page, sortBy, filterText)
         .then(({ data }) => {
-          setCompanies(data);
-          setFetchError(undefined);
+          dispatch(fetchSuccess(data));
         })
         .catch((error: AxiosError) => {
-          setFetchError(error);
-        })
-        .finally(() => {
-          setIsFetching(false);
+          dispatch(fetchFailure(error));
         });
     },
     []
   );
 
   return {
-    companies,
-    isFetching,
-    fetchError,
-    refresh,
+    companies: state.companies,
+    isFetching: state.isFetching,
+    fetchError: state.fetchError,
+    fetchCount: state.fetchCount,
+    fetchCompanies,
   };
 };
 

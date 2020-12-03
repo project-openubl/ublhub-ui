@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { Switch, Route } from "react-router-dom";
 
-import { AppPlaceholder } from "components";
+import { AppPlaceholder } from "shared/components";
 import { Paths } from "Paths";
 
 const CommpanyList = lazy(() => import("./company-list"));

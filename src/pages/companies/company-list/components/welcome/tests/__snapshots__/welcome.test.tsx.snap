@@ -4,42 +4,33 @@ exports[`Welcome Renders without crashing 1`] = `
 <EmptyState
   variant="large"
 >
-  <div>
-    <ProcessImprovementIcon
-      className="pf-c-empty-state__icon"
-      height="54px"
-      style={
-        Object {
-          "opacity": 0.6,
-        }
-      }
-    />
-  </div>
+  <EmptyStateIcon
+    icon={[Function]}
+  />
   <Title
     headingLevel="h4"
     size="lg"
   >
-    Welcome to the Migration Toolkit for Applications
+    Welcome to XSender
   </Title>
   <EmptyStateBody>
-    The Migration Toolkit for Applications helps you assess and perform large-scale application migrations and modernizations. Start by creating a project for your applications.
+    XSender helps you to send your XML files to the SUNAT on a large-scale. Start by creating a company for your XMLs.
   </EmptyStateBody>
   <Button
     onClick={[Function]}
     variant="primary"
   >
-    Create project
+    Create company
   </Button>
   <EmptyStateSecondaryActions>
     To learn more, visit the
     <a
-      href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+      href="https://project-openubl.github.io"
       rel="noopener noreferrer"
       target="_blank"
     >
-      documentation
+      documentation.
     </a>
-    .
   </EmptyStateSecondaryActions>
 </EmptyState>
 `;
