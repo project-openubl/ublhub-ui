@@ -36,6 +36,8 @@ jobs:
     - run: yarn install
     - uses: chromaui/action@v1
       if: ${{ env.CHROMATIC_PROJECT_TOKEN }} != null
+      env:
+        CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
       with:          
         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
         token: ${{ secrets.GITHUB_TOKEN }}
