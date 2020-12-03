@@ -27,7 +27,7 @@ export const getCompanies = (
   };
 
   const query: string[] = [];
-  Object.keys(params).map((key) => {
+  Object.keys(params).forEach((key) => {
     const value = (params as any)[key];
     if (value !== undefined) {
       query.push(`${key}=${value}`);
