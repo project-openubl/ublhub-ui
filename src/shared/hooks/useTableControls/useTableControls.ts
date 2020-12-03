@@ -114,7 +114,6 @@ export const useTableControls = (): HookState => {
       direction: SortByDirection,
       extraData: IExtraColumnData
     ) => {
-      console.log(extraData);
       const newSortBy = { index, direction };
       dispatch(setSortBy(newSortBy));
     },
