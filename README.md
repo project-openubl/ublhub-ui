@@ -2,6 +2,10 @@
 [![codecov](https://codecov.io/gh/project-openubl/xsender-server-ui/branch/master/graph/badge.svg)](https://codecov.io/gh/project-openubl/xsender-server-ui)
 [![xsender-server-ui](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/8fs1cv/master&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/8fs1cv/runs)
 
+# Visual testing
+
+We use chromatic for testing our UI components. Our components are available in [Xsender Server- Chromatic](https://5fc93badf6736100218b69a7-ymutaahbie.chromatic.com/).
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
