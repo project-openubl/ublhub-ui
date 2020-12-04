@@ -52,11 +52,19 @@ jobs:
       uses: actions/checkout@v2
     - run: yarn install
     - run: yarn build:instrumentation
+    - uses: haya14busa/action-cond@v1
+      id: define_tags
+      with:
+        cond: ${{ env.CYPRESS_RECORD_KEY != null }}
+        if_true: ${{ matrix.os }}-${{ matrix.browser }}
+        if_false: null
+      env:
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
         record: ${{ env.CYPRESS_RECORD_KEY != null }}
-        tag: ${{ matrix.os }}-${{ matrix.browser }}
+        tag: ${{ steps.define_tags.outputs.value }}
         start: yarn run xsender:all
         wait-on: 'http://localhost:3000'
         wait-on-timeout: 120
