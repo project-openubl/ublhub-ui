@@ -35,9 +35,11 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - run: yarn install
+    - run: yarn run chromatic
     - uses: chromaui/action@v1      
       with:          
         token: ${{ secrets.GITHUB_TOKEN }}
+        projectToken: ozfdy6jxgv
         # projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
 
   e2e:
