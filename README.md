@@ -4,7 +4,7 @@
 
 # Visual testing
 
-We use chromatic for testing our UI components. Our components are available in [Xsender Server- Chromatic](https://5fc93badf6736100218b69a7-ymutaahbie.chromatic.com/).
+We use chromatic for testing our UI components. Our components are available in [Xsender Server- Chromatic](https://master-5fc93badf6736100218b69a7.chromatic.com).
 
 # Getting Started with Create React App
 
