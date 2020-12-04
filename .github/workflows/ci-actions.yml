@@ -31,7 +31,7 @@ jobs:
 
   visual-test:
     runs-on: ubuntu-latest   
-    # if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'project-openubl' }}
+    if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'project-openubl' }}
     steps:
     - uses: actions/checkout@v1
     - run: yarn install
@@ -39,8 +39,7 @@ jobs:
     - uses: chromaui/action@v1      
       with:          
         token: ${{ secrets.GITHUB_TOKEN }}
-        projectToken: ozfdy6jxgv
-        # projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+        projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
 
   e2e:
     runs-on: ${{ matrix.os }}
@@ -55,7 +54,6 @@ jobs:
     - run: yarn build:instrumentation
     - name: Cypress run
       uses: cypress-io/github-action@v2
-      if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'project-openubl' }}
       with:
         record: true
         tag: ${{ matrix.os }}-${{ matrix.browser }}

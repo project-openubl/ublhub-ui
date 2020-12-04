@@ -63,7 +63,6 @@
     "make": "react-scripts build && electron-forge make",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "chromatic": "chromatic --project-token=ozfdy6jxgv",
     "xsender:all": "npm-run-all --parallel xsender:backend xsender:ui",
     "xsender:backend": "docker run -p 8080:8080 quay.io/projectopenubl/xsender-server:master",
     "xsender:ui": "scripts/ui.sh"
@@ -122,7 +121,6 @@
     "@types/yup": "^0.29.8",
     "axios-mock-adapter": "^1.19.0",
     "babel-loader": "^8.1.0",
-    "chromatic": "^5.4.0",
     "concurrently": "^5.3.0",
     "cypress": "^5.4.0",
     "electron": "^11.0.2",
