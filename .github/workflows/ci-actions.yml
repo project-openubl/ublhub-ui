@@ -8,36 +8,46 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
-  unit-test:
+  # unit-test:
 
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x]
+  #   strategy:
+  #     matrix:
+  #       node-version: [10.x, 12.x, 14.x]
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: yarn install
-    - run: yarn build
-    - run: yarn test --coverage --watchAll=false
-    - uses: codecov/codecov-action@v1
-      with:
-        flags: unitests
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Use Node.js ${{ matrix.node-version }}
+  #     uses: actions/setup-node@v1
+  #     with:
+  #       node-version: ${{ matrix.node-version }}
+  #   - run: yarn install
+  #   - run: yarn build
+  #   - run: yarn test --coverage --watchAll=false
+  #   - uses: codecov/codecov-action@v1
+  #     with:
+  #       flags: unitests
 
   visual-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest   
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v1    
+    - uses: haya14busa/action-cond@v1
+      id: has_chromatic_token
+      with:
+        cond: ${{ env.CHROMATIC_PROJECT_TOKEN != null }}
+        if_true: execute
+        if_false: null
+      env:
+        CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - run: yarn install
-    - uses: chromaui/action@v1
+      if: ${{ steps.has_chromatic_token.outputs.value != null }}
+    - uses: chromaui/action@v1      
+      if: ${{ steps.has_chromatic_token.outputs.value != null }}
       with:          
-        projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
         token: ${{ secrets.GITHUB_TOKEN }}
+        projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
 
   e2e:
     runs-on: ${{ matrix.os }}
@@ -50,11 +60,19 @@ jobs:
       uses: actions/checkout@v2
     - run: yarn install
     - run: yarn build:instrumentation
+    - uses: haya14busa/action-cond@v1
+      id: define_tags
+      with:
+        cond: ${{ env.CYPRESS_RECORD_KEY != null }}
+        if_true: ${{ matrix.os }}-${{ matrix.browser }}
+        if_false: null
+      env:
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
-        record: true
-        tag: ${{ matrix.os }}-${{ matrix.browser }}
+        record: ${{ env.CYPRESS_RECORD_KEY != null }}
+        tag: ${{ steps.define_tags.outputs.value }}
         start: yarn run xsender:all
         wait-on: 'http://localhost:3000'
         wait-on-timeout: 120
