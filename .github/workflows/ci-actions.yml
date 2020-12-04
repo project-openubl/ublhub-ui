@@ -8,26 +8,26 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
-  # unit-test:
+  unit-test:
 
-  #   runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  #   strategy:
-  #     matrix:
-  #       node-version: [10.x, 12.x, 14.x]
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
 
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Use Node.js ${{ matrix.node-version }}
-  #     uses: actions/setup-node@v1
-  #     with:
-  #       node-version: ${{ matrix.node-version }}
-  #   - run: yarn install
-  #   - run: yarn build
-  #   - run: yarn test --coverage --watchAll=false
-  #   - uses: codecov/codecov-action@v1
-  #     with:
-  #       flags: unitests
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: yarn install
+    - run: yarn build
+    - run: yarn test --coverage --watchAll=false
+    - uses: codecov/codecov-action@v1
+      with:
+        flags: unitests
 
   visual-test:
     runs-on: ubuntu-latest   
