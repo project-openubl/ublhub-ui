@@ -85,6 +85,13 @@
       "last 1 safari version"
     ]
   },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!<rootDir>/node_modules/",
+      "!src/**/*.stories.*"
+    ]
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
