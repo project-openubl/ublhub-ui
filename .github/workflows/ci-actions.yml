@@ -56,8 +56,7 @@ jobs:
       uses: cypress-io/github-action@v2
       with:
         record: ${{ env.CYPRESS_RECORD_KEY != null }}
-        # record: true
-        # tag: ${{ matrix.os }}-${{ matrix.browser }}
+        tag: ${{ matrix.os }}-${{ matrix.browser }}
         start: yarn run xsender:all
         wait-on: 'http://localhost:3000'
         wait-on-timeout: 120
