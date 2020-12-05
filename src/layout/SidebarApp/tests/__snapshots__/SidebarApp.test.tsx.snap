@@ -9,11 +9,10 @@ exports[`Test snapshot 1`] = `
       onSelect={[Function]}
       onToggle={[Function]}
       ouiaSafe={true}
-      theme="dark"
+      theme="light"
     >
-      <NavList
-        ariaLeftScroll="Scroll left"
-        ariaRightScroll="Scroll right"
+      <NavGroup
+        title="Global"
       >
         <NavItem>
           <NavLink
@@ -23,12 +22,16 @@ exports[`Test snapshot 1`] = `
             Companies
           </NavLink>
         </NavItem>
+      </NavGroup>
+      <NavGroup
+        title="Company"
+      >
         <NavItem>
           Documents
         </NavItem>
-      </NavList>
+      </NavGroup>
     </Nav>
   }
-  theme="dark"
+  theme="light"
 />
 `;

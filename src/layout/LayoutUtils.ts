@@ -1,2 +1,2 @@
 type ThemeType = "light" | "dark";
-export const LayoutTheme: ThemeType = "dark";
+export const LayoutTheme: ThemeType = "light";
