@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CompanyList Renders without crashing 1`] = `
+<Fragment>
+  <ConditionalRender
+    then={<AppPlaceholder />}
+    when={true}
+  >
+    <SimplePageSection
+      description="Companies allow you to group your documents."
+      title="Companies"
+    />
+    <PageSection>
+      <AppTableWithControls
+        actions={
+          Array [
+            Object {
+              "onClick": [Function],
+              "title": "Edit",
+            },
+          ]
+        }
+        columns={
+          Array [
+            Object {
+              "title": "Name",
+              "transforms": Array [
+                [Function],
+              ],
+            },
+            Object {
+              "title": "Description",
+            },
+          ]
+        }
+        count={0}
+        filtersApplied={false}
+        handleFilterTextChange={[Function]}
+        handlePaginationChange={[Function]}
+        handleSortChange={[Function]}
+        isLoading={true}
+        items={Array []}
+        itemsToRow={[Function]}
+        loadingVariant="skeleton"
+        noDataState={
+          <EmptyState
+            variant="small"
+          >
+            <EmptyStateIcon
+              icon={[Function]}
+            />
+            <Title
+              headingLevel="h2"
+              size="lg"
+            >
+              No companies available
+            </Title>
+            <EmptyStateBody>
+              Add a company by clicking on 
+              <strong>
+                New company
+              </strong>
+              .
+            </EmptyStateBody>
+          </EmptyState>
+        }
+        pagination={
+          Object {
+            "page": 1,
+            "perPage": 10,
+          }
+        }
+        toolbar={
+          <ForwardRef
+            variant="button-group"
+          >
+            <ToolbarItem>
+              <Button
+                aria-label="new-company"
+                onClick={[Function]}
+                type="button"
+                variant="primary"
+              >
+                New company
+              </Button>
+            </ToolbarItem>
+          </ForwardRef>
+        }
+      />
+    </PageSection>
+  </ConditionalRender>
+</Fragment>
+`;

@@ -85,6 +85,13 @@
       "last 1 safari version"
     ]
   },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!<rootDir>/node_modules/",
+      "!src/**/*.stories.*"
+    ]
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -107,18 +114,19 @@
     "@storybook/addon-actions": "^6.0.27",
     "@storybook/addon-essentials": "^6.0.27",
     "@storybook/addon-links": "^6.0.27",
-    "@storybook/addon-storyshots": "^6.0.27",
     "@storybook/addons": "^6.0.27",
     "@storybook/node-logger": "^6.0.27",
     "@storybook/preset-create-react-app": "^3.1.4",
     "@storybook/react": "^6.0.27",
     "@storybook/theming": "^6.0.27",
+    "@testing-library/react-hooks": "^3.4.2",
     "@types/enzyme": "^3.10.7",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.6",
     "@types/redux-logger": "^3.0.8",
     "@types/yup": "^0.29.8",
+    "axios-mock-adapter": "^1.19.0",
     "babel-loader": "^8.1.0",
     "concurrently": "^5.3.0",
     "cypress": "^5.4.0",
