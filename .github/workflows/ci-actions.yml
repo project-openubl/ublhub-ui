@@ -30,21 +30,12 @@ jobs:
         flags: unitests
 
   visual-test:
-    runs-on: ubuntu-latest   
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'project-openubl' }}
     steps:
     - uses: actions/checkout@v1    
-    - uses: haya14busa/action-cond@v1
-      id: has_chromatic_token
-      with:
-        cond: ${{ env.CHROMATIC_PROJECT_TOKEN != null }}
-        if_true: execute
-        if_false: null
-      env:
-        CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - run: yarn install
-      if: ${{ steps.has_chromatic_token.outputs.value != null }}
     - uses: chromaui/action@v1      
-      if: ${{ steps.has_chromatic_token.outputs.value != null }}
       with:          
         token: ${{ secrets.GITHUB_TOKEN }}
         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
