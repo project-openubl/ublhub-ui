@@ -30,14 +30,14 @@ export interface Company {
   id?: string;
   name: string;
   description?: string;
-  sunatWsUrls: SUNATWsUrls;
-  sunatCredentials: SUNATCredentials;
+  webServices: SUNATWsUrls;
+  credentials: SUNATCredentials;
 }
 
 export interface SUNATWsUrls {
   factura: string;
   guia: string;
-  retencion: string;
+  retenciones: string;
 }
 
 export interface SUNATCredentials {

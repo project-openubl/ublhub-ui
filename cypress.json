@@ -1,4 +1,7 @@
 {
   "baseUrl": "http://localhost:3000/#",
-  "projectId": "8fs1cv"
+  "projectId": "8fs1cv",
+  "env": {
+    "REST_API": "http://localhost:8080/api"
+  }
 }

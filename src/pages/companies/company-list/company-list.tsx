@@ -120,7 +120,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
         extraData: IExtraData
       ) => {
         const row: Company = getRow(rowData);
-        history.push(formatPath(Paths.editCompany, { company: row.id }));
+        history.push(formatPath(Paths.editCompany, { company: row.name }));
       },
     },
   ];
@@ -167,6 +167,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
                 <ToolbarItem>
                   <Button
                     type="button"
+                    aria-label="new-company"
                     variant={ButtonVariant.primary}
                     onClick={newCompany}
                   >

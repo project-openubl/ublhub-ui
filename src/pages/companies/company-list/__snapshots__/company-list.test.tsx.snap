@@ -76,6 +76,7 @@ exports[`CompanyList Renders without crashing 1`] = `
           >
             <ToolbarItem>
               <Button
+                aria-label="new-company"
                 onClick={[Function]}
                 type="button"
                 variant="primary"
