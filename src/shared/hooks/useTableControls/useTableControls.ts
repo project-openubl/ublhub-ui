@@ -6,32 +6,34 @@ import {
   SortByDirection,
 } from "@patternfly/react-table";
 
+import { PageQuery, SortByQuery } from "api/models";
+
 const setFilterText = createAction("app-table/filterText/change")<string>();
-const setSortBy = createAction("app-table/sortBy/change")<ISortBy>();
-const setPagination = createAction("app-table/pagination/change")<{
-  page: number;
-  perPage: number;
+const setSortBy = createAction("app-table/sortBy/change")<{
+  index: number;
+  fieldName: string;
+  direction: "asc" | "desc";
 }>();
+const setPagination = createAction("app-table/pagination/change")<PageQuery>();
 
 type State = Readonly<{
   changed: boolean;
 
   filterText: string;
-  paginationParams: {
-    page: number;
-    perPage: number;
-  };
-  sortBy: ISortBy | undefined;
+  paginationQuery: PageQuery;
+  sortByQuery?: SortByQuery;
+  sortBy?: ISortBy;
 }>;
 
 const defaultState: State = {
   changed: false,
 
   filterText: "",
-  paginationParams: {
+  paginationQuery: {
     page: 1,
     perPage: 10,
   },
+  sortByQuery: undefined,
   sortBy: undefined,
 };
 
@@ -46,21 +48,22 @@ const reducer = (state: State, action: Action): State => {
         ...state,
         changed: true,
         filterText: action.payload,
-        paginationParams: { page: 1, perPage: state.paginationParams.perPage },
+        paginationQuery: { page: 1, perPage: state.paginationQuery.perPage },
       };
     case getType(setPagination):
       return {
         ...state,
         changed: true,
-        paginationParams: {
-          page: action.payload.page,
-          perPage: action.payload.perPage,
-        },
+        paginationQuery: { ...action.payload },
       };
     case getType(setSortBy):
       return {
         ...state,
         changed: true,
+        sortByQuery: {
+          orderBy: action.payload.fieldName,
+          orderDirection: action.payload.direction,
+        },
         sortBy: {
           index: action.payload.index,
           direction: action.payload.direction,
@@ -73,9 +76,19 @@ const reducer = (state: State, action: Action): State => {
 
 // Hook
 
+interface HookArgs {
+  columnToField: (
+    _: React.MouseEvent,
+    index: number,
+    direction: SortByDirection,
+    extraData: IExtraColumnData
+  ) => string;
+}
+
 interface HookState {
   filterText: string;
-  pagination: { page: number; perPage: number };
+  paginationQuery: PageQuery;
+  sortByQuery?: SortByQuery;
   sortBy?: ISortBy;
   handleFilterTextChange: (filterText: string) => void;
   handlePaginationChange: ({
@@ -93,7 +106,9 @@ interface HookState {
   ) => void;
 }
 
-export const useTableControls = (): HookState => {
+export const useTableControls = ({
+  columnToField: columnIndexToField,
+}: HookArgs): HookState => {
   const [state, dispatch] = useReducer(reducer, defaultState);
 
   const handleFilterTextChange = useCallback((filterText: string) => {
@@ -109,20 +124,26 @@ export const useTableControls = (): HookState => {
 
   const handleSortChange = useCallback(
     (
-      _: React.MouseEvent,
+      event: React.MouseEvent,
       index: number,
       direction: SortByDirection,
       extraData: IExtraColumnData
     ) => {
-      const newSortBy = { index, direction };
-      dispatch(setSortBy(newSortBy));
+      dispatch(
+        setSortBy({
+          index: index,
+          fieldName: columnIndexToField(event, index, direction, extraData),
+          direction: direction,
+        })
+      );
     },
-    []
+    [columnIndexToField]
   );
 
   return {
     filterText: state.filterText,
-    pagination: state.paginationParams,
+    paginationQuery: state.paginationQuery,
+    sortByQuery: state.sortByQuery,
     sortBy: state.sortBy,
     handleFilterTextChange,
     handlePaginationChange,

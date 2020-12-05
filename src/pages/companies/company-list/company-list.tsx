@@ -17,10 +17,11 @@ import {
 import {
   IActions,
   ICell,
+  IExtraColumnData,
   IExtraData,
   IRowData,
-  ISortBy,
   sortable,
+  SortByDirection,
 } from "@patternfly/react-table";
 import { AddCircleOIcon } from "@patternfly/react-icons";
 
@@ -33,7 +34,7 @@ import {
 import { useTableControls } from "shared/hooks";
 
 import { formatPath, Paths } from "Paths";
-import { Company } from "api/models";
+import { Company, PageQuery, SortByQuery } from "api/models";
 
 import { Welcome } from "./components/welcome";
 import useFetchCompany from "./hooks/useFetchCompany";
@@ -42,6 +43,20 @@ const columns: ICell[] = [
   { title: "Name", transforms: [sortable] },
   { title: "Description" },
 ];
+
+const columnIndexToField = (
+  _: React.MouseEvent,
+  index: number,
+  direction: SortByDirection,
+  extraData: IExtraColumnData
+) => {
+  switch (index) {
+    case 0:
+      return "name";
+    default:
+      throw new Error("Invalid column index=" + index);
+  }
+};
 
 const COMPANY_FIELD = "company";
 
@@ -76,28 +91,24 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
 
   const {
     filterText,
-    pagination,
+    paginationQuery,
+    sortByQuery,
     sortBy,
     handleFilterTextChange,
     handlePaginationChange,
     handleSortChange,
-  } = useTableControls();
+  } = useTableControls({ columnToField: columnIndexToField });
 
   const reloadTable = useCallback(
-    (
-      filterText: string,
-      pagination: { page: number; perPage: number },
-      sortBy?: ISortBy
-    ) => {
-      //sortBy.
-      fetchCompanies(pagination, undefined, filterText);
+    (filterText: string, pagination: PageQuery, sortBy?: SortByQuery) => {
+      fetchCompanies(pagination, sortBy, filterText);
     },
     [fetchCompanies]
   );
 
   useEffect(() => {
-    reloadTable(filterText, pagination, sortBy);
-  }, [filterText, pagination, sortBy, reloadTable]);
+    reloadTable(filterText, paginationQuery, sortByQuery);
+  }, [filterText, paginationQuery, sortByQuery, reloadTable]);
 
   const actions: IActions = [
     {
@@ -141,7 +152,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
             count={companies ? companies.meta.count : 0}
             items={companies ? companies.data : []}
             itemsToRow={itemsToRow}
-            pagination={pagination}
+            pagination={paginationQuery}
             sortBy={sortBy}
             handleFilterTextChange={handleFilterTextChange}
             handlePaginationChange={handlePaginationChange}
