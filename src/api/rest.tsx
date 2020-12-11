@@ -4,6 +4,7 @@ import { APIClient } from "axios-config";
 import { Company, PageQuery, PageRepresentation, SortByQuery } from "./models";
 
 const USER_COMPANIES = "/user/companies";
+const COMPANIES = "/companies";
 
 export const createCompany = (company: any): AxiosPromise<Company> => {
   return APIClient.post(USER_COMPANIES, company);
@@ -35,4 +36,8 @@ export const getCompanies = (
   });
 
   return APIClient.get(`${USER_COMPANIES}?${query.join("&")}`);
+};
+
+export const deleteCompany = (company: Company): AxiosPromise => {
+  return APIClient.delete(`${COMPANIES}/${company.name}`);
 };

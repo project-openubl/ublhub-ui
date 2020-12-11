@@ -21,7 +21,7 @@ exports[`DeleteModalWithMatch Renders without crashing 1`] = `
   }
   appendTo={[Function]}
   aria-describedby=""
-  aria-label=""
+  aria-label="delete-with-match-modal"
   aria-labelledby=""
   className=""
   hasNoBodyWrapper={false}

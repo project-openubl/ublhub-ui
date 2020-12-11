@@ -3,7 +3,7 @@ import { Story, Meta } from "@storybook/react/types-6-0";
 import { Welcome, WelcomeProps } from "../welcome";
 
 export default {
-  title: "Components / Welcome",
+  title: "Company list / Welcome",
   component: Welcome,
   argTypes: {
     onPrimaryAction: { action: "clicked" },
