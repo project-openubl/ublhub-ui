@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import {
   Bullseye,
@@ -25,6 +26,8 @@ import {
 } from "@patternfly/react-table";
 import { AddCircleOIcon } from "@patternfly/react-icons";
 
+import { deleteWithMatchModalActions } from "store/delete-with-match-modal";
+
 import {
   AppPlaceholder,
   AppTableWithControls,
@@ -32,12 +35,16 @@ import {
   SimplePageSection,
 } from "shared/components";
 import { useTableControls } from "shared/hooks";
+import { DeleteWithMatchModalContainer } from "shared/containers";
 
 import { formatPath, Paths } from "Paths";
 import { Company, PageQuery, SortByQuery } from "api/models";
 
 import { Welcome } from "./components/welcome";
 import useFetchCompany from "./hooks/useFetchCompany";
+import useDeleteCompany from "./hooks/useDeleteCompany";
+import { alertActions } from "store/alert";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 const columns: ICell[] = [
   { title: "Name", transforms: [sortable] },
@@ -81,6 +88,10 @@ const itemsToRow = (items: Company[]) => {
 export interface CompanyListProps extends RouteComponentProps {}
 
 export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
+  const dispatch = useDispatch();
+
+  const { deleteCompany } = useDeleteCompany();
+
   const {
     companies,
     isFetching,
@@ -123,16 +134,54 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
         history.push(formatPath(Paths.editCompany, { company: row.name }));
       },
     },
+    {
+      title: "Delete",
+      onClick: (
+        event: React.MouseEvent,
+        rowIndex: number,
+        rowData: IRowData,
+        extraData: IExtraData
+      ) => {
+        const row: Company = getRow(rowData);
+        dispatch(
+          deleteWithMatchModalActions.openModal({
+            title: "Delete company",
+            message: `Are you sure you want to delete the company ${row.name}`,
+            matchText: row.name,
+            onDelete: () => {
+              dispatch(deleteWithMatchModalActions.processing());
+              deleteCompany(
+                row,
+                () => {
+                  dispatch(deleteWithMatchModalActions.closeModal());
+                  reloadTable(filterText, paginationQuery, sortByQuery);
+                },
+                (error) => {
+                  dispatch(deleteWithMatchModalActions.closeModal());
+                  dispatch(
+                    alertActions.addAlert(
+                      "danger",
+                      "Error",
+                      getAxiosErrorMessage(error)
+                    )
+                  );
+                }
+              );
+            },
+          })
+        );
+      },
+    },
   ];
 
-  const newCompany = () => {
+  const handleOnNewCompany = () => {
     history.push(Paths.newCompany);
   };
 
   if (fetchCount === 1 && companies?.data.length === 0) {
     return (
       <Bullseye>
-        <Welcome onPrimaryAction={newCompany} />
+        <Welcome onPrimaryAction={handleOnNewCompany} />
       </Bullseye>
     );
   }
@@ -169,7 +218,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
                     type="button"
                     aria-label="new-company"
                     variant={ButtonVariant.primary}
-                    onClick={newCompany}
+                    onClick={handleOnNewCompany}
                   >
                     New company
                   </Button>
@@ -191,6 +240,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
           />
         </PageSection>
       </ConditionalRender>
+      <DeleteWithMatchModalContainer />
     </>
   );
 };

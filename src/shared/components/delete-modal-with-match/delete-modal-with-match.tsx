@@ -18,7 +18,7 @@ export interface DeleteModalWithMatchProps {
 
   inProgress?: boolean;
   onDelete: () => void;
-  onCancel: () => void;
+  onCancel?: () => void;
 }
 
 export const DeleteModalWithMatch: React.FC<DeleteModalWithMatchProps> = ({
@@ -42,7 +42,9 @@ export const DeleteModalWithMatch: React.FC<DeleteModalWithMatchProps> = ({
   };
 
   const handleCancel = () => {
-    onCancel();
+    if (onCancel) {
+      onCancel();
+    }
   };
 
   return (
@@ -51,6 +53,7 @@ export const DeleteModalWithMatch: React.FC<DeleteModalWithMatchProps> = ({
       title={title}
       isOpen={isModalOpen}
       onClose={handleCancel}
+      aria-label="delete-with-match-modal"
       actions={[
         <Button
           key="delete"

@@ -92,4 +92,32 @@ context("Test company list", () => {
     cy.get("Button[aria-label='new-company']").click();
     cy.url().should("eq", Cypress.config().baseUrl + "/companies/~new");
   });
+
+  it("Company list - delete", () => {
+    cy.visit("/companies");
+
+    // Verify table has 12 elements
+    cy.get(".pf-c-options-menu__toggle-text").contains(12);
+
+    // Open delete modal
+    cy.get("button[aria-label='Actions']").last().click();
+    cy.get(".pf-c-dropdown__menu-item").contains("Delete").click();
+
+    cy.get(".pf-c-modal-box").should("have.length", 1);
+    cy.get(".pf-m-danger").contains("Delete").should("be.disabled");
+    cy.get(".pf-m-link").contains("Cancel").should("not.be.disabled");
+
+    // Edit data and save
+    cy.get("input[name='matchText']").type("project");
+    cy.get(".pf-m-danger").contains("Delete").should("be.disabled");
+
+    cy.get("input[name='matchText']").clear().type("company10");
+    cy.get(".pf-m-danger").contains("Delete").should("not.be.disabled");
+
+    cy.get(".pf-m-danger").contains("Delete").click();
+    cy.get(".pf-c-modal-box").should("have.length", 0);
+
+    // Verify company has been deleted
+    cy.get(".pf-c-options-menu__toggle-text").contains(11);
+  });
 });
