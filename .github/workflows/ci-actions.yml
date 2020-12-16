@@ -89,6 +89,7 @@ jobs:
   container-images:
     if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'project-openubl' }}
     runs-on: ubuntu-latest
+    needs: [unit-test, visual-test, e2e]
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
