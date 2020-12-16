@@ -6,6 +6,7 @@ import { Paths } from "Paths";
 
 const CommpanyList = lazy(() => import("./company-list"));
 const NewCompany = lazy(() => import("./new-company"));
+const EditCompany = lazy(() => import("./edit-company"));
 
 export const Projects: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ export const Projects: React.FC = () => {
         <Switch>
           <Route path={Paths.companyList} component={CommpanyList} exact />
           <Route path={Paths.newCompany} component={NewCompany} />
+          <Route path={Paths.editCompany} component={EditCompany} />
         </Switch>
       </Suspense>
     </>

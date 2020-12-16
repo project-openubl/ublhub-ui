@@ -6,77 +6,65 @@ import { Company, PageRepresentation } from "api/models";
 
 describe("useFetchCompany", () => {
   it("Fetch error due to no REST API found", async () => {
+    const COMPANY_NAME = "mycompany";
+
     // Mock REST API
-    new MockAdapter(axios).onGet("/user/companies").networkError();
+    new MockAdapter(axios).onGet("/companies/" + COMPANY_NAME).networkError();
 
     // Use hook
     const { result, waitForNextUpdate } = renderHook(() => useFetchCompany());
 
-    const {
-      companies,
-      isFetching,
-      fetchError,
-      fetchCompanies,
-    } = result.current;
+    const { company, isFetching, fetchError, fetchCompany } = result.current;
 
     expect(isFetching).toBe(false);
-    expect(companies).toBeUndefined();
+    expect(company).toBeUndefined();
     expect(fetchError).toBeUndefined();
 
     // Init fetch
-    act(() => fetchCompanies({ page: 2, perPage: 50 }));
+    act(() => fetchCompany(COMPANY_NAME));
     expect(result.current.isFetching).toBe(true);
 
     // Fetch finished
     await waitForNextUpdate();
     expect(result.current.isFetching).toBe(false);
-    expect(result.current.companies).toBeUndefined();
+    expect(result.current.company).toBeUndefined();
     expect(result.current.fetchError).not.toBeUndefined();
   });
 
   it("Fetch success", async () => {
     // Mock REST API
-    const data: PageRepresentation<Company> = {
-      meta: {
-        offset: 0,
-        limit: 0,
-        count: 0,
+    const data: Company = {
+      name: "myCompany",
+      webServices: {
+        factura: "http://url1.com",
+        guia: "http://url2.com",
+        retenciones: "http://url3.com",
       },
-      links: {
-        first: "",
-        previous: "",
-        last: "",
-        next: "",
+      credentials: {
+        username: "myUsername",
+        password: "myPassword",
       },
-      data: [],
     };
 
-    new MockAdapter(axios)
-      .onGet(`/user/companies?offset=0&limit=10`)
-      .reply(200, data);
+    new MockAdapter(axios).onGet(`/companies/${data.name}`).reply(200, data);
 
     // Use hook
     const { result, waitForNextUpdate } = renderHook(() => useFetchCompany());
 
-    const {
-      companies,
-      isFetching,
-      fetchError,
-      fetchCompanies,
-    } = result.current;
+    const { company, isFetching, fetchError, fetchCompany } = result.current;
 
     expect(isFetching).toBe(false);
-    expect(companies).toBeUndefined();
+    expect(company).toBeUndefined();
     expect(fetchError).toBeUndefined();
 
     // Init fetch
-    act(() => fetchCompanies({ page: 1, perPage: 10 }));
+    act(() => fetchCompany(data.name));
     expect(result.current.isFetching).toBe(true);
 
     // Fetch finished
     await waitForNextUpdate();
     expect(result.current.isFetching).toBe(false);
-    expect(result.current.companies).toMatchObject(data);
+    expect(result.current.company).toMatchObject(data);
     expect(result.current.fetchError).toBeUndefined();
   });
 });

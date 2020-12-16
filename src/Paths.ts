@@ -16,6 +16,8 @@ export enum Paths {
   newCompany = "/companies/~new",
 
   editCompany = "/companies/:company",
+  editCompany_overview = "/companies/:company/overview",
+  editCompany_sunat = "/companies/:company/sunat",
 }
 
 export interface OptionalCompanyRoute {

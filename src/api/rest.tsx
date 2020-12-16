@@ -41,3 +41,7 @@ export const getCompanies = (
 export const deleteCompany = (company: Company): AxiosPromise => {
   return APIClient.delete(`${COMPANIES}/${company.name}`);
 };
+
+export const getCompany = (name: string): AxiosPromise<Company> => {
+  return APIClient.get(`${COMPANIES}/${name}`);
+};

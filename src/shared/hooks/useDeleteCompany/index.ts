@@ -1,0 +1,1 @@
+export { useDeleteCompany } from "./useDeleteCompany";
