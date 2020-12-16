@@ -86,7 +86,8 @@ jobs:
         with:
           flags: e2etests
 
-  electron-linux:
+  container-images:
+    if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'project-openubl' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -95,18 +96,33 @@ jobs:
         with:
           node-version: 12.x
       - run: yarn install
-      - run: yarn run make
-      - name: Rename distribution
-        run: |
-          mv out/make/deb/x64/xsender*.deb xsender.amd64.deb
-          mv out/make/rpm/x64/xsender*.rpm xsender.x86_64.rpm
-      - name: Upload .deb
-        uses: actions/upload-artifact@v1
+      - run: yarn build
+      - name: Push to GitHub Packages
+        uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: xsender.amd64.deb
-          path: 'xsender.amd64.deb'
-      - name: Upload .rpm
-        uses: actions/upload-artifact@v1
+          registry: docker.pkg.github.com
+          name: project-openubl/xsender-server-ui/xsender-server-ui
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          dockerfile: Dockerfile
+          snapshot: false
+          tags: "master"
+      - name: Push to Docker Hub
+        uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: xsender.x86_64.rpm
-          path: 'xsender.x86_64.rpm'
+          name: projectopenubl/xsender-server
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          dockerfile: Dockerfile
+          snapshot: false
+          tags: "master"
+      - name: Push to Quay.io
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          registry: quay.io
+          name: projectopenubl/xsender-server
+          username: ${{ secrets.QUAYIO_USERNAME }}
+          password: ${{ secrets.QUAYIO_PASSWORD }}
+          dockerfile: Dockerfile
+          snapshot: false
+          tags: "master"
