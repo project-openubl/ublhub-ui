@@ -26,6 +26,7 @@ import {
 } from "@patternfly/react-table";
 import { AddCircleOIcon } from "@patternfly/react-icons";
 
+import { alertActions } from "store/alert";
 import { deleteWithMatchModalActions } from "store/delete-with-match-modal";
 
 import {
@@ -34,17 +35,18 @@ import {
   ConditionalRender,
   SimplePageSection,
 } from "shared/components";
-import { useTableControls } from "shared/hooks";
+import {
+  useTableControls,
+  useFetchCompanies,
+  useDeleteCompany,
+} from "shared/hooks";
 import { DeleteWithMatchModalContainer } from "shared/containers";
 
 import { formatPath, Paths } from "Paths";
 import { Company, PageQuery, SortByQuery } from "api/models";
+import { getAxiosErrorMessage } from "utils/modelUtils";
 
 import { Welcome } from "./components/welcome";
-import useFetchCompany from "./hooks/useFetchCompany";
-import useDeleteCompany from "./hooks/useDeleteCompany";
-import { alertActions } from "store/alert";
-import { getAxiosErrorMessage } from "utils/modelUtils";
 
 const columns: ICell[] = [
   { title: "Name", transforms: [sortable] },
@@ -98,7 +100,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
     fetchError,
     fetchCount,
     fetchCompanies,
-  } = useFetchCompany(true);
+  } = useFetchCompanies(true);
 
   const {
     filterText,
