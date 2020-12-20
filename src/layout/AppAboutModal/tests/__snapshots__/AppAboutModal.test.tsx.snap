@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppAboutModal 1`] = `
+<AboutModal
+  appendTo={null}
+  backgroundImageSrc=""
+  brandImageAlt="Logo"
+  brandImageSrc="logo-navbar.svg"
+  className=""
+  isOpen={true}
+  noAboutModalBoxContentContainer={false}
+  onClose={[MockFunction]}
+  productName=""
+  trademark="COPYRIGHT © 2020."
+>
+  <TextContent>
+    <TextList
+      component="dl"
+    >
+      <TextListItem
+        component="dt"
+      >
+        Source code
+      </TextListItem>
+      <TextListItem
+        component="dd"
+      >
+        <a
+          href="https://github.com/project-openubl/xsender-server-ui"
+        >
+          Github
+        </a>
+      </TextListItem>
+    </TextList>
+  </TextContent>
+</AboutModal>
+`;

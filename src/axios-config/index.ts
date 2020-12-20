@@ -1,2 +1,2 @@
 export { APIClient } from "./apiClient";
-export { initApi } from "./apiInit";
+export { initApi, initInterceptors } from "./apiInit";

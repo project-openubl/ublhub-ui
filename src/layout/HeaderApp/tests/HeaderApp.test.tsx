@@ -1,13 +1,8 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { HeaderApp, HeaderProps } from "../HeaderApp";
-import { Button } from "@patternfly/react-core";
+import { HeaderApp } from "../HeaderApp";
 
 it("Test snapshot", () => {
-  const props: HeaderProps = {
-    aboutButton: <Button>About Button</Button>,
-  };
-
-  const wrapper = shallow(<HeaderApp {...props} />);
+  const wrapper = shallow(<HeaderApp />);
   expect(wrapper).toMatchSnapshot();
 });

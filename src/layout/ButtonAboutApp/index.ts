@@ -1,1 +1,0 @@
-export { ButtonAboutApp } from "./ButtonAboutApp";

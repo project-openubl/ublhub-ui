@@ -6,49 +6,68 @@ import {
   Avatar,
   PageHeaderToolsGroup,
   PageHeaderToolsItem,
+  Button,
+  ButtonVariant,
 } from "@patternfly/react-core";
+import { HelpIcon } from "@patternfly/react-icons";
 
-import { ButtonAboutApp } from "../ButtonAboutApp";
+import { isSSOEnabled } from "Constants";
+import { AppAboutModalState } from "../AppAboutModalState";
+import { SSOMenu } from "./SSOMenu";
+import { MobileDropdown } from "./MobileDropdown";
 
 import navBrandImage from "images/logo-navbar.svg";
 import imgAvatar from "images/avatar.svg";
 
-export interface HeaderProps {}
-
-interface State {}
-
-export class HeaderApp extends React.Component<HeaderProps, State> {
-  renderPageToolbar = () => {
-    return (
-      <React.Fragment>
-        <PageHeaderTools>
-          <PageHeaderToolsGroup
-            visibility={{
-              default: "hidden",
-              "2xl": "visible",
-              xl: "visible",
-              lg: "visible",
-              md: "hidden",
-              sm: "hidden",
+export const HeaderApp: React.FC = () => {
+  const toolbar = (
+    <PageHeaderTools>
+      <PageHeaderToolsGroup
+        visibility={{
+          default: "hidden",
+          "2xl": "visible",
+          xl: "visible",
+          lg: "visible",
+          md: "hidden",
+          sm: "hidden",
+        }}
+      >
+        <PageHeaderToolsItem>
+          <AppAboutModalState>
+            {({ toggleModal }) => {
+              return (
+                <Button
+                  id="aboutButton"
+                  aria-label="about-button"
+                  variant={ButtonVariant.plain}
+                  onClick={toggleModal}
+                >
+                  <HelpIcon />
+                </Button>
+              );
             }}
-          >
-            <PageHeaderToolsItem>
-              <ButtonAboutApp />
-            </PageHeaderToolsItem>
-          </PageHeaderToolsGroup>
-          <Avatar src={imgAvatar} alt="Avatar image" />
-        </PageHeaderTools>
-      </React.Fragment>
-    );
-  };
+          </AppAboutModalState>
+        </PageHeaderToolsItem>
+      </PageHeaderToolsGroup>
+      <PageHeaderToolsGroup>
+        <PageHeaderToolsItem
+          visibility={{
+            lg: "hidden",
+          }} /** this kebab dropdown replaces the icon buttons and is hidden for desktop sizes */
+        >
+          <MobileDropdown />
+        </PageHeaderToolsItem>
+        {isSSOEnabled() && <SSOMenu />}
+      </PageHeaderToolsGroup>
+      <Avatar src={imgAvatar} alt="Avatar image" />
+    </PageHeaderTools>
+  );
 
-  render() {
-    return (
-      <PageHeader
-        logo={<Brand src={navBrandImage} alt="brand" />}
-        headerTools={this.renderPageToolbar()}
-        showNavToggle
-      />
-    );
-  }
-}
+  return (
+    <PageHeader
+      logo={<Brand src={navBrandImage} alt="brand" />}
+      headerTools={toolbar}
+      showNavToggle
+    />
+  );
+};

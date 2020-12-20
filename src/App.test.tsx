@@ -6,16 +6,18 @@ import App from "./App";
 import configureStore from "./store";
 import { initApi } from "axios-config";
 
-it("renders without crashing", () => {
-  const div = document.createElement("div");
+describe("AppPlaceholder", () => {
+  it("renders without crashing", () => {
+    const div = document.createElement("div");
 
-  initApi();
+    initApi();
 
-  ReactDOM.render(
-    <Provider store={configureStore()}>
-      <App />,
-    </Provider>,
-    div
-  );
-  ReactDOM.unmountComponentAtNode(div);
+    ReactDOM.render(
+      <Provider store={configureStore()}>
+        <App />,
+      </Provider>,
+      div
+    );
+    ReactDOM.unmountComponentAtNode(div);
+  });
 });
