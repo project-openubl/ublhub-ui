@@ -46,6 +46,11 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         browser: [chrome, firefox]
+    services:
+      backend:
+        image: quay.io/projectopenubl/xsender-server:master
+        ports:
+          - 8080:8080
     steps:
       - name: Checkout
         uses: actions/checkout@v2

@@ -67,7 +67,6 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "xsender:all": "npm-run-all --parallel xsender:backend xsender:ui",
-    "xsender:backend": "docker run -p 8080:8080 quay.io/projectopenubl/xsender-server:master",
     "xsender:ui": "scripts/ui.sh"
   },
   "eslintConfig": {
