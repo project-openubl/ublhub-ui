@@ -59,6 +59,7 @@
     "start:sso": "REACT_APP_SSO_ENABLED=true react-scripts -r @cypress/instrument-cra start",
     "build": "react-scripts build",
     "build:instrumentation": "CYPRESS_INSTRUMENT_PRODUCTION=true react-scripts -r @cypress/instrument-cra build",
+    "build:sso:instrumentation": "REACT_APP_SSO_ENABLED=true CYPRESS_INSTRUMENT_PRODUCTION=true react-scripts -r @cypress/instrument-cra build",
     "test": "react-scripts test",
     "test:debug": "react-scripts --inspect-brk test --runInBand --no-cache",
     "eject": "react-scripts eject",

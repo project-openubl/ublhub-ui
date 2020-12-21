@@ -91,6 +91,49 @@ jobs:
         with:
           flags: e2etests
 
+  e2e-sso:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        browser: [chrome, firefox]
+    services:
+      backend:
+        image: quay.io/projectopenubl/xsender-server:master
+        ports:
+          - 8080:8080
+      sso:
+        image: quay.io/keycloak/keycloak:12.0.1
+        ports:
+          - 8180:8080
+        volumes:
+          - tmp/example-realm.json:/tmp/example-realm.json
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - run: yarn install
+      - run: yarn build:sso:instrumentation      
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          record: false
+          start: yarn run xsender:all
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 120
+          config: pageLoadTimeout=100000
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: e2e-sso-screenshots-${{ matrix.os }}-${{ matrix.browser }}
+          path: cypress/screenshots
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: e2e-sso-videos-${{ matrix.os }}-${{ matrix.browser }}
+          path: cypress/videos
+
   container-images:
     if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'project-openubl' }}
     runs-on: ubuntu-latest
