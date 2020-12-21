@@ -66,7 +66,7 @@
     "make": "react-scripts build && electron-forge make",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "xsender:all": "npm-run-all --parallel xsender:backend xsender:ui",
+    "xsender:all": "npm-run-all --parallel xsender:ui",
     "xsender:ui": "scripts/ui.sh"
   },
   "eslintConfig": {
