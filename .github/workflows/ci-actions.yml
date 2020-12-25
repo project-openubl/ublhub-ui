@@ -108,7 +108,6 @@ jobs:
           - 8180:8080
         volumes:
           - ${{ github.workspace }}/openubl-realm.json:/tmp/example-realm.json
-          # - /tmp/example-realm.json:/tmp/example-realm.json
         env:
           KEYCLOAK_USER: admin
           KEYCLOAK_PASSWORD: admin

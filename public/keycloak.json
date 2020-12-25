@@ -1,6 +1,6 @@
 {
   "realm": "openubl",
-  "auth-server-url": "http://localhost:8180/auth/",
+  "auth-server-url": "http://keycloak:8180/auth/",
   "resource": "xsender-ui",
   "public-client": true
 }

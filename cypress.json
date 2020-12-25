@@ -2,6 +2,6 @@
   "baseUrl": "http://localhost:3000/#",
   "projectId": "8fs1cv",
   "env": {
-    "REST_API": "http://localhost:8080/api"
+    "REST_API": "http://xsender-server:8080/api"
   }
 }
