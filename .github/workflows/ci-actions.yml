@@ -107,11 +107,11 @@ jobs:
         ports:
           - 8180:8080
         volumes:
-          - ${{ github.workspace }}/openubl-realm.json:/tmp/example-realm.json
+          - ${{ github.workspace }}/openubl-realm.json:/tmp/openubl-realm.json
         env:
           KEYCLOAK_USER: admin
           KEYCLOAK_PASSWORD: admin
-          KEYCLOAK_IMPORT: /tmp/example-realm.json
+          KEYCLOAK_IMPORT: /tmp/openubl-realm.json
     steps:
       - name: Checkout
         uses: actions/checkout@v2
