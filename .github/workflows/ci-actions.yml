@@ -98,17 +98,20 @@ jobs:
         os: [ubuntu-latest]
         browser: [chrome, firefox]
     services:
-      backend:
+      xsender-server:
         image: quay.io/projectopenubl/xsender-server:master
         ports:
           - 8080:8080
-      sso:
+      keycloak:
         image: quay.io/keycloak/keycloak:12.0.1
         ports:
           - 8180:8080
         volumes:
-          - /tmp/example-realm.json:/tmp/example-realm.json
+          - ${{ github.workspace }}/openubl-realm.json:/tmp/example-realm.json
+          # - /tmp/example-realm.json:/tmp/example-realm.json
         env:
+          KEYCLOAK_USER: admin
+          KEYCLOAK_PASSWORD: admin
           KEYCLOAK_IMPORT: /tmp/example-realm.json
     steps:
       - name: Checkout
