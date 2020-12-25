@@ -107,7 +107,7 @@ jobs:
         ports:
           - 8180:8080
         volumes:
-          - ${{ github.workspace }}/xsender-server-ui/openubl-realm.json:/tmp/example-realm.json
+          - ${{ github.workspace }}/openubl-realm.json:/tmp/example-realm.json
         env:
           KEYCLOAK_USER: admin
           KEYCLOAK_PASSWORD: admin
