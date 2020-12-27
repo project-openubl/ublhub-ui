@@ -115,7 +115,7 @@ jobs:
       - name: Keycloak Action
         uses: carlosthe19916/keycloak-actions@master
         with:
-          server: http://localhost:8080/auth
+          server: http://localhost:8180/auth
           username: admin
           password: admin
           cmd: create partialImport -r openubl -s ifResourceExists=FAIL -o -f ${{ github.workspace }}/openubl-realm.json
