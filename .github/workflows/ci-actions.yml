@@ -118,7 +118,7 @@ jobs:
           server: http://keycloak:8180/auth
           username: admin
           password: admin
-          cmd: create partialImport -r openubl -s ifResourceExists=FAIL -o -f ${{ github.workspace }}/openubl-realm.json
+          cmd: create partialImport -r openubl -s ifResourceExists=FAIL -o -f openubl-realm.json
       - run: yarn install
       - run: yarn build:sso:instrumentation      
       - name: Cypress run
