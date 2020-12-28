@@ -92,14 +92,15 @@ jobs:
           flags: e2etests
 
   e2e-sso:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    # runs-on: ${{ matrix.os }}
     # container: node:10.18-jessie
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        browser: [chrome, firefox]
+    # strategy:
+    #   matrix:
+    #     os: [ubuntu-latest]
+    #     browser: [chrome, firefox]
     services:
-      xsender-server:
+      backend:
         image: quay.io/projectopenubl/xsender-server:master
         ports:
           - 8080:8080
@@ -116,7 +117,7 @@ jobs:
       - run: yarn install
       - run: yarn build:sso:instrumentation
       - run: curl http://localhost:8080
-      - run: curl http://localhost:8180
+      - run: curl http://keycloak:8180
       - name: Keycloak Action
         uses: carlosthe19916/keycloak-actions@master
         with:
@@ -137,12 +138,14 @@ jobs:
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
-          name: e2e-sso-screenshots-${{ matrix.os }}-${{ matrix.browser }}
+          # name: e2e-sso-screenshots-${{ matrix.os }}-${{ matrix.browser }}
+          name: e2e-sso-screenshots-sso
           path: cypress/screenshots
       - uses: actions/upload-artifact@v1
         if: always()
         with:
-          name: e2e-sso-videos-${{ matrix.os }}-${{ matrix.browser }}
+          # name: e2e-sso-videos-${{ matrix.os }}-${{ matrix.browser }}
+          name: e2e-sso-videos-sso
           path: cypress/videos
 
   container-images:
