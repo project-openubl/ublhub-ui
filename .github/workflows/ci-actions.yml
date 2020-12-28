@@ -115,8 +115,8 @@ jobs:
         uses: actions/checkout@v2
       - run: yarn install
       - run: yarn build:sso:instrumentation
-      - run: curl http://xsender-server:8080
-      - run: curl http://keycloak:8180
+      - run: curl http://xsender-server
+      - run: curl http://keycloak
       - name: Keycloak Action
         uses: carlosthe19916/keycloak-actions@master
         with:
