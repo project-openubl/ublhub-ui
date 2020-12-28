@@ -115,12 +115,12 @@ jobs:
         uses: actions/checkout@v2
       - run: yarn install
       - run: yarn build:sso:instrumentation
-      - run: curl http://localhost:8080
-      - run: curl http://localhost:8180
+      - run: curl http://xsender-server:8080
+      - run: curl http://keycloak:8180
       - name: Keycloak Action
         uses: carlosthe19916/keycloak-actions@master
         with:
-          server: http://localhost:8180/auth
+          server: http://keycloak:8180/auth
           username: admin
           password: admin
           cmd: create partialImport -r openubl -s ifResourceExists=FAIL -o -f openubl-realm.json
