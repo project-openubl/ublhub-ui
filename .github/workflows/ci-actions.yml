@@ -92,13 +92,11 @@ jobs:
           flags: e2etests
 
   e2e-sso:
-    runs-on: ubuntu-latest
-    # runs-on: ${{ matrix.os }}
-    # container: node:10.19-jessie
-    # strategy:
-    #   matrix:
-    #     os: [ubuntu-latest]
-    #     browser: [chrome, firefox]
+    runs-on: ${{ matrix.os }}    
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        browser: [chrome, firefox]
     services:
       backend:
         image: quay.io/projectopenubl/xsender-server:master
@@ -136,14 +134,12 @@ jobs:
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
-          # name: e2e-sso-screenshots-${{ matrix.os }}-${{ matrix.browser }}
-          name: e2e-sso-screenshots-sso
+          name: e2e-sso-screenshots-${{ matrix.os }}-${{ matrix.browser }}
           path: cypress/screenshots
       - uses: actions/upload-artifact@v1
         if: always()
         with:
-          # name: e2e-sso-videos-${{ matrix.os }}-${{ matrix.browser }}
-          name: e2e-sso-videos-sso
+          name: e2e-sso-videos-${{ matrix.os }}-${{ matrix.browser }}
           path: cypress/videos
 
   container-images:
