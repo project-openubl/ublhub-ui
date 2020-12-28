@@ -117,7 +117,7 @@ jobs:
       - run: yarn install
       - run: yarn build:sso:instrumentation
       - run: curl http://localhost:8080
-      - run: curl http://localhost:8180
+      - run: curl http://localhost:8180/auth
       - name: Keycloak Action
         uses: carlosthe19916/keycloak-actions@master
         with:
