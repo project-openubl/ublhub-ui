@@ -94,7 +94,7 @@ jobs:
   e2e-sso:
     runs-on: ubuntu-latest
     # runs-on: ${{ matrix.os }}
-    # container: node:10.18-jessie
+    container: node:10.18-jessie
     # strategy:
     #   matrix:
     #     os: [ubuntu-latest]
