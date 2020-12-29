@@ -66,8 +66,7 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "xsender:all": "npm-run-all --parallel xsender:ui",
-    "xsender:ui": "scripts/ui.sh",
-    "xsender:ui-container": "docker run -p 3000:8080 -e API_URL=http://localhost:8080 -e SSO_REALM=openubl -e SSO_CLIENT_ID=xsender-ui -e SSO_SERVER_URL=http://localhost:8180/auth/ project-openubl/xsender-server-ui:test"
+    "xsender:ui": "scripts/ui.sh"    
   },
   "eslintConfig": {
     "extends": [

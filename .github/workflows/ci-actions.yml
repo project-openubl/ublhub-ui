@@ -105,62 +105,6 @@ jobs:
         with:
           flags: e2etests
 
-  e2e-container:
-    runs-on: ubuntu-latest
-    services:
-      backend:
-        image: quay.io/projectopenubl/xsender-server:master
-        ports:
-          - 8080:8080
-      keycloak:
-        image: quay.io/keycloak/keycloak:12.0.1
-        ports:
-          - 8180:8080
-        env:
-          KEYCLOAK_USER: admin
-          KEYCLOAK_PASSWORD: admin
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Keycloak Admin CLI
-        uses: carlosthe19916/keycloak-action@master
-        with:
-          server: http://keycloak:8080/auth
-          username: admin
-          password: admin
-          cmd: create realms -f openubl-realm.json
-      - run: yarn install
-      - run: yarn build
-      - name: Docker
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: project-openubl/xsender-server-ui
-          dockerfile: Dockerfile
-          snapshot: false
-          tags: "test"
-          no_push: true
-      - name: Cypress run
-        uses: cypress-io/github-action@v2
-        with:
-          record: false
-          start: yarn run xsender:ui-container
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 120
-          config: pageLoadTimeout=100000
-          browser: chrome
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v1
-        if: failure()
-        with:
-          name: e2e-screenshots-container
-          path: cypress/screenshots
-      - uses: actions/upload-artifact@v1
-        if: always()
-        with:
-          name: e2e-videos-container
-          path: cypress/videos
-
   container-images:
     if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'project-openubl' }}
     runs-on: ubuntu-latest
