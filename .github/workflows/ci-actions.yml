@@ -136,6 +136,14 @@ jobs:
         with:
           push: false
           tags: project-openubl/xsender-server-ui:test
+      - name: Docker
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: project-openubl/xsender-server-ui
+          dockerfile: Dockerfile
+          snapshot: false
+          tags: "test"
+          no_push: true
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
