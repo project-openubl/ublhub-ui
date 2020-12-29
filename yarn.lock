@@ -6885,6 +6885,11 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
+cypress-keycloak-commands@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/cypress-keycloak-commands/-/cypress-keycloak-commands-1.2.0.tgz#7f241e8e104ebd389f9a844966dcca43694d0645"
+  integrity sha512-j0THu0XMVlWah7YjDoVlFg2bIwSiBSda6g5Pm8HpC/9U2Glk0Hrp4yLggoseft3ThAlrpIkoLaIKMDbmvtgicw==
+
 cypress@^5.4.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-5.5.0.tgz#1da0355794a43247f8a80cb7f505e83e1cf847cb"

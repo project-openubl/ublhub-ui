@@ -1,46 +1,52 @@
 /// <reference types="cypress" />
 
 context("Test company list", () => {
-  before(() => {
-    const headers = {
-      "Content-Type": "application/json",
-    };
+  beforeEach(() => {
+    cy.kcLogout();
+    cy.kcLogin("alice").as("tokens");
 
-    // Delete all companies
-    cy.request({
-      method: "GET",
-      headers: headers,
-      url: `${Cypress.env("REST_API")}/user/companies?limit=1000`,
-    }).then((result) => {
-      result.body.data.forEach((e) => {
-        cy.request({
-          method: "DELETE",
-          headers: headers,
-          url: `${Cypress.env("REST_API")}/companies/${e.name}`,
+    cy.get("@tokens").then((tokens) => {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + tokens.access_token,
+      };
+
+      // Delete all companies
+      cy.request({
+        method: "GET",
+        headers: headers,
+        url: `${Cypress.env("REST_API")}/user/companies?limit=1000`,
+      }).then((result) => {
+        result.body.data.forEach((e) => {
+          cy.request({
+            method: "DELETE",
+            headers: headers,
+            url: `${Cypress.env("REST_API")}/companies/${e.name}`,
+          });
         });
       });
-    });
 
-    // Create companies
-    for (let i = 1; i <= 12; i++) {
-      cy.request({
-        method: "POST",
-        headers: headers,
-        body: {
-          name: `Company${i}`,
-          webServices: {
-            factura: "http://url1.com",
-            guia: "http://url2.com",
-            retenciones: "http://url3.com",
+      // Create companies
+      for (let i = 1; i <= 12; i++) {
+        cy.request({
+          method: "POST",
+          headers: headers,
+          body: {
+            name: `Company${i}`,
+            webServices: {
+              factura: "http://url1.com",
+              guia: "http://url2.com",
+              retenciones: "http://url3.com",
+            },
+            credentials: {
+              username: "myUsername",
+              password: "myPassword",
+            },
           },
-          credentials: {
-            username: "myUsername",
-            password: "myPassword",
-          },
-        },
-        url: `${Cypress.env("REST_API")}/user/companies`,
-      });
-    }
+          url: `${Cypress.env("REST_API")}/user/companies`,
+        });
+      }
+    });
   });
 
   it("Company list - filtering", () => {

@@ -2,6 +2,10 @@
   "baseUrl": "http://localhost:3000/#",
   "projectId": "8fs1cv",
   "env": {
-    "REST_API": "http://localhost:8080/api"
-  }
+    "REST_API": "http://localhost:8080/api",
+    "auth_base_url": "http://localhost:8180/auth",
+    "auth_realm": "openubl",
+    "auth_client_id": "xsender-ui"
+  },
+  "chromeWebSecurity": false
 }
