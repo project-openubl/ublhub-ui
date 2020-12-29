@@ -1,5 +1,5 @@
 until $(curl --output /dev/null --silent --head --fail http://localhost:8080); do
-    printf 'backend...'
+    printf '.'
     sleep 3
 done
 
