@@ -1,6 +1,11 @@
 /// <reference types="cypress" />
 
 context("Test NewCompany", () => {
+  beforeEach(() => {
+    cy.kcLogout();
+    cy.kcLogin("alice");
+  });
+  
   it("Form should work", () => {
     cy.visit("/companies/~new");
 

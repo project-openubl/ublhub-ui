@@ -1,6 +1,11 @@
 /// <reference types="cypress" />
 
 context("Test template", () => {
+  beforeEach(() => {
+    cy.kcLogout();
+    cy.kcLogin("alice");
+  });
+
   it("Action buttons disabled when form is invalid", () => {
     cy.visit("/");
 
