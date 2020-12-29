@@ -11,7 +11,6 @@ import {
 } from "@patternfly/react-core";
 import { HelpIcon } from "@patternfly/react-icons";
 
-import { isSSOEnabled } from "Constants";
 import { AppAboutModalState } from "../AppAboutModalState";
 import { SSOMenu } from "./SSOMenu";
 import { MobileDropdown } from "./MobileDropdown";
@@ -57,7 +56,7 @@ export const HeaderApp: React.FC = () => {
         >
           <MobileDropdown />
         </PageHeaderToolsItem>
-        {isSSOEnabled() && <SSOMenu />}
+        <SSOMenu />
       </PageHeaderToolsGroup>
       <Avatar src={imgAvatar} alt="Avatar image" />
     </PageHeaderTools>
