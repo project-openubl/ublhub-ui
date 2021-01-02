@@ -54,7 +54,7 @@ jobs:
         env:
           KEYCLOAK_USER: admin
           KEYCLOAK_PASSWORD: admin
-          KEYCLOAK_IMPORT: /tmp/openubl-realm.json
+          # KEYCLOAK_IMPORT: /tmp/openubl-realm.json
         volumes:
           - ${{ github.workspace }}/openubl-realm.json:/tmp/openubl-realm.json
       backend-db:
