@@ -56,7 +56,7 @@ jobs:
           KEYCLOAK_PASSWORD: admin
           KEYCLOAK_IMPORT: /tmp/openubl-realm.json
         volumes:
-          - openubl-realm.json:/tmp/openubl-realm.json
+          - $GITHUB_WORKSPACE/openubl-realm.json:/tmp/openubl-realm.json
       backend-db:
         image: postgres:13.1
         ports:
