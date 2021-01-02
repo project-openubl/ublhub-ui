@@ -76,13 +76,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Keycloak Admin CLI
-        uses: carlosthe19916/keycloak-action@master
-        with:
-          server: http://keycloak:8080/auth
-          username: admin
-          password: admin
-          cmd: create realms -f openubl-realm.json
+      # - name: Keycloak Admin CLI
+      #   uses: carlosthe19916/keycloak-action@master
+      #   with:
+      #     server: http://keycloak:8080/auth
+      #     username: admin
+      #     password: admin
+      #     cmd: create realms -f openubl-realm.json
       - run: yarn install
       - run: yarn build:instrumentation
       - uses: haya14busa/action-cond@v1
