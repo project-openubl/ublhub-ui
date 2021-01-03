@@ -83,6 +83,11 @@ jobs:
           QUARKUS_OIDC_AUTH_SERVER_URL: http://keycloak:8080/auth/realms/openubl
           QUARKUS_OIDC_CLIENT_ID: xsender
           QUARKUS_OIDC_CREDENTIALS_SECRET: secret
+        options: >-
+          --health-cmd "curl --fail http://localhost:8080 || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout
         uses: actions/checkout@v2
