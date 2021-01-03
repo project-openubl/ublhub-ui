@@ -55,13 +55,13 @@ jobs:
           KEYCLOAK_USER: admin
           KEYCLOAK_PASSWORD: admin        
       backend-db:
-        image: postgres:12
+        image: postgres
         ports:
           - 5432:5432
         env:
-          POSTGRESQL_USER: user
-          POSTGRESQL_PASSWORD: password
-          POSTGRESQL_DATABASE: xsender_db
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: xsender_db
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
