@@ -62,6 +62,11 @@ jobs:
           POSTGRESQL_USER: user
           POSTGRESQL_PASSWORD: password
           POSTGRESQL_DATABASE: xsender_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       backend:
         image: quay.io/projectopenubl/xsender-server:master
         ports:
