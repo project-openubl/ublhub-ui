@@ -55,7 +55,7 @@ jobs:
           KEYCLOAK_USER: admin
           KEYCLOAK_PASSWORD: admin        
       backend-db:
-        image: postgres
+        image: postgres:13.1
         ports:
           - 5432:5432
         env:
