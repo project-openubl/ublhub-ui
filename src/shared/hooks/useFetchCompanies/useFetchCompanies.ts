@@ -15,9 +15,9 @@ export const {
   success: fetchSuccess,
   failure: fetchFailure,
 } = createAsyncAction(
-  "useFetchCompany/fetch/request",
-  "useFetchCompany/fetch/success",
-  "useFetchCompany/fetch/failure"
+  "useFetchCompanies/fetch/request",
+  "useFetchCompanies/fetch/success",
+  "useFetchCompanies/fetch/failure"
 )<void, PageRepresentation<Company>, AxiosError>();
 
 type State = Readonly<{
@@ -84,7 +84,9 @@ export interface IState {
   ) => void;
 }
 
-export const useFetchCompany = (defaultIsFetching: boolean = false): IState => {
+export const useFetchCompanies = (
+  defaultIsFetching: boolean = false
+): IState => {
   const [state, dispatch] = useReducer(reducer, defaultIsFetching, initReducer);
 
   const fetchCompanies = useCallback(
@@ -111,4 +113,4 @@ export const useFetchCompany = (defaultIsFetching: boolean = false): IState => {
   };
 };
 
-export default useFetchCompany;
+export default useFetchCompanies;

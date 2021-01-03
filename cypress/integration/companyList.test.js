@@ -88,7 +88,7 @@ context("Test company list", () => {
     cy.get(".pf-c-table__action").first().click();
     cy.get(".pf-c-dropdown__menu-item").contains("Edit").click();
 
-    cy.url().should("eq", Cypress.config().baseUrl + "/companies/company1");
+    cy.url().should("eq", Cypress.config().baseUrl + "/companies/company1/overview");
   });
 
   it("Company list - new", () => {
