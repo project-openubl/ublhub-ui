@@ -4,6 +4,7 @@ import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import { PageSection } from "@patternfly/react-core";
 
 import { AppPlaceholder } from "shared/components";
+import { DeleteWithMatchModalContainer } from "shared/containers";
 
 import { CompanytRoute, Paths } from "Paths";
 
@@ -36,6 +37,7 @@ export const EditCompany: React.FC<AnalysisConfigurationProps> = ({
           </Switch>
         </Suspense>
       </PageSection>
+      <DeleteWithMatchModalContainer />
     </>
   );
 };
