@@ -1,6 +1,7 @@
 ![CI](https://github.com/project-openubl/xsender-server-ui/workflows/CI/badge.svg)
 [![codecov](https://codecov.io/gh/project-openubl/xsender-server-ui/branch/master/graph/badge.svg)](https://codecov.io/gh/project-openubl/xsender-server-ui)
 [![xsender-server-ui](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/8fs1cv/master&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/8fs1cv/runs)
+[![Docker Repository on Quay](https://quay.io/repository/projectopenubl/xsender-server-ui/status "Docker Repository on Quay")](https://quay.io/repository/projectopenubl/xsender-server-ui)
 
 # XSender Server UI
 
