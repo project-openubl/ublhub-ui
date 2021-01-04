@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ErrorEmptyState Renders without crashing 1`] = `
+<EmptyState
+  variant="large"
+>
+  <EmptyStateIcon
+    icon={[Function]}
+  />
+  <Title
+    headingLevel="h4"
+    size="lg"
+  >
+    404
+  </Title>
+  <EmptyStateBody>
+    Could not find resource
+  </EmptyStateBody>
+</EmptyState>
+`;

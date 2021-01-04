@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CompanySunatDetails Renders without crashing 1`] = `
+<Card>
+  <CardTitle>
+    SUNAT
+  </CardTitle>
+  <CardBody>
+    <DescriptionList
+      columnModifier={
+        Object {
+          "default": "2Col",
+        }
+      }
+    >
+      <DescriptionListGroup>
+        <DescriptionListTerm>
+          Factura URL
+        </DescriptionListTerm>
+        <DescriptionListDescription>
+          http://url1.com
+        </DescriptionListDescription>
+      </DescriptionListGroup>
+      <DescriptionListGroup>
+        <DescriptionListTerm>
+          Retención URL
+        </DescriptionListTerm>
+        <DescriptionListDescription>
+          http://url3.com
+        </DescriptionListDescription>
+      </DescriptionListGroup>
+      <DescriptionListGroup>
+        <DescriptionListTerm>
+          Guía remisión URL
+        </DescriptionListTerm>
+        <DescriptionListDescription>
+          http://url2.com
+        </DescriptionListDescription>
+      </DescriptionListGroup>
+      <DescriptionListGroup>
+        <DescriptionListTerm>
+          Username
+        </DescriptionListTerm>
+        <DescriptionListDescription>
+          myUsername
+        </DescriptionListDescription>
+      </DescriptionListGroup>
+    </DescriptionList>
+  </CardBody>
+</Card>
+`;
