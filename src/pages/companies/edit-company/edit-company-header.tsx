@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import { Alert, Skeleton } from "@patternfly/react-core";
+import { Alert, PageSection, Skeleton } from "@patternfly/react-core";
 
 import { useDeleteCompany, useFetchCompany } from "shared/hooks";
 
@@ -82,41 +82,43 @@ export const EditCompanyHeader: React.FC<EditCompanyHeaderProps> = () => {
   }
 
   return (
-    <ConditionalRender
-      when={isFetching}
-      then={<Skeleton screenreaderText="Loading contents" />}
-    >
-      <PageHeader
-        title={params.company}
-        breadcrumbs={[
-          {
-            title: "Companies",
-            path: Paths.companyList,
-          },
-          {
-            title: "Company details",
-            path: Paths.editCompany,
-          },
-        ]}
-        menuActions={[
-          { label: "Edit", callback: handleOnEdit },
-          { label: "Delete", callback: handleOnDelete },
-        ]}
-        navItems={[
-          {
-            title: "Overview",
-            path: formatPath(Paths.editCompany_overview, {
-              company: params.company,
-            }),
-          },
-          {
-            title: "SUNAT",
-            path: formatPath(Paths.editCompany_sunat, {
-              company: params.company,
-            }),
-          },
-        ]}
-      />
-    </ConditionalRender>
+    <PageSection variant="light">
+      <ConditionalRender
+        when={isFetching}
+        then={<Skeleton screenreaderText="Loading contents" />}
+      >
+        <PageHeader
+          title={params.company}
+          breadcrumbs={[
+            {
+              title: "Companies",
+              path: Paths.companyList,
+            },
+            {
+              title: "Company details",
+              path: Paths.editCompany,
+            },
+          ]}
+          menuActions={[
+            { label: "Edit", callback: handleOnEdit },
+            { label: "Delete", callback: handleOnDelete },
+          ]}
+          navItems={[
+            {
+              title: "Overview",
+              path: formatPath(Paths.editCompany_overview, {
+                company: params.company,
+              }),
+            },
+            {
+              title: "SUNAT",
+              path: formatPath(Paths.editCompany_sunat, {
+                company: params.company,
+              }),
+            },
+          ]}
+        />
+      </ConditionalRender>
+    </PageSection>
   );
 };
