@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import { Alert, PageSection, Skeleton } from "@patternfly/react-core";
+import { Alert, Skeleton } from "@patternfly/react-core";
 
+import { AppPageSection, ConditionalRender } from "shared/components";
 import { useDeleteCompany, useFetchCompany } from "shared/hooks";
 
 import { alertActions } from "store/alert";
@@ -13,7 +14,6 @@ import { CompanytRoute, formatPath, Paths } from "Paths";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 
 import { PageHeader } from "./components/page-header";
-import { ConditionalRender } from "shared/components";
 
 export interface EditCompanyHeaderProps {}
 
@@ -82,7 +82,7 @@ export const EditCompanyHeader: React.FC<EditCompanyHeaderProps> = () => {
   }
 
   return (
-    <PageSection variant="light">
+    <AppPageSection>
       <ConditionalRender
         when={isFetching}
         then={<Skeleton screenreaderText="Loading contents" />}
@@ -119,6 +119,6 @@ export const EditCompanyHeader: React.FC<EditCompanyHeaderProps> = () => {
           ]}
         />
       </ConditionalRender>
-    </PageSection>
+    </AppPageSection>
   );
 };

@@ -1,3 +1,4 @@
+export { AppPageSection } from "./app-page-section";
 export { AppPlaceholder } from "./app-placeholder";
 export { AppTable } from "./app-table";
 export { AppTableWithControls } from "./app-table-with-controls";
