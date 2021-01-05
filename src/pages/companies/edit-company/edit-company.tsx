@@ -16,14 +16,10 @@ const Sunat = lazy(() => import("./sunat"));
 export interface AnalysisConfigurationProps
   extends RouteComponentProps<CompanytRoute> {}
 
-export const EditCompany: React.FC<AnalysisConfigurationProps> = ({
-  match,
-}) => {
+export const EditCompany: React.FC<AnalysisConfigurationProps> = () => {
   return (
     <>
-      <PageSection variant="light">
-        <EditCompanyHeader />
-      </PageSection>
+      <EditCompanyHeader />
       <PageSection>
         <Suspense fallback={<AppPlaceholder />}>
           <Switch>

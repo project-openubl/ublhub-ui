@@ -11,5 +11,5 @@ export const ConditionalRender: React.FC<ConditionalRenderProps> = ({
   then,
   children,
 }) => {
-  return when ? then : children;
+  return when ? then : children || <></>;
 };

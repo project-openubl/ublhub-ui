@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CompanyDetails Renders without crashing 1`] = `
+<Card>
+  <CardTitle>
+    Details
+  </CardTitle>
+  <CardBody>
+    <DescriptionList>
+      <DescriptionListGroup>
+        <DescriptionListTerm>
+          Name
+        </DescriptionListTerm>
+        <DescriptionListDescription>
+          my company
+        </DescriptionListDescription>
+      </DescriptionListGroup>
+      <DescriptionListGroup>
+        <DescriptionListTerm>
+          Description
+        </DescriptionListTerm>
+        <DescriptionListDescription>
+          my description
+        </DescriptionListDescription>
+      </DescriptionListGroup>
+    </DescriptionList>
+  </CardBody>
+</Card>
+`;
