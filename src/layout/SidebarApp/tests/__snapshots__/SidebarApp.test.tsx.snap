@@ -9,7 +9,7 @@ exports[`Test snapshot 1`] = `
       onSelect={[Function]}
       onToggle={[Function]}
       ouiaSafe={true}
-      theme="light"
+      theme="dark"
     >
       <NavGroup
         title="Global"
@@ -32,6 +32,6 @@ exports[`Test snapshot 1`] = `
       </NavGroup>
     </Nav>
   }
-  theme="light"
+  theme="dark"
 />
 `;
