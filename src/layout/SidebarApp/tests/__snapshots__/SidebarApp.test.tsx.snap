@@ -27,7 +27,12 @@ exports[`Test snapshot 1`] = `
         title="Company"
       >
         <NavItem>
-          Documents
+          <NavLink
+            activeClassName="pf-m-current"
+            to="/documents"
+          >
+            Documents
+          </NavLink>
         </NavItem>
       </NavGroup>
     </Nav>
