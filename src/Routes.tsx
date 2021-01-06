@@ -5,10 +5,12 @@ import { AppPlaceholder } from "shared/components";
 import { Paths } from "./Paths";
 
 const Companies = lazy(() => import("./pages/companies"));
+const Documents = lazy(() => import("./pages/documents"));
 
 export const AppRoutes = () => {
   const routes = [
     { component: Companies, path: Paths.companyList, exact: false },
+    { component: Documents, path: Paths.documentList, exact: false },
   ];
 
   return (

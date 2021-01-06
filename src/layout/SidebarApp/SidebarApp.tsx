@@ -17,7 +17,11 @@ export const SidebarApp: React.FC = () => {
           </NavItem>
         </NavGroup>
         <NavGroup title="Company">
-          <NavItem>Documents</NavItem>
+          <NavItem>
+            <NavLink to={Paths.documentList} activeClassName="pf-m-current">
+              Documents
+            </NavLink>
+          </NavItem>
         </NavGroup>
       </Nav>
     );
