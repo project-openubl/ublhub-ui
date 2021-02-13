@@ -1,13 +1,18 @@
 import React from "react";
 import { RouteComponentProps, useParams } from "react-router-dom";
 
-import { PageSection } from "@patternfly/react-core";
+import { Card, CardBody, PageSection } from "@patternfly/react-core";
 
-import { SimplePageSection } from "shared/components";
+import { SimplePageSection, UploadFilesDropzone } from "shared/components";
 import { CompanytRoute, formatPath, Paths } from "Paths";
+import { DOCUMENTS } from "api/rest";
 
 import { CompanyContextSelectorSection } from "../components/company-context-selector-section";
 import { CompanyContextSelector } from "../components/company-context-selector/company-context-selector";
+
+const getUploadUrl = (company: string) => {
+  return DOCUMENTS.replace(":company", company);
+};
 
 export interface NewDocumentProps extends RouteComponentProps {}
 
@@ -20,7 +25,8 @@ export const NewDocument: React.FC<NewDocumentProps> = () => {
         <CompanyContextSelector />
       </CompanyContextSelectorSection>
       <SimplePageSection
-        title="Upload document"
+        title="Upload"
+        description="Upload your XML files using the dropzone below."
         breadcrumbs={[
           {
             title: "Documents",
@@ -36,7 +42,16 @@ export const NewDocument: React.FC<NewDocumentProps> = () => {
           },
         ]}
       />
-      <PageSection>new document</PageSection>
+      <PageSection>
+        <Card>
+          <CardBody>
+            <UploadFilesDropzone
+              accept=".xml"
+              url={getUploadUrl(params.company)}
+            />
+          </CardBody>
+        </Card>
+      </PageSection>
     </>
   );
 };

@@ -6,6 +6,8 @@ import { Company, PageQuery, PageRepresentation, SortByQuery } from "./models";
 const USER_COMPANIES = "/user/companies";
 const COMPANIES = "/companies";
 
+export const DOCUMENTS = `${COMPANIES}/:company/documents`;
+
 export const createCompany = (company: any): AxiosPromise<Company> => {
   return APIClient.post(USER_COMPANIES, company);
 };
