@@ -1,27 +1,27 @@
 import React, { useEffect } from "react";
-import {
-  Link,
-  RouteComponentProps,
-  useHistory,
-  useParams,
-} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-import { PageSection } from "@patternfly/react-core";
+import {
+  Bullseye,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  PageSection,
+  Title,
+} from "@patternfly/react-core";
+import { CrosshairsIcon } from "@patternfly/react-icons";
 
 import { useSelector } from "react-redux";
 import { RootState } from "store/rootReducer";
 import { companyContextSelectors } from "store/company-context";
 
-import { CompanytRoute, formatPath, Paths } from "Paths";
 import { SimplePageSection } from "shared/components";
+import { formatPath, Paths } from "Paths";
 
-import { CompanyContextSelector } from "../components/company-context-selector/company-context-selector";
 import { CompanyContextSelectorSection } from "../components/company-context-selector-section";
+import { CompanyContextSelector } from "../components/company-context-selector/company-context-selector";
 
-export interface DocumentListProps extends RouteComponentProps {}
-
-export const DocumentList: React.FC<DocumentListProps> = () => {
-  const params = useParams<CompanytRoute>();
+export const SelectCompany: React.FC = () => {
   const history = useHistory();
 
   const currentCompany = useSelector((state: RootState) =>
@@ -29,14 +29,14 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
   );
 
   useEffect(() => {
-    if (params.company !== currentCompany) {
+    if (currentCompany) {
       history.push(
         formatPath(Paths.documents_byCompany, {
           company: currentCompany,
         })
       );
     }
-  }, [params, history, currentCompany]);
+  }, [currentCompany, history]);
 
   return (
     <>
@@ -45,13 +45,15 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
       </CompanyContextSelectorSection>
       <SimplePageSection title="Documents" />
       <PageSection>
-        <Link
-          to={formatPath(Paths.documents_byCompany_new, {
-            company: params.company,
-          })}
-        >
-          Upload
-        </Link>
+        <Bullseye>
+          <EmptyState>
+            <EmptyStateIcon icon={CrosshairsIcon} />
+            <Title headingLevel="h4" size="lg">
+              Select a company
+            </Title>
+            <EmptyStateBody>Select a company to see his data.</EmptyStateBody>
+          </EmptyState>
+        </Bullseye>
       </PageSection>
     </>
   );

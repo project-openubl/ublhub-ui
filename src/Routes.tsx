@@ -10,7 +10,7 @@ const Documents = lazy(() => import("./pages/documents"));
 export const AppRoutes = () => {
   const routes = [
     { component: Companies, path: Paths.companyList, exact: false },
-    { component: Documents, path: Paths.documentList, exact: false },
+    { component: Documents, path: Paths.documents, exact: false },
   ];
 
   return (

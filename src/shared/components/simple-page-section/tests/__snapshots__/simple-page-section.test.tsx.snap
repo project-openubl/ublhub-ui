@@ -4,12 +4,18 @@ exports[`SimplePageSection Renders without crashing 1`] = `
 <PageSection
   variant="light"
 >
-  <TextContent>
-    <Text
-      component="h1"
-    >
-      myTitle
-    </Text>
-  </TextContent>
+  <Stack
+    hasGutter={true}
+  >
+    <StackItem>
+      <TextContent>
+        <Text
+          component="h1"
+        >
+          myTitle
+        </Text>
+      </TextContent>
+    </StackItem>
+  </Stack>
 </PageSection>
 `;
