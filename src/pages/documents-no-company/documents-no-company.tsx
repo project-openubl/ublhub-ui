@@ -49,7 +49,7 @@ export const DocumentsNoCompany: React.FC = () => {
             <Title headingLevel="h4" size="lg">
               Select a company
             </Title>
-            <EmptyStateBody>Select a company to see his data.</EmptyStateBody>
+            <EmptyStateBody>Select a company to see its data.</EmptyStateBody>
           </EmptyState>
         </Bullseye>
       </PageSection>

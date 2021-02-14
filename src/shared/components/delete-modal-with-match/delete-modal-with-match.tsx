@@ -85,6 +85,7 @@ export const DeleteModalWithMatch: React.FC<DeleteModalWithMatchProps> = ({
           value={inputMatchValue}
           onChange={(value) => setInputMatchValue(value)}
           aria-label="Text input match"
+          autoComplete="off"
         />
       </div>
     </Modal>

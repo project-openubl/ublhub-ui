@@ -4,8 +4,8 @@ export interface PageQuery {
 }
 
 export interface SortByQuery {
-  orderBy: string | undefined;
-  orderDirection: "asc" | "desc";
+  index: number;
+  direction: "asc" | "desc";
 }
 
 export interface PageRepresentation<T> {

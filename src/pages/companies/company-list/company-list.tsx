@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
@@ -12,17 +12,16 @@ import {
   EmptyStateVariant,
   PageSection,
   Title,
+  ToolbarFilter,
   ToolbarGroup,
   ToolbarItem,
 } from "@patternfly/react-core";
 import {
   IActions,
   ICell,
-  IExtraColumnData,
   IExtraData,
   IRowData,
   sortable,
-  SortByDirection,
 } from "@patternfly/react-table";
 import { AddCircleOIcon } from "@patternfly/react-icons";
 
@@ -33,6 +32,7 @@ import {
   AppPlaceholder,
   AppTableWithControls,
   ConditionalRender,
+  SearchFilter,
   SimplePageSection,
 } from "shared/components";
 import {
@@ -43,28 +43,32 @@ import {
 import { DeleteWithMatchModalContainer } from "shared/containers";
 
 import { formatPath, Paths } from "Paths";
-import { Company, PageQuery, SortByQuery } from "api/models";
+import { CompanySortBy, CompanySortByQuery } from "api/rest";
+import { Company, SortByQuery } from "api/models";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 
 import { Welcome } from "./components/welcome";
 
-const columns: ICell[] = [
-  { title: "Name", transforms: [sortable] },
-  { title: "Description" },
-];
-
-const columnIndexToField = (
-  _: React.MouseEvent,
-  index: number,
-  direction: SortByDirection,
-  extraData: IExtraColumnData
-) => {
-  switch (index) {
-    case 0:
-      return "name";
-    default:
-      throw new Error("Invalid column index=" + index);
+const toSortByQuery = (
+  sortBy?: SortByQuery
+): CompanySortByQuery | undefined => {
+  if (!sortBy) {
+    return undefined;
   }
+
+  let field: CompanySortBy;
+  switch (sortBy.index) {
+    case 0:
+      field = CompanySortBy.NAME;
+      break;
+    default:
+      throw new Error("Invalid column index=" + sortBy.index);
+  }
+
+  return {
+    field,
+    direction: sortBy.direction,
+  };
 };
 
 const COMPANY_FIELD = "company";
@@ -73,28 +77,12 @@ const getRow = (rowData: IRowData): Company => {
   return rowData[COMPANY_FIELD];
 };
 
-const itemsToRow = (items: Company[]) => {
-  return items.map((item) => ({
-    [COMPANY_FIELD]: item,
-    cells: [
-      {
-        title: (
-          <Link to={formatPath(Paths.editCompany, { company: item.name })}>
-            {item.name}
-          </Link>
-        ),
-      },
-      {
-        title: item.description,
-      },
-    ],
-  }));
-};
-
 export interface CompanyListProps extends RouteComponentProps {}
 
 export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
   const dispatch = useDispatch();
+
+  const [filterText, setFilterText] = useState("");
 
   const { deleteCompany } = useDeleteCompany();
 
@@ -107,25 +95,54 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
   } = useFetchCompanies(true);
 
   const {
-    filterText,
     paginationQuery,
     sortByQuery,
-    sortBy,
-    handleFilterTextChange,
     handlePaginationChange,
     handleSortChange,
-  } = useTableControls({ columnToField: columnIndexToField });
+  } = useTableControls();
 
-  const reloadTable = useCallback(
-    (filterText: string, pagination: PageQuery, sortBy?: SortByQuery) => {
-      fetchCompanies(pagination, sortBy, filterText);
-    },
-    [fetchCompanies]
-  );
+  const refreshTable = useCallback(() => {
+    fetchCompanies(
+      {
+        filterText,
+      },
+      paginationQuery,
+      toSortByQuery(sortByQuery)
+    );
+  }, [filterText, paginationQuery, sortByQuery, fetchCompanies]);
 
   useEffect(() => {
-    reloadTable(filterText, paginationQuery, sortByQuery);
-  }, [filterText, paginationQuery, sortByQuery, reloadTable]);
+    fetchCompanies(
+      {
+        filterText,
+      },
+      paginationQuery,
+      toSortByQuery(sortByQuery)
+    );
+  }, [filterText, paginationQuery, sortByQuery, fetchCompanies]);
+
+  const columns: ICell[] = [
+    { title: "Name", transforms: [sortable] },
+    { title: "Description" },
+  ];
+
+  const itemsToRow = (items: Company[]) => {
+    return items.map((item) => ({
+      [COMPANY_FIELD]: item,
+      cells: [
+        {
+          title: (
+            <Link to={formatPath(Paths.editCompany, { company: item.name })}>
+              {item.name}
+            </Link>
+          ),
+        },
+        {
+          title: item.description,
+        },
+      ],
+    }));
+  };
 
   const actions: IActions = [
     {
@@ -160,7 +177,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
                 row,
                 () => {
                   dispatch(deleteWithMatchModalActions.closeModal());
-                  reloadTable(filterText, paginationQuery, sortByQuery);
+                  refreshTable();
                 },
                 (error) => {
                   dispatch(deleteWithMatchModalActions.closeModal());
@@ -178,6 +195,11 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
 
   const handleOnNewCompany = () => {
     history.push(Paths.newCompany);
+  };
+
+  const handleOnFilterApplied = (filterText: string) => {
+    setFilterText(filterText);
+    handlePaginationChange({ page: 1 });
   };
 
   if (fetchCount === 1 && companies?.data.length === 0) {
@@ -204,8 +226,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
             items={companies ? companies.data : []}
             itemsToRow={itemsToRow}
             pagination={paginationQuery}
-            sortBy={sortBy}
-            handleFilterTextChange={handleFilterTextChange}
+            sortBy={sortByQuery}
             handlePaginationChange={handlePaginationChange}
             handleSortChange={handleSortChange}
             columns={columns}
@@ -213,6 +234,12 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
             isLoading={isFetching}
             loadingVariant="skeleton"
             fetchError={fetchError}
+            filtersApplied={filterText.trim().length > 0}
+            toolbarToggle={
+              <ToolbarGroup variant="filter-group">
+                <SearchFilter onApplyFilter={handleOnFilterApplied} />
+              </ToolbarGroup>
+            }
             toolbar={
               <ToolbarGroup variant="button-group">
                 <ToolbarItem>
@@ -227,7 +254,6 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
                 </ToolbarItem>
               </ToolbarGroup>
             }
-            filtersApplied={filterText.trim().length > 0}
             noDataState={
               <EmptyState variant={EmptyStateVariant.small}>
                 <EmptyStateIcon icon={AddCircleOIcon} />

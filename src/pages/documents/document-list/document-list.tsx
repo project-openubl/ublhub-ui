@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps, useHistory, useParams } from "react-router-dom";
 
 import {
@@ -35,26 +35,28 @@ import { DeleteWithMatchModalContainer } from "shared/containers";
 
 import { CompanytRoute, formatPath, Paths } from "Paths";
 import { UBLDocument, PageQuery, SortByQuery } from "api/models";
+import { UBLDocumentSortBy, UBLDocumentSortByQuery } from "api/rest";
 
-const columns: ICell[] = [
-  { title: "Ruc" },
-  { title: "ID", transforms: [sortable] },
-  { title: "Type" },
-  { title: "Status" },
-];
-
-const columnIndexToField = (
-  _: React.MouseEvent,
-  index: number,
-  direction: SortByDirection,
-  extraData: IExtraColumnData
-) => {
-  switch (index) {
-    case 0:
-      return "name";
-    default:
-      throw new Error("Invalid column index=" + index);
+const toSortByQuery = (
+  sortBy?: SortByQuery
+): UBLDocumentSortByQuery | undefined => {
+  if (!sortBy) {
+    return undefined;
   }
+
+  let field: UBLDocumentSortBy;
+  switch (sortBy.index) {
+    case 0:
+      field = UBLDocumentSortBy.DOCUMENT_ID;
+      break;
+    default:
+      throw new Error("Invalid column index=" + sortBy.index);
+  }
+
+  return {
+    field,
+    direction: sortBy.direction,
+  };
 };
 
 const DOCUMENT_FIELD = "document";
@@ -63,31 +65,13 @@ const getRow = (rowData: IRowData): UBLDocument => {
   return rowData[DOCUMENT_FIELD];
 };
 
-const itemsToRow = (items: UBLDocument[]) => {
-  return items.map((item) => ({
-    [DOCUMENT_FIELD]: item,
-    cells: [
-      {
-        title: item.fileInfo.ruc,
-      },
-      {
-        title: item.fileInfo.documentID,
-      },
-      {
-        title: item.fileInfo.documentType,
-      },
-      {
-        title: item.deliveryStatus,
-      },
-    ],
-  }));
-};
-
 export interface DocumentListProps extends RouteComponentProps {}
 
 export const DocumentList: React.FC<DocumentListProps> = () => {
   const history = useHistory();
   const params = useParams<CompanytRoute>();
+
+  const [filterText, setFilterText] = useState("");
 
   const {
     documents,
@@ -97,25 +81,60 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
   } = useFetchDocuments(true);
 
   const {
-    filterText,
     paginationQuery,
     sortByQuery,
-    sortBy,
-    handleFilterTextChange,
     handlePaginationChange,
     handleSortChange,
-  } = useTableControls({ columnToField: columnIndexToField });
+  } = useTableControls();
 
-  const reloadTable = useCallback(
-    (filterText: string, pagination: PageQuery, sortBy?: SortByQuery) => {
-      fetchDocuments(params.company, pagination, sortBy, filterText);
-    },
-    [params, fetchDocuments]
-  );
+  const refreshTable = useCallback(() => {
+    fetchDocuments(
+      params.company,
+      {
+        filterText,
+      },
+      paginationQuery,
+      toSortByQuery(sortByQuery)
+    );
+  }, [filterText, paginationQuery, sortByQuery, fetchDocuments]);
 
   useEffect(() => {
-    reloadTable(filterText, paginationQuery, sortByQuery);
-  }, [filterText, paginationQuery, sortByQuery, reloadTable]);
+    fetchDocuments(
+      params.company,
+      {
+        filterText,
+      },
+      paginationQuery,
+      toSortByQuery(sortByQuery)
+    );
+  }, [filterText, paginationQuery, sortByQuery, fetchDocuments]);
+
+  const columns: ICell[] = [
+    { title: "Ruc" },
+    { title: "ID", transforms: [sortable] },
+    { title: "Type" },
+    { title: "Status" },
+  ];
+
+  const itemsToRow = (items: UBLDocument[]) => {
+    return items.map((item) => ({
+      [DOCUMENT_FIELD]: item,
+      cells: [
+        {
+          title: item.fileInfo.ruc,
+        },
+        {
+          title: item.fileInfo.documentID,
+        },
+        {
+          title: item.fileInfo.documentType,
+        },
+        {
+          title: item.deliveryStatus,
+        },
+      ],
+    }));
+  };
 
   const actions: IActions = [
     {
@@ -154,18 +173,14 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
         when={isFetching && !(documents || fetchError)}
         then={<AppPlaceholder />}
       >
-        <SimplePageSection
-          title="Documents"
-          description="Documents are the set of XML files you uploaded."
-        />
+        <SimplePageSection title="Documents" />
         <PageSection>
           <AppTableWithControls
             count={documents ? documents.meta.count : 0}
             items={documents ? documents.data : []}
             itemsToRow={itemsToRow}
             pagination={paginationQuery}
-            sortBy={sortBy}
-            handleFilterTextChange={handleFilterTextChange}
+            sortBy={sortByQuery}
             handlePaginationChange={handlePaginationChange}
             handleSortChange={handleSortChange}
             columns={columns}
@@ -173,6 +188,7 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
             isLoading={isFetching}
             loadingVariant="skeleton"
             fetchError={fetchError}
+            filtersApplied={filterText.trim().length > 0}
             toolbar={
               <ToolbarGroup variant="button-group">
                 <ToolbarItem>
@@ -187,7 +203,6 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
                 </ToolbarItem>
               </ToolbarGroup>
             }
-            filtersApplied={filterText.trim().length > 0}
             noDataState={
               <EmptyState variant={EmptyStateVariant.small}>
                 <EmptyStateIcon icon={AddCircleOIcon} />
@@ -195,7 +210,7 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
                   No documents available
                 </Title>
                 <EmptyStateBody>
-                  Add a documents by clicking on <strong>New company</strong>.
+                  Add a documents by clicking on <strong>New document</strong>.
                 </EmptyStateBody>
               </EmptyState>
             }

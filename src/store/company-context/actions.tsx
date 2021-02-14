@@ -18,7 +18,7 @@ export const fetchCompaniesContext = () => {
   return (dispatch: Dispatch) => {
     dispatch(fetchCompaniesRequest());
 
-    return getCompanies({ page: 1, perPage: 10_000 })
+    return getCompanies({}, { page: 1, perPage: 10_000 })
       .then((res: AxiosResponse<PageRepresentation<Company>>) => {
         dispatch(fetchCompaniesSuccess(res.data.data));
       })

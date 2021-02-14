@@ -8,18 +8,14 @@ exports[`AppTableWithControls Renders adding toolbar 1`] = `
     }
   }
 >
-  <Toolbar>
+  <Toolbar
+    className="pf-m-toggle-group-container"
+    collapseListedFiltersBreakpoint="xl"
+  >
     <ToolbarContent
       isExpanded={false}
       showClearFiltersButton={false}
     >
-      <ForwardRef>
-        <ToolbarItem>
-          <SearchInput
-            onSearch={[MockFunction]}
-          />
-        </ToolbarItem>
-      </ForwardRef>
       <p>
         This is an additional content to toolbar
       </p>
@@ -102,18 +98,14 @@ exports[`AppTableWithControls Renders without crashing 1`] = `
     }
   }
 >
-  <Toolbar>
+  <Toolbar
+    className="pf-m-toggle-group-container"
+    collapseListedFiltersBreakpoint="xl"
+  >
     <ToolbarContent
       isExpanded={false}
       showClearFiltersButton={false}
     >
-      <ForwardRef>
-        <ToolbarItem>
-          <SearchInput
-            onSearch={[MockFunction]}
-          />
-        </ToolbarItem>
-      </ForwardRef>
       <ToolbarItem
         alignment={
           Object {

@@ -2,7 +2,7 @@ import { useCallback, useReducer } from "react";
 import { AxiosError } from "axios";
 import { ActionType, createAsyncAction, getType } from "typesafe-actions";
 
-import { getDocuments } from "api/rest";
+import { UBLDocumentSortByQuery, getDocuments } from "api/rest";
 import {
   PageRepresentation,
   UBLDocument,
@@ -79,9 +79,11 @@ export interface IState {
   fetchCount: number;
   fetchDocuments: (
     company: string,
+    filters: {
+      filterText?: string;
+    },
     page: PageQuery,
-    sortBy?: SortByQuery,
-    filterText?: string
+    sortBy?: UBLDocumentSortByQuery
   ) => void;
 }
 
@@ -93,13 +95,15 @@ export const useFetchDocuments = (
   const fetchDocuments = useCallback(
     (
       company: string,
+      filters: {
+        filterText?: string;
+      },
       page: PageQuery,
-      sortBy?: SortByQuery,
-      filterText?: string
+      sortBy?: UBLDocumentSortByQuery
     ) => {
       dispatch(fetchRequest());
 
-      getDocuments(company, page, sortBy, filterText)
+      getDocuments(company, filters, page, sortBy)
         .then(({ data }) => {
           dispatch(fetchSuccess(data));
         })
