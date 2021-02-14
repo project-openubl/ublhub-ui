@@ -3,7 +3,6 @@ const newCompanySchema = {
     {
       component: "sub-form",
       title: "Company",
-      description: "A company contains all files like XMLs or CDRs",
       name: "details",
       fields: [
         {
@@ -25,6 +24,19 @@ const newCompanySchema = {
               pattern: "[a-z0-9]([-a-z0-9]*[a-z0-9])?",
               message:
                 "Label must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character (e.g. 'my-name', or '123-abc', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?')",
+            },
+          ],
+        },
+        {
+          component: "textarea",
+          name: "description",
+          label: "Description",
+          type: "text",
+          isRequired: false,
+          validate: [
+            {
+              type: "max-length",
+              threshold: 250,
             },
           ],
         },

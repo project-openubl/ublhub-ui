@@ -18,6 +18,7 @@ import { getAxiosErrorMessage } from "utils/modelUtils";
 
 export interface NewCompanyFormValues {
   name: string;
+  description?: string;
   webServices: {
     factura: string;
     guia: string;

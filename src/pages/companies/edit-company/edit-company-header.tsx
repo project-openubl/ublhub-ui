@@ -111,7 +111,13 @@ export const EditCompanyHeader: React.FC<EditCompanyHeaderProps> = () => {
               }),
             },
             {
-              title: "SUNAT",
+              title: "Details",
+              path: formatPath(Paths.editCompany_sunat, {
+                company: params.company,
+              }),
+            },
+            {
+              title: "SUNAT Credentials",
               path: formatPath(Paths.editCompany_sunat, {
                 company: params.company,
               }),
