@@ -1,0 +1,1 @@
+export { useFetchDocuments } from "./useFetchDocuments";

@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SimpleContextSelector Renders without crashing 1`] = `
+<ContextSelector
+  className=""
+  footer={null}
+  isOpen={false}
+  menuAppendTo="inline"
+  onSearchButtonClick={[Function]}
+  onSearchInputChange={[Function]}
+  onSelect={[Function]}
+  onToggle={[Function]}
+  ouiaSafe={true}
+  screenReaderLabel="Selected item:"
+  searchButtonAriaLabel="Search menu items"
+  searchInputPlaceholder="Search"
+  searchInputValue=""
+  toggleText="value1"
+>
+  <ContextSelectorItem
+    className=""
+    isDisabled={false}
+    key="0"
+    onClick={[Function]}
+    sendRef={[Function]}
+  >
+    value1
+  </ContextSelectorItem>
+  <ContextSelectorItem
+    className=""
+    isDisabled={false}
+    key="1"
+    onClick={[Function]}
+    sendRef={[Function]}
+  >
+    value2
+  </ContextSelectorItem>
+  <ContextSelectorItem
+    className=""
+    isDisabled={false}
+    key="2"
+    onClick={[Function]}
+    sendRef={[Function]}
+  >
+    value3
+  </ContextSelectorItem>
+</ContextSelector>
+`;

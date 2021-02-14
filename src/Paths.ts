@@ -19,8 +19,9 @@ export enum Paths {
   editCompany_overview = "/companies/:company/overview",
   editCompany_sunat = "/companies/:company/sunat",
 
-  documentList = "/documents",
-  newDocument = "/documents/~new",
+  documentList_empty = "/documents/select-company",
+  documentList = "/documents/company/:company/",
+  newDocument = "/documents/company/:company/~new",
 }
 
 export interface OptionalCompanyRoute {

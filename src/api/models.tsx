@@ -44,3 +44,16 @@ export interface SUNATCredentials {
   username: string;
   password: string;
 }
+
+export interface UBLDocument {
+  id?: string;
+  deliveryStatus: string;
+  fileInfo: FileInfo;
+}
+
+export interface FileInfo {
+  documentID: string;
+  documentType: string;
+  filename: string;
+  ruc: string;
+}

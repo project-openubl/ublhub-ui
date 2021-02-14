@@ -1,28 +1,40 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Nav, NavItem, PageSidebar, NavGroup } from "@patternfly/react-core";
+import { Nav, NavItem, PageSidebar, NavList } from "@patternfly/react-core";
+
+import { useSelector } from "react-redux";
+import { RootState } from "store/rootReducer";
+import { companyContextSelectors } from "store/company-context";
+
+import { formatPath, Paths } from "Paths";
 import { LayoutTheme } from "../LayoutUtils";
 
-import { Paths } from "Paths";
-
 export const SidebarApp: React.FC = () => {
+  const currentCompany = useSelector((state: RootState) =>
+    companyContextSelectors.currentCompany(state)
+  );
+
+  const documentsLink = currentCompany
+    ? formatPath(Paths.documentList, {
+        company: currentCompany,
+      })
+    : Paths.documentList_empty;
+
   const renderPageNav = () => {
     return (
       <Nav id="nav-primary-simple" aria-label="Nav" theme={LayoutTheme}>
-        <NavGroup title="Global">
+        <NavList>
           <NavItem>
             <NavLink to={Paths.companyList} activeClassName="pf-m-current">
               Companies
             </NavLink>
           </NavItem>
-        </NavGroup>
-        <NavGroup title="Company">
           <NavItem>
-            <NavLink to={Paths.documentList} activeClassName="pf-m-current">
+            <NavLink to={documentsLink} activeClassName="pf-m-current">
               Documents
             </NavLink>
           </NavItem>
-        </NavGroup>
+        </NavList>
       </Nav>
     );
   };
