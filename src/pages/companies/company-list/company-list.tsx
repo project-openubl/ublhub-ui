@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import {
@@ -78,7 +78,11 @@ const itemsToRow = (items: Company[]) => {
     [COMPANY_FIELD]: item,
     cells: [
       {
-        title: item.name,
+        title: (
+          <Link to={formatPath(Paths.editCompany, { company: item.name })}>
+            {item.name}
+          </Link>
+        ),
       },
       {
         title: item.description,

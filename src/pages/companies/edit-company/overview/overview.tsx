@@ -32,10 +32,10 @@ export const Overview: React.FC<OverviewProps> = ({ match: { params } }) => {
     <ConditionalRender when={isFetching} then={<AppPlaceholder />}>
       {company && (
         <Grid hasGutter>
-          <GridItem md={4}>
+          <GridItem lg={4}>
             <CompanyDetails company={company} />
           </GridItem>
-          <GridItem md={8}>
+          <GridItem lg={8}>
             <CompanySunatDetails company={company} />
           </GridItem>
         </Grid>
