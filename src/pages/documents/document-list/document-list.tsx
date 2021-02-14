@@ -1,14 +1,7 @@
 import React, { useCallback, useEffect } from "react";
-import {
-  Link,
-  RouteComponentProps,
-  useHistory,
-  useParams,
-} from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { RouteComponentProps, useHistory, useParams } from "react-router-dom";
 
 import {
-  Bullseye,
   Button,
   ButtonVariant,
   EmptyState,
@@ -31,25 +24,17 @@ import {
 } from "@patternfly/react-table";
 import { AddCircleOIcon } from "@patternfly/react-icons";
 
-import { alertActions } from "store/alert";
-import { deleteWithMatchModalActions } from "store/delete-with-match-modal";
-
 import {
   AppPlaceholder,
   AppTableWithControls,
   ConditionalRender,
   SimplePageSection,
 } from "shared/components";
-import {
-  useTableControls,
-  useFetchDocuments,
-  useDeleteCompany,
-} from "shared/hooks";
+import { useTableControls, useFetchDocuments } from "shared/hooks";
 import { DeleteWithMatchModalContainer } from "shared/containers";
 
 import { CompanytRoute, formatPath, Paths } from "Paths";
 import { UBLDocument, PageQuery, SortByQuery } from "api/models";
-import { getAxiosErrorMessage } from "utils/modelUtils";
 
 const columns: ICell[] = [
   { title: "Ruc" },
@@ -101,18 +86,13 @@ const itemsToRow = (items: UBLDocument[]) => {
 export interface DocumentListProps extends RouteComponentProps {}
 
 export const DocumentList: React.FC<DocumentListProps> = () => {
-  const dispatch = useDispatch();
-
   const history = useHistory();
   const params = useParams<CompanytRoute>();
-
-  const { deleteCompany } = useDeleteCompany();
 
   const {
     documents,
     isFetching,
     fetchError,
-    fetchCount,
     fetchDocuments,
   } = useFetchDocuments(true);
 
@@ -147,6 +127,7 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
         extraData: IExtraData
       ) => {
         const row: UBLDocument = getRow(rowData);
+        console.log(row);
       },
     },
     {
@@ -158,6 +139,7 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
         extraData: IExtraData
       ) => {
         const row: UBLDocument = getRow(rowData);
+        console.log(row);
       },
     },
   ];
