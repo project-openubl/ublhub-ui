@@ -6,7 +6,6 @@ import {
   Text,
   Stack,
   StackItem,
-  Split,
 } from "@patternfly/react-core";
 
 import { BreadCrumbPath } from "../breadcrumb-path";

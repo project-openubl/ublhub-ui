@@ -1,16 +1,24 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import { useDispatch } from "react-redux";
 import { companyContextActions } from "store/company-context";
 
 import { CompanyContextSelectorContainer } from "shared/containers";
 
-import { CompanytRoute } from "Paths";
+import { CompanytRoute, formatPath, Paths } from "Paths";
 import { Company } from "api/models";
 
-export const CompanyContextSelector: React.FC = () => {
+export interface CompanyContextSelectorProps {
+  url: Paths;
+}
+
+export const CompanyContextSelector: React.FC<CompanyContextSelectorProps> = ({
+  url,
+}) => {
   const dispatch = useDispatch();
+
+  const history = useHistory();
   const { company } = useParams<CompanytRoute>();
 
   useEffect(() => {
@@ -25,6 +33,7 @@ export const CompanyContextSelector: React.FC = () => {
 
   const handleOnChange = (company: Company) => {
     dispatch(companyContextActions.setCompanyContext(company.name));
+    history.push(formatPath(url, { company: company.name }));
   };
 
   return <CompanyContextSelectorContainer onChange={handleOnChange} />;

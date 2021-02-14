@@ -1,1 +1,1 @@
-export { CompanyContextSelector as Welcome } from "./company-context-selector";
+export { CompanyContextSelector } from "./company-context-selector";

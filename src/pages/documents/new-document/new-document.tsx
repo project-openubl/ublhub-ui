@@ -7,9 +7,6 @@ import { SimplePageSection, UploadFilesDropzone } from "shared/components";
 import { CompanytRoute, formatPath, Paths } from "Paths";
 import { DOCUMENTS } from "api/rest";
 
-import { CompanyContextSelectorSection } from "../components/company-context-selector-section";
-import { CompanyContextSelector } from "../components/company-context-selector/company-context-selector";
-
 const getUploadUrl = (company: string) => {
   return DOCUMENTS.replace(":company", company);
 };
@@ -21,22 +18,19 @@ export const NewDocument: React.FC<NewDocumentProps> = () => {
 
   return (
     <>
-      <CompanyContextSelectorSection>
-        <CompanyContextSelector />
-      </CompanyContextSelectorSection>
       <SimplePageSection
         title="Upload"
         description="Upload your XML files using the dropzone below."
         breadcrumbs={[
           {
             title: "Documents",
-            path: formatPath(Paths.documents_byCompany, {
+            path: formatPath(Paths.documentList, {
               company: params.company,
             }),
           },
           {
             title: "upload",
-            path: formatPath(Paths.documents_byCompany_new, {
+            path: formatPath(Paths.newDocument, {
               company: params.company,
             }),
           },

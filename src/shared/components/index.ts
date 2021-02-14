@@ -2,6 +2,7 @@ export { AppPageSection } from "./app-page-section";
 export { AppPlaceholder } from "./app-placeholder";
 export { AppTable } from "./app-table";
 export { AppTableWithControls } from "./app-table-with-controls";
+export { CompanyContextSelectorSection } from "./company-context-selector-section";
 export { ConditionalRender } from "./conditional-render";
 export { DeleteModalWithMatch } from "./delete-modal-with-match";
 export { ErrorEmptyState } from "./error-empty-state";

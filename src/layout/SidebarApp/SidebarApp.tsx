@@ -15,10 +15,10 @@ export const SidebarApp: React.FC = () => {
   );
 
   const documentsLink = currentCompany
-    ? formatPath(Paths.documents_byCompany, {
+    ? formatPath(Paths.documentList, {
         company: currentCompany,
       })
-    : Paths.documents_selectCompany;
+    : Paths.documentList_empty;
 
   const renderPageNav = () => {
     return (

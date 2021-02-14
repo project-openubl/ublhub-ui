@@ -11,37 +11,35 @@ import {
 } from "@patternfly/react-core";
 import { CrosshairsIcon } from "@patternfly/react-icons";
 
-import { useSelector } from "react-redux";
-import { RootState } from "store/rootReducer";
-import { companyContextSelectors } from "store/company-context";
+import { useDispatch } from "react-redux";
+import { companyContextActions } from "store/company-context";
 
-import { SimplePageSection } from "shared/components";
+import {
+  SimplePageSection,
+  CompanyContextSelectorSection,
+} from "shared/components";
+import { CompanyContextSelectorContainer } from "shared/containers";
+
+import { Company } from "api/models";
 import { formatPath, Paths } from "Paths";
 
-import { CompanyContextSelectorSection } from "../components/company-context-selector-section";
-import { CompanyContextSelector } from "../components/company-context-selector/company-context-selector";
-
-export const SelectCompany: React.FC = () => {
+export const DocumentsNoCompany: React.FC = () => {
   const history = useHistory();
-
-  const currentCompany = useSelector((state: RootState) =>
-    companyContextSelectors.currentCompany(state)
-  );
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (currentCompany) {
-      history.push(
-        formatPath(Paths.documents_byCompany, {
-          company: currentCompany,
-        })
-      );
-    }
-  }, [currentCompany, history]);
+    dispatch(companyContextActions.fetchCompaniesContext());
+  }, [dispatch]);
+
+  const handleOnChange = (company: Company) => {
+    dispatch(companyContextActions.setCompanyContext(company.name));
+    history.push(formatPath(Paths.documentList, { company: company.name }));
+  };
 
   return (
     <>
       <CompanyContextSelectorSection>
-        <CompanyContextSelector />
+        <CompanyContextSelectorContainer onChange={handleOnChange} />
       </CompanyContextSelectorSection>
       <SimplePageSection title="Documents" />
       <PageSection>
