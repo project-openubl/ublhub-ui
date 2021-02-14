@@ -1,13 +1,7 @@
 import { AxiosPromise } from "axios";
 import { APIClient } from "axios-config";
 
-import {
-  Company,
-  UBLDocument,
-  PageQuery,
-  PageRepresentation,
-  SortByQuery,
-} from "./models";
+import { Company, UBLDocument, PageQuery, PageRepresentation } from "./models";
 
 type Direction = "asc" | "desc";
 

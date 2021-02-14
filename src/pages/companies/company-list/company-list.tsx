@@ -12,7 +12,6 @@ import {
   EmptyStateVariant,
   PageSection,
   Title,
-  ToolbarFilter,
   ToolbarGroup,
   ToolbarItem,
 } from "@patternfly/react-core";

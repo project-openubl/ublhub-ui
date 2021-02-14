@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RouteComponentProps, useHistory, useParams } from "react-router-dom";
 
 import {
@@ -16,11 +16,9 @@ import {
 import {
   IActions,
   ICell,
-  IExtraColumnData,
   IExtraData,
   IRowData,
   sortable,
-  SortByDirection,
 } from "@patternfly/react-table";
 import { AddCircleOIcon } from "@patternfly/react-icons";
 
@@ -28,13 +26,14 @@ import {
   AppPlaceholder,
   AppTableWithControls,
   ConditionalRender,
+  SearchFilter,
   SimplePageSection,
 } from "shared/components";
 import { useTableControls, useFetchDocuments } from "shared/hooks";
 import { DeleteWithMatchModalContainer } from "shared/containers";
 
 import { CompanytRoute, formatPath, Paths } from "Paths";
-import { UBLDocument, PageQuery, SortByQuery } from "api/models";
+import { UBLDocument, SortByQuery } from "api/models";
 import { UBLDocumentSortBy, UBLDocumentSortByQuery } from "api/rest";
 
 const toSortByQuery = (
@@ -87,16 +86,16 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
     handleSortChange,
   } = useTableControls();
 
-  const refreshTable = useCallback(() => {
-    fetchDocuments(
-      params.company,
-      {
-        filterText,
-      },
-      paginationQuery,
-      toSortByQuery(sortByQuery)
-    );
-  }, [filterText, paginationQuery, sortByQuery, fetchDocuments]);
+  // const refreshTable = useCallback(() => {
+  //   fetchDocuments(
+  //     params.company,
+  //     {
+  //       filterText,
+  //     },
+  //     paginationQuery,
+  //     toSortByQuery(sortByQuery)
+  //   );
+  // }, [filterText, paginationQuery, sortByQuery, fetchDocuments]);
 
   useEffect(() => {
     fetchDocuments(
@@ -107,7 +106,7 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
       paginationQuery,
       toSortByQuery(sortByQuery)
     );
-  }, [filterText, paginationQuery, sortByQuery, fetchDocuments]);
+  }, [params, filterText, paginationQuery, sortByQuery, fetchDocuments]);
 
   const columns: ICell[] = [
     { title: "Ruc" },
@@ -167,6 +166,11 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
     history.push(formatPath(Paths.newDocument, { company: params.company }));
   };
 
+  const handleOnFilterApplied = (filterText: string) => {
+    setFilterText(filterText);
+    handlePaginationChange({ page: 1 });
+  };
+
   return (
     <>
       <ConditionalRender
@@ -189,6 +193,11 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
             loadingVariant="skeleton"
             fetchError={fetchError}
             filtersApplied={filterText.trim().length > 0}
+            toolbarToggle={
+              <ToolbarGroup variant="filter-group">
+                <SearchFilter onApplyFilter={handleOnFilterApplied} />
+              </ToolbarGroup>
+            }
             toolbar={
               <ToolbarGroup variant="button-group">
                 <ToolbarItem>

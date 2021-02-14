@@ -3,12 +3,7 @@ import { AxiosError } from "axios";
 import { ActionType, createAsyncAction, getType } from "typesafe-actions";
 
 import { UBLDocumentSortByQuery, getDocuments } from "api/rest";
-import {
-  PageRepresentation,
-  UBLDocument,
-  PageQuery,
-  SortByQuery,
-} from "api/models";
+import { PageRepresentation, UBLDocument, PageQuery } from "api/models";
 
 export const {
   request: fetchRequest,
