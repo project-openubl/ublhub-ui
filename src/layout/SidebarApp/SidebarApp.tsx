@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Nav, NavItem, PageSidebar, NavGroup } from "@patternfly/react-core";
+import { Nav, NavItem, PageSidebar, NavList } from "@patternfly/react-core";
 
 import { useSelector } from "react-redux";
 import { RootState } from "store/rootReducer";
@@ -23,20 +23,18 @@ export const SidebarApp: React.FC = () => {
   const renderPageNav = () => {
     return (
       <Nav id="nav-primary-simple" aria-label="Nav" theme={LayoutTheme}>
-        <NavGroup title="Global">
+        <NavList>
           <NavItem>
             <NavLink to={Paths.companyList} activeClassName="pf-m-current">
               Companies
             </NavLink>
           </NavItem>
-        </NavGroup>
-        <NavGroup title="Company">
           <NavItem>
             <NavLink to={documentsLink} activeClassName="pf-m-current">
               Documents
             </NavLink>
           </NavItem>
-        </NavGroup>
+        </NavList>
       </Nav>
     );
   };
