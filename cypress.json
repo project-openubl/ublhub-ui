@@ -7,5 +7,7 @@
     "auth_realm": "openubl",
     "auth_client_id": "xsender-ui"
   },
+  "viewportWidth": 1225,
+  "viewportHeight": 886,
   "chromeWebSecurity": false
 }
