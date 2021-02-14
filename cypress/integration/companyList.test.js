@@ -53,12 +53,12 @@ context("Test company list", () => {
     cy.visit("/companies");
     cy.get("tbody > tr").should("have.length", 10);
 
-    cy.get("input[name='filterText']").type("company12");
+    cy.get("input[aria-label='filter-text']").type("company12");
     cy.get("button[aria-label='search button']").click();
     cy.get("tbody > tr").should("have.length", 1);
     cy.get("tbody > tr").contains("company12");
 
-    cy.get("input[name='filterText']").clear().type("COMPANY5");
+    cy.get("input[aria-label='filter-text']").clear().type("COMPANY5");
     cy.get("button[aria-label='search button']").click();
     cy.get("tbody > tr").should("have.length", 1);
     cy.get("tbody > tr").contains("company5");
@@ -88,7 +88,10 @@ context("Test company list", () => {
     cy.get(".pf-c-table__action").first().click();
     cy.get(".pf-c-dropdown__menu-item").contains("Edit").click();
 
-    cy.url().should("eq", Cypress.config().baseUrl + "/companies/company1/overview");
+    cy.url().should(
+      "eq",
+      Cypress.config().baseUrl + "/companies/company1/overview"
+    );
   });
 
   it("Company list - new", () => {
