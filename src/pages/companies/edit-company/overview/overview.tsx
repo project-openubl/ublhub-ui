@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
 
-import { Grid, GridItem } from "@patternfly/react-core";
+import { Card, CardBody, Grid, GridItem } from "@patternfly/react-core";
 
 import { CompanytRoute } from "Paths";
 
@@ -25,7 +25,13 @@ export const Overview: React.FC<OverviewProps> = ({ match: { params } }) => {
   }, [params, fetchCompany]);
 
   if (fetchError) {
-    return <ErrorEmptyState error={fetchError} />;
+    return (
+      <Card>
+        <CardBody>
+          <ErrorEmptyState error={fetchError} />
+        </CardBody>
+      </Card>
+    );
   }
 
   return (

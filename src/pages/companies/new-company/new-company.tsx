@@ -40,13 +40,7 @@ export const NewCompany: React.FC<CompanyListProps> = ({ history }) => {
     return createCompany(formValues)
       .then(() => {
         history.push(Paths.companyList);
-        dispatch(
-          alertActions.addAlert(
-            "success",
-            "Success",
-            "Company successfully created."
-          )
-        );
+        dispatch(alertActions.addSuccessAlert("Company successfully created."));
       })
       .catch((error: AxiosError) => {
         if (error.response?.status === 409) {
@@ -54,13 +48,7 @@ export const NewCompany: React.FC<CompanyListProps> = ({ history }) => {
             `The name '${formValues.name}' is already taken.`
           );
         } else {
-          dispatch(
-            alertActions.addAlert(
-              "danger",
-              "Error",
-              getAxiosErrorMessage(error)
-            )
-          );
+          dispatch(alertActions.addErrorAlert(getAxiosErrorMessage(error)));
         }
       });
   };
@@ -80,7 +68,9 @@ export const NewCompany: React.FC<CompanyListProps> = ({ history }) => {
         <StackItem>
           <FormRenderer
             schema={newCompanySchema}
-            FormTemplate={(props) => <Pf4FormTemplate {...props} />}
+            FormTemplate={(props) => (
+              <Pf4FormTemplate submitLabel="Create" {...props} />
+            )}
             componentMapper={componentMapper}
             onSubmit={handleOnSubmit}
             onCancel={handleOnCancel}

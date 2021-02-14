@@ -42,7 +42,7 @@ export interface SUNATWsUrls {
 
 export interface SUNATCredentials {
   username: string;
-  password: string;
+  password?: string;
 }
 
 export interface UBLDocument {

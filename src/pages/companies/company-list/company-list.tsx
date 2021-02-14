@@ -165,11 +165,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
                 (error) => {
                   dispatch(deleteWithMatchModalActions.closeModal());
                   dispatch(
-                    alertActions.addAlert(
-                      "danger",
-                      "Error",
-                      getAxiosErrorMessage(error)
-                    )
+                    alertActions.addErrorAlert(getAxiosErrorMessage(error))
                   );
                 }
               );

@@ -18,6 +18,23 @@ export const createCompany = (company: any): AxiosPromise<Company> => {
   return APIClient.post(USER_COMPANIES, company);
 };
 
+export const updateCompany = (company: any): AxiosPromise<Company> => {
+  if (!company.name) {
+    throw new Error("Company must have an name");
+  }
+  return APIClient.put(`${COMPANIES}/${company.name}`, company);
+};
+
+export const updateCompanySunatCredentials = (
+  companyName: string,
+  credentials: any
+): AxiosPromise<Company> => {
+  return APIClient.put(
+    `${COMPANIES}/${companyName}/sunat-credentials`,
+    credentials
+  );
+};
+
 export const getCompanies = (
   pagination: PageQuery,
   sortBy?: SortByQuery,
