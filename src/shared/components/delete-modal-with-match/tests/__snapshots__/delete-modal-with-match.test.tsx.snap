@@ -47,6 +47,7 @@ exports[`DeleteModalWithMatch Renders without crashing 1`] = `
     </p>
     <TextInput
       aria-label="Text input match"
+      autoComplete="off"
       id="matchText"
       name="matchText"
       onChange={[Function]}

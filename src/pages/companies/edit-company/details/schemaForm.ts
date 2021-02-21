@@ -1,4 +1,4 @@
-const newCompanySchema = {
+const detailsCompanySchema = {
   fields: [
     {
       component: "sub-form",
@@ -11,6 +11,7 @@ const newCompanySchema = {
           label: "Name",
           type: "text",
           isRequired: true,
+          isDisabled: true,
           validate: [
             {
               type: "required",
@@ -106,46 +107,7 @@ const newCompanySchema = {
         },
       ],
     },
-    {
-      component: "sub-form",
-      title: "SUNAT Credentials",
-      name: "credentials",
-      fields: [
-        {
-          component: "text-field",
-          name: "credentials.username",
-          label: "Username",
-          type: "text",
-          isRequired: true,
-          validate: [
-            {
-              type: "required",
-            },
-            {
-              type: "min-length",
-              threshold: 3,
-            },
-          ],
-        },
-        {
-          component: "text-field",
-          name: "credentials.password",
-          label: "Password",
-          type: "password",
-          isRequired: true,
-          validate: [
-            {
-              type: "required",
-            },
-            {
-              type: "min-length",
-              threshold: 3,
-            },
-          ],
-        },
-      ],
-    },
   ],
 };
 
-export default newCompanySchema;
+export default detailsCompanySchema;

@@ -31,7 +31,7 @@ export const EditCompanyHeader: React.FC<EditCompanyHeaderProps> = () => {
   }, [params, fetchCompany]);
 
   const handleOnEdit = () => {
-    const path = formatPath(Paths.editCompany_sunat, {
+    const path = formatPath(Paths.editCompany_details, {
       company: params.company,
     });
     history.push(path);
@@ -57,13 +57,7 @@ export const EditCompanyHeader: React.FC<EditCompanyHeaderProps> = () => {
             },
             (error) => {
               dispatch(deleteWithMatchModalActions.closeModal());
-              dispatch(
-                alertActions.addAlert(
-                  "danger",
-                  "Error",
-                  getAxiosErrorMessage(error)
-                )
-              );
+              dispatch(alertActions.addErrorAlert(getAxiosErrorMessage(error)));
             }
           );
         },
@@ -111,8 +105,14 @@ export const EditCompanyHeader: React.FC<EditCompanyHeaderProps> = () => {
               }),
             },
             {
-              title: "SUNAT",
-              path: formatPath(Paths.editCompany_sunat, {
+              title: "Details",
+              path: formatPath(Paths.editCompany_details, {
+                company: params.company,
+              }),
+            },
+            {
+              title: "SUNAT Credentials",
+              path: formatPath(Paths.editCompany_sunatCredentials, {
                 company: params.company,
               }),
             },

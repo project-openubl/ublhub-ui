@@ -2,13 +2,8 @@ import { useCallback, useReducer } from "react";
 import { AxiosError } from "axios";
 import { ActionType, createAsyncAction, getType } from "typesafe-actions";
 
-import { getCompanies } from "api/rest";
-import {
-  PageRepresentation,
-  Company,
-  PageQuery,
-  SortByQuery,
-} from "api/models";
+import { CompanySortByQuery, getCompanies } from "api/rest";
+import { PageRepresentation, Company, PageQuery } from "api/models";
 
 export const {
   request: fetchRequest,
@@ -78,9 +73,11 @@ export interface IState {
   fetchError?: AxiosError;
   fetchCount: number;
   fetchCompanies: (
+    filters: {
+      filterText?: string;
+    },
     page: PageQuery,
-    sortBy?: SortByQuery,
-    filterText?: string
+    sortBy?: CompanySortByQuery
   ) => void;
 }
 
@@ -90,10 +87,16 @@ export const useFetchCompanies = (
   const [state, dispatch] = useReducer(reducer, defaultIsFetching, initReducer);
 
   const fetchCompanies = useCallback(
-    (page: PageQuery, sortBy?: SortByQuery, filterText?: string) => {
+    (
+      filters: {
+        filterText?: string;
+      },
+      page: PageQuery,
+      sortBy?: CompanySortByQuery
+    ) => {
       dispatch(fetchRequest());
 
-      getCompanies(page, sortBy, filterText)
+      getCompanies(filters, page, sortBy)
         .then(({ data }) => {
           dispatch(fetchSuccess(data));
         })

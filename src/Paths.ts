@@ -17,7 +17,8 @@ export enum Paths {
 
   editCompany = "/companies/:company",
   editCompany_overview = "/companies/:company/overview",
-  editCompany_sunat = "/companies/:company/sunat",
+  editCompany_details = "/companies/:company/details",
+  editCompany_sunatCredentials = "/companies/:company/sunat-credentials",
 
   documentList_empty = "/documents/select-company",
   documentList = "/documents/company/:company/",

@@ -4,8 +4,8 @@ export interface PageQuery {
 }
 
 export interface SortByQuery {
-  orderBy: string | undefined;
-  orderDirection: "asc" | "desc";
+  index: number;
+  direction: "asc" | "desc";
 }
 
 export interface PageRepresentation<T> {
@@ -42,7 +42,7 @@ export interface SUNATWsUrls {
 
 export interface SUNATCredentials {
   username: string;
-  password: string;
+  password?: string;
 }
 
 export interface UBLDocument {

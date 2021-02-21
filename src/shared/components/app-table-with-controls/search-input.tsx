@@ -32,7 +32,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({ onSearch }) => {
         onKeyDown={handleOnKeyDown}
         autoComplete="off"
       />
-      <Button variant="control" aria-label="search button" onClick={callSearch}>
+      <Button variant="control" aria-label="search" onClick={callSearch}>
         <SearchIcon />
       </Button>
     </InputGroup>

@@ -24,7 +24,7 @@ describe("useFetchCompanies", () => {
     expect(fetchError).toBeUndefined();
 
     // Init fetch
-    act(() => fetchCompanies({ page: 2, perPage: 50 }));
+    act(() => fetchCompanies({}, { page: 2, perPage: 50 }));
     expect(result.current.isFetching).toBe(true);
 
     // Fetch finished
@@ -70,7 +70,7 @@ describe("useFetchCompanies", () => {
     expect(fetchError).toBeUndefined();
 
     // Init fetch
-    act(() => fetchCompanies({ page: 1, perPage: 10 }));
+    act(() => fetchCompanies({}, { page: 1, perPage: 10 }));
     expect(result.current.isFetching).toBe(true);
 
     // Fetch finished

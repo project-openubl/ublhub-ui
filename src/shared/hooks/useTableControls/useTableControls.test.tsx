@@ -1,23 +1,11 @@
-import { IExtraColumnData, SortByDirection } from "@patternfly/react-table";
+import { SortByDirection } from "@patternfly/react-table";
 import { renderHook, act } from "@testing-library/react-hooks";
+import { DEFAULT_PAGINATION } from "Constants";
 import { useTableControls } from "./useTableControls";
 
 describe("useTableControls", () => {
-  it("Update filterText state correctly", () => {
-    const { result } = renderHook(() =>
-      useTableControls({ columnToField: jest.fn() })
-    );
-
-    //
-    const { handleFilterTextChange } = result.current;
-    act(() => handleFilterTextChange("My filtertext"));
-    expect(result.current.filterText).toBe("My filtertext");
-  });
-
   it("Update pagination correctly", () => {
-    const { result } = renderHook(() =>
-      useTableControls({ columnToField: jest.fn() })
-    );
+    const { result } = renderHook(() => useTableControls());
 
     //
     const { handlePaginationChange } = result.current;
@@ -30,22 +18,8 @@ describe("useTableControls", () => {
 
   it("Update state sortBy correctly", () => {
     const COLUMN_INDEX = 2;
-    const FIELD_NAME = "myField";
 
-    const columnToField = (
-      _: React.MouseEvent,
-      index: number,
-      direction: SortByDirection,
-      extraData: IExtraColumnData
-    ) => {
-      if (index === COLUMN_INDEX) {
-        return FIELD_NAME;
-      }
-
-      throw new Error("Invalid index");
-    };
-
-    const { result } = renderHook(() => useTableControls({ columnToField }));
+    const { result } = renderHook(() => useTableControls());
 
     //
     const { handleSortChange } = result.current;
@@ -58,13 +32,36 @@ describe("useTableControls", () => {
       )
     );
 
-    expect(result.current.sortBy).toMatchObject({
+    expect(result.current.sortByQuery).toMatchObject({
       index: COLUMN_INDEX,
       direction: SortByDirection.desc,
     });
-    expect(result.current.sortByQuery).toMatchObject({
-      orderBy: FIELD_NAME,
-      orderDirection: SortByDirection.desc,
-    });
+  });
+
+  it("Start with default pagination", () => {
+    const { result } = renderHook(() =>
+      useTableControls({ paginationQuery: { page: 2, perPage: 50 } })
+    );
+
+    //
+    const { paginationQuery } = result.current;
+
+    expect(paginationQuery.page).toBe(2);
+    expect(paginationQuery.perPage).toBe(50);
+  });
+
+  it("Start with default sortBy", () => {
+    const { result } = renderHook(() =>
+      useTableControls({
+        paginationQuery: DEFAULT_PAGINATION,
+        sortByQuery: { index: 2, direction: "desc" },
+      })
+    );
+
+    //
+    const { sortByQuery } = result.current;
+
+    expect(sortByQuery?.index).toBe(2);
+    expect(sortByQuery?.direction).toBe("desc");
   });
 });

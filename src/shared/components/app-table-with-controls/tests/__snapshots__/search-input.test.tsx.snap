@@ -13,7 +13,7 @@ exports[`SearchInput Renders without crashing 1`] = `
     value=""
   />
   <Button
-    aria-label="search button"
+    aria-label="search"
     onClick={[Function]}
     variant="control"
   >
