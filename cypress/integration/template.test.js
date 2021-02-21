@@ -10,7 +10,7 @@ context("Test template", () => {
     cy.visit("/");
 
     cy.get("#aboutButton").click();
-    cy.get(".pf-c-about-modal-box").contains("Source code");
+    cy.get(".pf-c-about-modal-box").contains("About");
     cy.get("button[aria-label='Close Dialog']").click();
   });
 });
