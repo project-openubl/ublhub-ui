@@ -54,12 +54,12 @@ context("Test company list", () => {
     cy.get("tbody > tr").should("have.length", 10);
 
     cy.get("input[aria-label='filter-text']").type("company12");
-    cy.get("button[aria-label='search button']").click();
+    cy.get("button[aria-label='search']").click();
     cy.get("tbody > tr").should("have.length", 1);
     cy.get("tbody > tr").contains("company12");
 
     cy.get("input[aria-label='filter-text']").clear().type("COMPANY5");
-    cy.get("button[aria-label='search button']").click();
+    cy.get("button[aria-label='search']").click();
     cy.get("tbody > tr").should("have.length", 1);
     cy.get("tbody > tr").contains("company5");
   });
