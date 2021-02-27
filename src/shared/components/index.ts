@@ -11,3 +11,4 @@ export { SimpleContextSelector } from "./simple-context-selector";
 export { SimplePageSection } from "./simple-page-section";
 export { SimplePagination } from "./simple-pagination";
 export { UploadFilesDropzone } from "./upload-files-dropzone";
+export { WsWatcher } from "./ws-watcher";

@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import useWebSocket from "react-use-websocket";
+import { useKeycloak } from "@react-keycloak/web";
 
 import {
   Bullseye,
@@ -16,6 +18,7 @@ import {
   ToolbarItem,
 } from "@patternfly/react-core";
 import {
+  cellWidth,
   IActions,
   ICell,
   IExtraData,
@@ -43,7 +46,7 @@ import { DeleteWithMatchModalContainer } from "shared/containers";
 
 import { formatPath, Paths } from "Paths";
 import { CompanySortBy, CompanySortByQuery } from "api/rest";
-import { Company, SortByQuery } from "api/models";
+import { Company, EntityEvent, SortByQuery } from "api/models";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 
 import { Welcome } from "./components/welcome";
@@ -80,6 +83,7 @@ export interface CompanyListProps extends RouteComponentProps {}
 
 export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
   const dispatch = useDispatch();
+  const { keycloak } = useKeycloak();
 
   const [filterText, setFilterText] = useState("");
 
@@ -120,8 +124,47 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
     );
   }, [filterText, paginationQuery, sortByQuery, fetchCompanies]);
 
+  const socketUrl = "ws://localhost:8080/companies";
+  const {
+    lastJsonMessage: eventMsg,
+    sendJsonMessage: sendEventMessage,
+  } = useWebSocket(socketUrl, {
+    onOpen: () => {
+      sendEventMessage({
+        authentication: {
+          token: keycloak.token,
+        },
+      });
+    },
+    shouldReconnect: (event: CloseEvent) => event.code !== 1011,
+    share: true,
+  });
+
+  useEffect(() => {
+    if (eventMsg) {
+      const event: EntityEvent = eventMsg as EntityEvent;
+
+      switch (event.type) {
+        case "CREATED":
+          if (
+            paginationQuery.page === 1 &&
+            !sortByQuery &&
+            !(companies?.data || []).find((f) => f.id === event.id)
+          ) {
+            refreshTable();
+          }
+          break;
+        case "DELETED":
+          if (companies && companies.data.find((f) => f.id === event.id)) {
+            refreshTable();
+          }
+          break;
+      }
+    }
+  }, [eventMsg, companies, paginationQuery, sortByQuery, refreshTable]);
+
   const columns: ICell[] = [
-    { title: "Name", transforms: [sortable] },
+    { title: "Name", transforms: [sortable, cellWidth(40)] },
     { title: "Description" },
   ];
 
@@ -176,7 +219,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
                 row,
                 () => {
                   dispatch(deleteWithMatchModalActions.closeModal());
-                  refreshTable();
+                  // refreshTable();
                 },
                 (error) => {
                   dispatch(deleteWithMatchModalActions.closeModal());
@@ -231,7 +274,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
             columns={columns}
             actions={actions}
             isLoading={isFetching}
-            loadingVariant="skeleton"
+            loadingVariant="none"
             fetchError={fetchError}
             filtersApplied={filterText.trim().length > 0}
             toolbarToggle={
@@ -240,18 +283,20 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
               </ToolbarGroup>
             }
             toolbar={
-              <ToolbarGroup variant="button-group">
-                <ToolbarItem>
-                  <Button
-                    type="button"
-                    aria-label="new-company"
-                    variant={ButtonVariant.primary}
-                    onClick={handleOnNewCompany}
-                  >
-                    New company
-                  </Button>
-                </ToolbarItem>
-              </ToolbarGroup>
+              <>
+                <ToolbarGroup variant="button-group">
+                  <ToolbarItem>
+                    <Button
+                      type="button"
+                      aria-label="new-company"
+                      variant={ButtonVariant.primary}
+                      onClick={handleOnNewCompany}
+                    >
+                      New company
+                    </Button>
+                  </ToolbarItem>
+                </ToolbarGroup>
+              </>
             }
             noDataState={
               <EmptyState variant={EmptyStateVariant.small}>

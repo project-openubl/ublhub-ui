@@ -1,3 +1,10 @@
+export type EntityEventType = "CREATED" | "UPDATED" | "DELETED";
+
+export interface EntityEvent {
+  id: string;
+  type: EntityEventType;
+}
+
 export interface PageQuery {
   page: number;
   perPage: number;

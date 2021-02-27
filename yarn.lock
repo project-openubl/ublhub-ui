@@ -14339,6 +14339,11 @@ react-textarea-autosize@^8.1.1:
     use-composed-ref "^1.0.0"
     use-latest "^1.0.0"
 
+react-use-websocket@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/react-use-websocket/-/react-use-websocket-2.5.0.tgz#20c6657802369a280c4921840a0529c2fd0cfe6f"
+  integrity sha512-xC2xE13RI584dyRtuQaTRf9tyJsdL4wD2fqq8ugZAcm3Xf+qjyvTJiB2BMsWfBOjQgnjOJstp2sOPXFB84Sb+Q==
+
 react@^16.13.1, react@^16.8.3:
   version "16.14.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.14.0.tgz#94d776ddd0aaa37da3eda8fc5b6b18a4c9a3114d"
