@@ -1,8 +1,14 @@
 export type EntityEventType = "CREATED" | "UPDATED" | "DELETED";
 
+export interface WsMessage {
+  type: "event";
+  spec: EntityEvent;
+}
+
 export interface EntityEvent {
   id: string;
-  type: EntityEventType;
+  event: EntityEventType;
+  entity: string;
 }
 
 export interface PageQuery {
@@ -55,12 +61,13 @@ export interface SUNATCredentials {
 export interface UBLDocument {
   id?: string;
   deliveryStatus: string;
-  fileInfo: FileInfo;
-}
+  retries: number;
 
-export interface FileInfo {
   documentID: string;
   documentType: string;
-  filename: string;
   ruc: string;
+
+  sunat: Sunat;
 }
+
+export interface Sunat {}

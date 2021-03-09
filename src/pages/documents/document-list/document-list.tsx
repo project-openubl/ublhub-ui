@@ -14,6 +14,7 @@ import {
   ToolbarItem,
 } from "@patternfly/react-core";
 import {
+  compoundExpand,
   IActions,
   ICell,
   IExtraData,
@@ -109,10 +110,10 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
   }, [params, filterText, paginationQuery, sortByQuery, fetchDocuments]);
 
   const columns: ICell[] = [
-    { title: "Ruc" },
-    { title: "ID", transforms: [sortable] },
-    { title: "Type" },
-    { title: "Status" },
+    { title: "Ruc", cellTransforms: [compoundExpand] },
+    { title: "ID", cellTransforms: [compoundExpand], transforms: [sortable] },
+    { title: "Type", cellTransforms: [compoundExpand] },
+    { title: "Status", cellTransforms: [compoundExpand] },
   ];
 
   const itemsToRow = (items: UBLDocument[]) => {
@@ -120,13 +121,13 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
       [DOCUMENT_FIELD]: item,
       cells: [
         {
-          title: item.fileInfo.ruc,
+          title: item.ruc,
         },
         {
-          title: item.fileInfo.documentID,
+          title: item.documentID,
         },
         {
-          title: item.fileInfo.documentType,
+          title: item.documentType,
         },
         {
           title: item.deliveryStatus,

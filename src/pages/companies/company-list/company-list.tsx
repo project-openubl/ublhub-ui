@@ -46,7 +46,7 @@ import { DeleteWithMatchModalContainer } from "shared/containers";
 
 import { formatPath, Paths } from "Paths";
 import { CompanySortBy, CompanySortByQuery } from "api/rest";
-import { Company, EntityEvent, SortByQuery } from "api/models";
+import { Company, WsMessage, SortByQuery } from "api/models";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 
 import { Welcome } from "./components/welcome";
@@ -125,6 +125,7 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
   }, [filterText, paginationQuery, sortByQuery, fetchCompanies]);
 
   const socketUrl = "ws://localhost:8080/companies";
+
   const {
     lastJsonMessage: eventMsg,
     sendJsonMessage: sendEventMessage,
@@ -142,20 +143,20 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
 
   useEffect(() => {
     if (eventMsg) {
-      const event: EntityEvent = eventMsg as EntityEvent;
+      const event: WsMessage = eventMsg as WsMessage;
 
-      switch (event.type) {
+      switch (event.spec.event) {
         case "CREATED":
           if (
             paginationQuery.page === 1 &&
             !sortByQuery &&
-            !(companies?.data || []).find((f) => f.id === event.id)
+            !(companies?.data || []).find((f) => f.id === event.spec.id)
           ) {
             refreshTable();
           }
           break;
         case "DELETED":
-          if (companies && companies.data.find((f) => f.id === event.id)) {
+          if (companies && companies.data.find((f) => f.id === event.spec.id)) {
             refreshTable();
           }
           break;
