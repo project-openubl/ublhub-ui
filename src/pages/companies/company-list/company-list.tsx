@@ -22,6 +22,7 @@ import {
   IActions,
   ICell,
   IExtraData,
+  IRow,
   IRowData,
   sortable,
 } from "@patternfly/react-table";
@@ -169,8 +170,9 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
     { title: "Description" },
   ];
 
-  const itemsToRow = (items: Company[]) => {
-    return items.map((item) => ({
+  const rows: IRow[] = [];
+  companies?.data.forEach((item) => {
+    rows.push({
       [COMPANY_FIELD]: item,
       cells: [
         {
@@ -184,8 +186,8 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
           title: item.description,
         },
       ],
-    }));
-  };
+    });
+  });
 
   const actions: IActions = [
     {
@@ -266,13 +268,12 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
         <PageSection>
           <AppTableWithControls
             count={companies ? companies.meta.count : 0}
-            items={companies ? companies.data : []}
-            itemsToRow={itemsToRow}
             pagination={paginationQuery}
             sortBy={sortByQuery}
             handlePaginationChange={handlePaginationChange}
             handleSortChange={handleSortChange}
             columns={columns}
+            rows={rows}
             actions={actions}
             isLoading={isFetching}
             loadingVariant="none"

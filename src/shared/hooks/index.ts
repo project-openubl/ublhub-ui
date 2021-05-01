@@ -1,3 +1,4 @@
+export { useColSelectionState } from "./useColSelectionState";
 export { useDeleteCompany } from "./useDeleteCompany";
 export { useFetchCompanies } from "./useFetchCompanies";
 export { useFetchCompany } from "./useFetchCompany";

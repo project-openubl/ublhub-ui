@@ -5,6 +5,7 @@ export { AppTableWithControls } from "./app-table-with-controls";
 export { CompanyContextSelectorSection } from "./company-context-selector-section";
 export { ConditionalRender } from "./conditional-render";
 export { DeleteModalWithMatch } from "./delete-modal-with-match";
+export { DocumentStatus } from "./document-status";
 export { ErrorEmptyState } from "./error-empty-state";
 export { SearchFilter } from "./search-filter";
 export { SimpleContextSelector } from "./simple-context-selector";
