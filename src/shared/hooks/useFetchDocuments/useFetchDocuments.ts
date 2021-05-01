@@ -2,6 +2,8 @@ import { useCallback, useReducer } from "react";
 import { AxiosError } from "axios";
 import { ActionType, createAsyncAction, getType } from "typesafe-actions";
 
+import debounce from "lodash/debounce";
+
 import { UBLDocumentSortByQuery, getDocuments } from "api/rest";
 import { PageRepresentation, UBLDocument, PageQuery } from "api/models";
 
@@ -67,12 +69,24 @@ const reducer = (state: State, action: Action): State => {
   }
 };
 
+//
+
+//
+
 export interface IState {
   documents?: PageRepresentation<UBLDocument>;
   isFetching: boolean;
   fetchError?: AxiosError;
   fetchCount: number;
   fetchDocuments: (
+    company: string,
+    filters: {
+      filterText?: string;
+    },
+    page: PageQuery,
+    sortBy?: UBLDocumentSortByQuery
+  ) => void;
+  fetchDocumentsStream: (
     company: string,
     filters: {
       filterText?: string;
@@ -109,12 +123,97 @@ export const useFetchDocuments = (
     []
   );
 
+  // const fetchDocumentsWithAutoRefresh = useCallback(
+  //   (
+  //     company: string,
+  //     filters: {
+  //       filterText?: string;
+  //     },
+  //     page: PageQuery,
+  //     sortBy?: UBLDocumentSortByQuery
+  //   ) => {
+  //     dispatch(fetchRequest());
+
+  //     getDocuments(company, filters, page, sortBy)
+  //       .then(({ data }) => {
+  //         dispatch(fetchSuccess(data));
+
+  //         const shouldReload = data.data.some((f) => {
+  //           return (
+  //             f.sunatDeliveryStatus === "SCHEDULED_TO_DELIVER" ||
+  //             f.sunatDeliveryStatus === "NEED_TO_CHECK_TICKET"
+  //           );
+  //         });
+
+  //         if (shouldReload) {
+  //           setTimeout(() => {
+  //             debouncedFetchDocuments(company, filters, page, sortBy);
+  //           }, 1000);
+  //         }
+  //       })
+  //       .catch((error: AxiosError) => {
+  //         dispatch(fetchFailure(error));
+  //       });
+  //   },
+  //   []
+  // );
+
+  const debouncedFetchDocuments = useCallback(
+    debounce(
+      (
+        company: string,
+        filters: {
+          filterText?: string;
+        },
+        page: PageQuery,
+        sortBy?: UBLDocumentSortByQuery
+      ) => {
+        const fetchFn = (
+          company: string,
+          filters: {
+            filterText?: string;
+          },
+          page: PageQuery,
+          sortBy?: UBLDocumentSortByQuery
+        ) => {
+          dispatch(fetchRequest());
+
+          getDocuments(company, filters, page, sortBy)
+            .then(({ data }) => {
+              dispatch(fetchSuccess(data));
+
+              const shouldReload = data.data.some((f) => {
+                return (
+                  f.sunatDeliveryStatus === "SCHEDULED_TO_DELIVER" ||
+                  f.sunatDeliveryStatus === "NEED_TO_CHECK_TICKET"
+                );
+              });
+
+              if (shouldReload) {
+                setTimeout(() => {
+                  debouncedFetchDocuments(company, filters, page, sortBy);
+                }, 1000);
+              }
+            })
+            .catch((error: AxiosError) => {
+              dispatch(fetchFailure(error));
+            });
+        };
+
+        return fetchFn(company, filters, page, sortBy);
+      },
+      500
+    ),
+    []
+  );
+
   return {
     documents: state.documents,
     isFetching: state.isFetching,
     fetchError: state.fetchError,
     fetchCount: state.fetchCount,
     fetchDocuments,
+    fetchDocumentsStream: debouncedFetchDocuments,
   };
 };
 

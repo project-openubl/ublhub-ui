@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 
-import { Alert, PageSection, Stack, StackItem } from "@patternfly/react-core";
+import {
+  Alert,
+  Button,
+  Flex,
+  FlexItem,
+  PageSection,
+  Stack,
+  StackItem,
+} from "@patternfly/react-core";
 
 import FormRenderer from "@data-driven-forms/react-form-renderer/dist/cjs/form-renderer";
 import Pf4FormTemplate from "@data-driven-forms/pf4-component-mapper/dist/cjs/form-template";
@@ -30,11 +38,44 @@ export interface NewCompanyFormValues {
   };
 }
 
+const BETA_TEMPLATE: NewCompanyFormValues = {
+  name: "",
+  description: "This is a test company",
+  credentials: {
+    username: "12345678959MODDATOS",
+    password: "MODDATOS",
+  },
+  webServices: {
+    factura: "https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService",
+    guia:
+      "https://e-beta.sunat.gob.pe/ol-ti-itemision-guia-gem-beta/billService",
+    retenciones:
+      "https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService",
+  },
+};
+
+const PROD_TEMPLATE: NewCompanyFormValues = {
+  name: "",
+  description: "",
+  credentials: {
+    username: "",
+    password: "",
+  },
+  webServices: {
+    factura: "https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService",
+    guia:
+      "https://e-guiaremision.sunat.gob.pe/ol-ti-itemision-guia-gem/billService",
+    retenciones:
+      "https://e-factura.sunat.gob.pe/ol-ti-itemision-otroscpe-gem/billService",
+  },
+};
+
 export interface CompanyListProps extends RouteComponentProps {}
 
 export const NewCompany: React.FC<CompanyListProps> = ({ history }) => {
   const dispatch = useDispatch();
   const [conflictErrorMsg, setConflictErrorMsg] = useState("");
+  const [initialValues, setInitialValues] = useState<NewCompanyFormValues>();
 
   const handleOnSubmit = (formValues: any) => {
     return createCompany(formValues)
@@ -57,9 +98,31 @@ export const NewCompany: React.FC<CompanyListProps> = ({ history }) => {
     history.push(Paths.companyList);
   };
 
+  const applyBetaTemplate = () => {
+    setInitialValues(BETA_TEMPLATE);
+  };
+
+  const applyProdTemplate = () => {
+    setInitialValues(PROD_TEMPLATE);
+  };
+
   return (
     <PageSection variant="light">
       <Stack hasGutter>
+        <StackItem>
+          <Flex>
+            <FlexItem>
+              <Button variant="secondary" onClick={applyBetaTemplate}>
+                Beta
+              </Button>
+            </FlexItem>
+            <FlexItem>
+              <Button variant="secondary" onClick={applyProdTemplate}>
+                Prod
+              </Button>
+            </FlexItem>
+          </Flex>
+        </StackItem>
         {conflictErrorMsg && (
           <StackItem>
             <Alert variant="danger" title={conflictErrorMsg} />
@@ -67,6 +130,7 @@ export const NewCompany: React.FC<CompanyListProps> = ({ history }) => {
         )}
         <StackItem>
           <FormRenderer
+            initialValues={initialValues}
             schema={newCompanySchema}
             FormTemplate={(props) => (
               <Pf4FormTemplate submitLabel="Create" {...props} />
