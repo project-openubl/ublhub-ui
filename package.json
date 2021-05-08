@@ -4,7 +4,6 @@
   "description": "XSender console",
   "author": "Carlos Feria <carlosthe19916@gmail.com> (https://github.com/carlosthe19916)",
   "private": true,
-  "proxy": "http://localhost:8080",
   "homepage": "./",
   "license": "EPL-2.0",
   "dependencies": {

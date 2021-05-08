@@ -5,44 +5,70 @@
 
 # XSender Server UI
 
-UI application for the xsender-server project.
+## Iniciar el servidor en modo desarrollo
 
-## Development
-
-To start in development mode follow the next steps:
-
-### Start Keycloak
-
-You can start Keycloak using Docker or Postmam:
+Clona el repositorio:
 
 ```shell
-docker run -p 8180:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin quay.io/projectopenubl/openubl-keycloak-theme
+git clone https://github.com/project-openubl/xsender-server-ui
 ```
 
-Then you need to create a realm and configure it. You can import the realm using the file `openubl-realm.json`.
+### Inicia las dependencias
 
-### Start the backend DB
+La UI necesita de [xsender-server](https://github.com/project-openubl/xsender-server) y todas las dependencias del mismo:
 
-Execute:
+- [PostgreSQL](https://www.postgresql.org/)
+- [Keycloak](https://www.keycloak.org/)
+- [Amazon S3](https://aws.amazon.com/s3/) o [Minio](https://min.io/)
+- [Apache kafka](https://kafka.apache.org/)
+
+Puedes el backend y todas sus dependencias utilizando `docker-compose.yml`:
 
 ```shell
-docker run -p 5432:5432 -e POSTGRES_USER=xsender_username -e POSTGRES_PASSWORD=xsender_password -e POSTGRES_DB=xsender_db postgres:13.1
+docker-compose up
 ```
 
-### Star the backend
+### Configura Kafka-connect
 
-You need to clone the backend server and then start it using:
+Una vez que todas las dependencias fueron iniciadas usando `docker-compose.yml` debes de configurar `Kafka connect`.
+
+Atre un terminal y ejecuta el siguiente comando:
 
 ```shell
-./mvnw quarkus:dev
+curl 'localhost:8083/connectors/' -i -X POST -H "Accept:application/json" \
+-H "Content-Type:application/json" \
+-d '{
+   "name":"postgresql-connector",
+   "config":{
+      "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+      "tasks.max": "1",
+      "database.hostname": "xsender-db",
+      "database.port": "5432",
+      "database.user": "xsender_username",
+      "database.password": "xsender_password",
+      "database.dbname": "xsender_db",
+      "database.server.name": "dbserver1",
+      "schema.include.list": "public",
+      "table.include.list": "public.outboxevent",
+      "tombstones.on.delete": "false",
+      "transforms": "outbox",
+      "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter",
+      "transforms.outbox.table.fields.additional.placement": "type:header:eventType",
+      "transforms.outbox.route.topic.replacement": "outbox.event.${routedByValue}",
+      "transforms.outbox.table.field.event.timestamp": "timestamp",
+      "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+      "key.converter.schemas.enable": "false",
+      "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+      "value.converter.schemas.enable": "false"
+   }
+}'
 ```
 
-### Start the UI
+### Inicia el servidor
 
-You can start the UI executing:
+Inicia el servidor en modo desarrollador
 
-```shell
+```shell script
+yarn install
 yarn start
 ```
-
-You should be able to open http://localhost:3000 and start working on the UI.

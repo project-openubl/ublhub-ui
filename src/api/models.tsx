@@ -39,6 +39,12 @@ export interface Links {
   previous: string;
   last: string;
 }
+
+export interface Namespace {
+  name: string;
+  description?: string;
+}
+
 export interface Company {
   id?: string;
   name: string;

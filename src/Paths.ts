@@ -12,6 +12,8 @@ export enum Paths {
   base = "/",
   notFound = "/not-found",
 
+  namespaceList = "/namespaces",
+
   companyList = "/companies",
   newCompany = "/companies/~new",
 

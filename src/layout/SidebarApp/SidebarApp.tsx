@@ -25,6 +25,11 @@ export const SidebarApp: React.FC = () => {
       <Nav id="nav-primary-simple" aria-label="Nav" theme={LayoutTheme}>
         <NavList>
           <NavItem>
+            <NavLink to={Paths.namespaceList} activeClassName="pf-m-current">
+              Namespaces
+            </NavLink>
+          </NavItem>
+          <NavItem>
             <NavLink to={Paths.companyList} activeClassName="pf-m-current">
               Companies
             </NavLink>

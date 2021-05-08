@@ -1,14 +1,98 @@
 import { AxiosPromise } from "axios";
 import { APIClient } from "axios-config";
 
-import { Company, UBLDocument, PageQuery, PageRepresentation } from "./models";
-
-type Direction = "asc" | "desc";
+import {
+  Company,
+  UBLDocument,
+  PageQuery,
+  PageRepresentation,
+  Namespace,
+} from "./models";
 
 const USER_COMPANIES = "/user/companies";
 const COMPANIES = "/companies";
+const NAMESPACES = "/namespaces";
 
 export const DOCUMENTS = `${COMPANIES}/:company/documents`;
+
+type Direction = "asc" | "desc";
+
+const headers = { Accept: "application/json" };
+
+const buildQuery = (params: any) => {
+  const query: string[] = [];
+
+  Object.keys(params).forEach((key) => {
+    const value = (params as any)[key];
+
+    if (value !== undefined && value !== null) {
+      let queryParamValues: string[] = [];
+      if (Array.isArray(value)) {
+        queryParamValues = value;
+      } else {
+        queryParamValues = [value];
+      }
+      queryParamValues.forEach((v) => query.push(`${key}=${v}`));
+    }
+  });
+
+  return query;
+};
+
+//
+
+export enum NamespaceSortBy {
+  name,
+}
+
+export interface NamespaceSortByQuery {
+  field: NamespaceSortBy;
+  direction?: Direction;
+}
+
+export const getNamespaces = (
+  filters: {
+    filterText?: string;
+  },
+  pagination: PageQuery,
+  sortBy?: NamespaceSortByQuery
+): AxiosPromise<PageRepresentation<Company>> => {
+  let sortByQuery: string | undefined = undefined;
+  if (sortBy) {
+    let field;
+    switch (sortBy.field) {
+      case NamespaceSortBy.name:
+        field = "name";
+        break;
+    }
+    sortByQuery = `${field}:${sortBy.direction}`;
+  }
+
+  const params = {
+    offset: (pagination.page - 1) * pagination.perPage,
+    limit: pagination.perPage,
+    sort_by: sortByQuery,
+
+    filterText: filters.filterText,
+  };
+
+  const query: string[] = buildQuery(params);
+  return APIClient.get(`${NAMESPACES}?${query.join("&")}`, { headers });
+};
+
+export const createNamespace = (ns: Namespace): AxiosPromise => {
+  return APIClient.post(`${NAMESPACES}`, ns);
+};
+
+export const updateNamespace = (ns: Namespace): AxiosPromise => {
+  return APIClient.put(`${NAMESPACES}/${ns.name}`, ns);
+};
+
+export const deleteNamespace = (ns: Namespace): AxiosPromise => {
+  return APIClient.delete(`${NAMESPACES}/${ns.name}`);
+};
+
+//
 
 export const createCompany = (company: any): AxiosPromise<Company> => {
   return APIClient.post(USER_COMPANIES, company);
