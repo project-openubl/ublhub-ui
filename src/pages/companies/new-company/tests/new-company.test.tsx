@@ -8,7 +8,7 @@ import {
 } from "@data-driven-forms/pf4-component-mapper";
 
 import newCompanySchema from "../schemaForm";
-import { NewCompanyFormValues } from "../new-company";
+import { IFormValue } from "../new-company";
 
 describe("<FormRendererTest />", () => {
   /**
@@ -67,7 +67,7 @@ describe("<FormRendererTest />", () => {
     /**
      * first argument are the values and the second one is formApi
      */
-    const formValues: NewCompanyFormValues = {
+    const formValues: IFormValue = {
       name: "myCompany",
       webServices: {
         factura: "http://url1.com",

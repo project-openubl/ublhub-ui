@@ -6,16 +6,15 @@ import { PageSection } from "@patternfly/react-core";
 import { AppPlaceholder } from "shared/components";
 import { DeleteWithMatchModalContainer } from "shared/containers";
 
-import { CompanytRoute, Paths } from "Paths";
+import { NamespaceRoute, Paths } from "Paths";
 
 import { EditCompanyHeader } from "./edit-company-header";
 
 const Overview = lazy(() => import("./overview"));
 const Details = lazy(() => import("./details"));
-const SunatCredentials = lazy(() => import("./sunat-credentials"));
 
 export interface AnalysisConfigurationProps
-  extends RouteComponentProps<CompanytRoute> {}
+  extends RouteComponentProps<NamespaceRoute> {}
 
 export const EditCompany: React.FC<AnalysisConfigurationProps> = () => {
   return (
@@ -26,10 +25,7 @@ export const EditCompany: React.FC<AnalysisConfigurationProps> = () => {
           <Switch>
             <Route path={Paths.editCompany_overview} component={Overview} />
             <Route path={Paths.editCompany_details} component={Details} />
-            <Route
-              path={Paths.editCompany_sunatCredentials}
-              component={SunatCredentials}
-            />
+
             <Redirect
               from={Paths.editCompany}
               to={Paths.editCompany_overview}

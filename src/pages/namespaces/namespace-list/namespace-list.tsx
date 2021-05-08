@@ -55,6 +55,8 @@ import { getAxiosErrorMessage } from "utils/modelUtils";
 
 import { Welcome } from "./components/welcome";
 import { NamespaceForm } from "./components/namespace-form";
+import { Link } from "react-router-dom";
+import { formatPath, Paths } from "Paths";
 
 const toSortByQuery = (
   sortBy?: SortByQuery
@@ -148,7 +150,15 @@ export const NamespaceList: React.FC<INamespaceListProps> = () => {
       [ROW_VALUE]: item,
       cells: [
         {
-          title: item.name,
+          title: (
+            <Link
+              to={formatPath(Paths.companyList, {
+                namespaceId: item.id,
+              })}
+            >
+              {item.name}
+            </Link>
+          ),
         },
         {
           title: item.description,

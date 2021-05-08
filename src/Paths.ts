@@ -14,23 +14,28 @@ export enum Paths {
 
   namespaceList = "/namespaces",
 
-  companyList = "/companies",
-  newCompany = "/companies/~new",
+  companyList_empty = "/ns-company/select-namespace",
+  companyList = "/ns-company/:namespaceId/companies",
+  newCompany = "/ns-company/:namespaceId/companies/~new",
 
-  editCompany = "/companies/:company",
-  editCompany_overview = "/companies/:company/overview",
-  editCompany_details = "/companies/:company/details",
-  editCompany_sunatCredentials = "/companies/:company/sunat-credentials",
+  editCompany = "/ns-company/:namespaceId/companies/:companyId",
+  editCompany_overview = "/ns-company/:namespaceId/companies/:companyId/overview",
+  editCompany_details = "/ns-company/:namespaceId/companies/:companyId/details",
 
-  documentList_empty = "/documents/select-company",
-  documentList = "/documents/company/:company/",
-  newDocument = "/documents/company/:company/~new",
+  documentList_empty = "/ns-document/:namespaceId/documents/select-company",
+  documentList = "/ns-document/:namespaceId/documents",
+  newDocument = "/ns-document/:namespaceId/documents/~new",
 }
 
 export interface OptionalCompanyRoute {
   company?: string;
 }
 
-export interface CompanytRoute {
-  company: string;
+export interface NamespaceRoute {
+  namespaceId: string;
+}
+
+export interface CompanyRoute {
+  namespaceId: string;
+  companyId: string;
 }

@@ -58,7 +58,7 @@ import {
   useColSelectionState,
 } from "shared/hooks";
 
-import { CompanytRoute, formatPath, Paths } from "Paths";
+import { NamespaceRoute, formatPath, Paths } from "Paths";
 import {
   UBLDocument,
   SortByQuery,
@@ -123,7 +123,7 @@ export interface DocumentListProps extends RouteComponentProps {}
 
 export const DocumentList: React.FC<DocumentListProps> = () => {
   const history = useHistory();
-  const params = useParams<CompanytRoute>();
+  const params = useParams<NamespaceRoute>();
   const { keycloak } = useKeycloak();
 
   const [filterText, setFilterText] = useState("");
@@ -144,7 +144,7 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
 
   const refreshTable = useCallback(() => {
     fetchDocumentsStream(
-      params.company,
+      params.namespaceId,
       {
         filterText,
       },
@@ -155,7 +155,7 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
 
   useEffect(() => {
     fetchDocumentsStream(
-      params.company,
+      params.namespaceId,
       {
         filterText,
       },
@@ -165,11 +165,11 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
   }, [params, filterText, paginationQuery, sortByQuery, fetchDocumentsStream]);
 
   const [socketUrl, setSocketUrl] = useState(
-    `ws://localhost:8080/companies/${params.company}/documents`
+    `ws://localhost:8080/companies/${params.namespaceId}/documents`
   );
   useEffect(() => {
-    if (params.company) {
-      setSocketUrl(`ws://localhost:8080/companies/${params.company}/documents`);
+    if (params.namespaceId) {
+      setSocketUrl(`ws://localhost:8080/companies/${params.namespaceId}/documents`);
     }
   }, [params]);
 
@@ -453,7 +453,7 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
   //
 
   const handleOnNewCompany = () => {
-    history.push(formatPath(Paths.newDocument, { company: params.company }));
+    history.push(formatPath(Paths.newDocument, { company: params.namespaceId }));
   };
 
   const handleOnFilterApplied = (filterText: string) => {

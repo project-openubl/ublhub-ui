@@ -48,6 +48,7 @@ export interface Namespace {
 
 export interface Company {
   id?: string;
+  ruc: string;
   name: string;
   description?: string;
   webServices: SUNATWsUrls;

@@ -1,1 +1,1 @@
-export { CompanyContextSelectorContainer } from "./company-context-selector-container";
+export { NamespaceContextSelectorContainer } from "./company-context-selector-container";

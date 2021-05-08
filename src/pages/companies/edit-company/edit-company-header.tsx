@@ -1,40 +1,55 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import { Alert, Skeleton } from "@patternfly/react-core";
 
 import { AppPageSection, ConditionalRender } from "shared/components";
-import { useDeleteCompany, useFetchCompany } from "shared/hooks";
+import { useDelete, useFetch } from "shared/hooks";
 
 import { alertActions } from "store/alert";
 import { deleteWithMatchModalActions } from "store/delete-with-match-modal";
 
-import { CompanytRoute, formatPath, Paths } from "Paths";
+import { CompanyRoute, formatPath, Paths } from "Paths";
 import { getAxiosErrorMessage } from "utils/modelUtils";
+
+import { Company } from "api/models";
+import { deleteCompany, getCompany } from "api/rest";
 
 import { PageHeader } from "./components/page-header";
 
 export interface EditCompanyHeaderProps {}
 
 export const EditCompanyHeader: React.FC<EditCompanyHeaderProps> = () => {
-  const params = useParams<CompanytRoute>();
   const history = useHistory();
-
-  const { deleteCompany } = useDeleteCompany();
-  const { company, isFetching, fetchError, fetchCompany } = useFetchCompany();
+  const { namespaceId, companyId } = useParams<CompanyRoute>();
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    fetchCompany(params.company);
-  }, [params, fetchCompany]);
+  const { requestDelete: requestDeleteCompany } = useDelete({
+    onDelete: (ns: Company) => deleteCompany(namespaceId, companyId),
+  });
 
-  const handleOnEdit = () => {
-    const path = formatPath(Paths.editCompany_details, {
-      company: params.company,
-    });
-    history.push(path);
+  const fetchCompany = useCallback(() => {
+    return getCompany(namespaceId, companyId);
+  }, [namespaceId, companyId]);
+
+  const {
+    data: company,
+    isFetching: isFetchingCompany,
+    fetchError: fetchErrorCompany,
+    requestFetch: refreshCompany,
+  } = useFetch<Company>({
+    defaultIsFetching: true,
+    onFetch: fetchCompany,
+  });
+
+  useEffect(() => {
+    refreshCompany();
+  }, [refreshCompany]);
+
+  const redirectToCompanyListPage = () => {
+    history.push(formatPath(Paths.companyList, { namespaceId }));
   };
 
   const handleOnDelete = () => {
@@ -44,16 +59,16 @@ export const EditCompanyHeader: React.FC<EditCompanyHeaderProps> = () => {
 
     dispatch(
       deleteWithMatchModalActions.openModal({
-        title: "Delete company",
-        message: `Are you sure you want to delete the company ${params.company}`,
-        matchText: params.company,
+        title: "Eliminar empresa",
+        message: `¿Estás seguro de querer eliminar la empresa RUC=${company.ruc} (${company.name})?`,
+        matchText: company.ruc,
         onDelete: () => {
           dispatch(deleteWithMatchModalActions.processing());
-          deleteCompany(
+          requestDeleteCompany(
             company,
             () => {
               dispatch(deleteWithMatchModalActions.closeModal());
-              history.push(Paths.companyList);
+              redirectToCompanyListPage();
             },
             (error) => {
               dispatch(deleteWithMatchModalActions.closeModal());
@@ -65,12 +80,12 @@ export const EditCompanyHeader: React.FC<EditCompanyHeaderProps> = () => {
     );
   };
 
-  if (fetchError) {
+  if (fetchErrorCompany) {
     return (
       <Alert
         variant="danger"
         isInline
-        title={getAxiosErrorMessage(fetchError)}
+        title={getAxiosErrorMessage(fetchErrorCompany)}
       />
     );
   }
@@ -78,42 +93,35 @@ export const EditCompanyHeader: React.FC<EditCompanyHeaderProps> = () => {
   return (
     <AppPageSection>
       <ConditionalRender
-        when={isFetching}
+        when={isFetchingCompany}
         then={<Skeleton screenreaderText="Loading contents" />}
       >
         <PageHeader
-          title={params.company}
+          title={company?.name || ""}
           breadcrumbs={[
             {
-              title: "Companies",
-              path: Paths.companyList,
+              title: "Empresas",
+              path: formatPath(Paths.companyList, { namespaceId }),
             },
             {
-              title: "Company details",
-              path: Paths.editCompany,
+              title: "detalle",
+              path: "",
             },
           ]}
-          menuActions={[
-            { label: "Edit", callback: handleOnEdit },
-            { label: "Delete", callback: handleOnDelete },
-          ]}
+          menuActions={[{ label: "Eliminar", callback: handleOnDelete }]}
           navItems={[
             {
-              title: "Overview",
+              title: "General",
               path: formatPath(Paths.editCompany_overview, {
-                company: params.company,
+                namespaceId,
+                companyId,
               }),
             },
             {
-              title: "Details",
+              title: "Detalle",
               path: formatPath(Paths.editCompany_details, {
-                company: params.company,
-              }),
-            },
-            {
-              title: "SUNAT Credentials",
-              path: formatPath(Paths.editCompany_sunatCredentials, {
-                company: params.company,
+                namespaceId,
+                companyId,
               }),
             },
           ]}

@@ -1,9 +1,6 @@
 export { useColSelectionState } from "./useColSelectionState";
 export { useDelete } from "./useDelete";
-export { useDeleteCompany } from "./useDeleteCompany";
 export { useFetch } from "./useFetch";
-export { useFetchCompanies } from "./useFetchCompanies";
-export { useFetchCompany } from "./useFetchCompany";
 export { useFetchDocuments } from "./useFetchDocuments";
 export { useModal } from "./useModal";
 export { useTableControls } from "./useTableControls";

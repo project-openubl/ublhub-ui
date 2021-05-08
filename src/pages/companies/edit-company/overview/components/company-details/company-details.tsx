@@ -17,17 +17,23 @@ export interface CompanyDetailsProps {
 export const CompanyDetails: React.FC<CompanyDetailsProps> = ({ company }) => {
   return (
     <Card>
-      <CardTitle>Details</CardTitle>
+      <CardTitle>Detalle</CardTitle>
       <CardBody>
         <DescriptionList>
           <DescriptionListGroup>
-            <DescriptionListTerm>Name</DescriptionListTerm>
+            <DescriptionListTerm>RUC</DescriptionListTerm>
+            <DescriptionListDescription>
+              {company.ruc}
+            </DescriptionListDescription>
+          </DescriptionListGroup>
+          <DescriptionListGroup>
+            <DescriptionListTerm>Nombre</DescriptionListTerm>
             <DescriptionListDescription>
               {company.name}
             </DescriptionListDescription>
           </DescriptionListGroup>
           <DescriptionListGroup>
-            <DescriptionListTerm>Description</DescriptionListTerm>
+            <DescriptionListTerm>Descripción</DescriptionListTerm>
             <DescriptionListDescription>
               {company.description}
             </DescriptionListDescription>
