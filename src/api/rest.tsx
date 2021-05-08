@@ -9,9 +9,11 @@ import {
   Namespace,
 } from "./models";
 
+const USER_NAMESPACES = "/user/namespaces";
+const NAMESPACES = "/namespaces";
+
 const USER_COMPANIES = "/user/companies";
 const COMPANIES = "/companies";
-const NAMESPACES = "/namespaces";
 
 export const DOCUMENTS = `${COMPANIES}/:company/documents`;
 
@@ -77,19 +79,19 @@ export const getNamespaces = (
   };
 
   const query: string[] = buildQuery(params);
-  return APIClient.get(`${NAMESPACES}?${query.join("&")}`, { headers });
+  return APIClient.get(`${USER_NAMESPACES}?${query.join("&")}`, { headers });
 };
 
 export const createNamespace = (ns: Namespace): AxiosPromise => {
-  return APIClient.post(`${NAMESPACES}`, ns);
+  return APIClient.post(`${USER_NAMESPACES}`, ns);
 };
 
 export const updateNamespace = (ns: Namespace): AxiosPromise => {
-  return APIClient.put(`${NAMESPACES}/${ns.name}`, ns);
+  return APIClient.put(`${NAMESPACES}/${ns.id}`, ns);
 };
 
 export const deleteNamespace = (ns: Namespace): AxiosPromise => {
-  return APIClient.delete(`${NAMESPACES}/${ns.name}`);
+  return APIClient.delete(`${NAMESPACES}/${ns.id}`);
 };
 
 //

@@ -19,23 +19,23 @@ export const Welcome: React.FC<WelcomeProps> = ({ onPrimaryAction }) => {
     <EmptyState variant={EmptyStateVariant.large}>
       <EmptyStateIcon icon={RocketIcon} />
       <Title headingLevel="h4" size="lg">
-        Welcome to XSender
+        Bienvenido a XSender
       </Title>
       <EmptyStateBody>
-        XSender helps you to send your XML files to the SUNAT on a large-scale.
-        Start by creating a company for your XMLs.
+        XSender te permite enviar tus archivos XML a la SUNAT en gran escala.
+        Empieza creando un namespace para tus empresas.
       </EmptyStateBody>
       <Button variant="primary" onClick={onPrimaryAction}>
-        Create company
+        Crear namespace
       </Button>
       <EmptyStateSecondaryActions>
-        To learn more, visit the
+        Para conocer más visita la
         <a
           target="_blank"
           href="https://project-openubl.github.io"
           rel="noopener noreferrer"
         >
-          documentation.
+          documentación.
         </a>
       </EmptyStateSecondaryActions>
     </EmptyState>

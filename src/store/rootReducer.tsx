@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { StateType } from "typesafe-actions";
 
-import notifications from "@redhat-cloud-services/frontend-components-notifications/cjs/notifications";
+import { notificationsReducer } from "@redhat-cloud-services/frontend-components-notifications/redux";
 
 import {
   companyContextStateKey,
@@ -15,7 +15,7 @@ import {
 export type RootState = StateType<typeof rootReducer>;
 
 export const rootReducer = combineReducers({
-  notifications: notifications,
+  notifications: notificationsReducer,
   [companyContextStateKey]: companyContextReducer,
   [deleteWithMatchModalStateKey]: deleteWithMatchModalReducer,
 });

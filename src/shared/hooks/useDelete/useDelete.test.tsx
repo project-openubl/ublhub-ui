@@ -2,16 +2,13 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { renderHook, act } from "@testing-library/react-hooks";
 
-import { Application } from "api/models";
-import { deleteApplication, APPLICATIONS } from "api/rest";
-
 import { useDelete } from "./useDelete";
 
 describe("useDelete", () => {
   it("Valid initial status", () => {
     // Use hook
     const { result } = renderHook(() =>
-      useDelete<Application>({
+      useDelete<string>({
         onDelete: jest.fn(),
       })
     );
@@ -23,28 +20,24 @@ describe("useDelete", () => {
   });
 
   it("Delete error", async () => {
-    const app: Application = {
-      id: 1,
-      name: "any name",
-    };
     const onSuccessMock = jest.fn();
     const onErrorMock = jest.fn();
 
     // Mock REST API
-    new MockAdapter(axios).onDelete(`${APPLICATIONS}/${app.id}`).networkError();
+    new MockAdapter(axios).onDelete("/countries/peru").networkError();
 
     // Use hook
-    const onDelete = (application: Application) => {
-      return deleteApplication(application.id!);
+    const onDelete = (value: string) => {
+      return axios.delete(`/countries/${value}`);
     };
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useDelete<Application>({ onDelete })
+      useDelete<string>({ onDelete })
     );
     const { requestDelete } = result.current;
 
     // Init delete
-    act(() => requestDelete(app, onSuccessMock, onErrorMock));
+    act(() => requestDelete("peru", onSuccessMock, onErrorMock));
     expect(result.current.isDeleting).toBe(true);
 
     // Delete finished
@@ -55,28 +48,24 @@ describe("useDelete", () => {
   });
 
   it("Delete success", async () => {
-    const version: Application = {
-      id: 1,
-      name: "any name",
-    };
     const onSuccessMock = jest.fn();
     const onErrorMock = jest.fn();
 
     // Mock REST API
-    new MockAdapter(axios).onDelete(`${APPLICATIONS}/${version.id}`).reply(201);
+    new MockAdapter(axios).onDelete("/countries/peru").reply(201);
 
     // Use hook
-    const onDelete = (application: Application) => {
-      return deleteApplication(application.id!);
+    const onDelete = (value: string) => {
+      return axios.delete(`/countries/${value}`);
     };
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useDelete<Application>({ onDelete })
+      useDelete<string>({ onDelete })
     );
-    const { requestDelete: deleteBusinessService } = result.current;
+    const { requestDelete: fireDelete } = result.current;
 
     // Init delete
-    act(() => deleteBusinessService(version, onSuccessMock, onErrorMock));
+    act(() => fireDelete("peru", onSuccessMock, onErrorMock));
     expect(result.current.isDeleting).toBe(true);
 
     // Delete finished

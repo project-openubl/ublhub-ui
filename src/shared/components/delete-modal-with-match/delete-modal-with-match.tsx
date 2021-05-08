@@ -61,7 +61,7 @@ export const DeleteModalWithMatch: React.FC<DeleteModalWithMatchProps> = ({
           isDisabled={!allowDeletion || inProgress}
           onClick={handleDelete}
         >
-          Delete
+          Eliminar
         </Button>,
         <Button
           key="cancel"
@@ -69,14 +69,14 @@ export const DeleteModalWithMatch: React.FC<DeleteModalWithMatchProps> = ({
           onClick={handleCancel}
           isDisabled={inProgress}
         >
-          Cancel
+          Cancelar
         </Button>,
       ]}
     >
       <div className="pf-c-content">
         <p>{message}</p>
 
-        <p>Type '{matchText}' to confirm.</p>
+        <p>Escribe '{matchText}' para confirmar.</p>
 
         <TextInput
           type="text"

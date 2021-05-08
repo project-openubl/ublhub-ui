@@ -211,10 +211,29 @@ export const NamespaceList: React.FC<INamespaceListProps> = () => {
     handlePaginationChange({ page: 1 });
   };
 
+  const namespaceModal = (
+    <Modal
+      title={!namespaceInModal ? "Crear namespace" : "Actualizar namespace"}
+      variant="medium"
+      isOpen={isNamespaceModalOpen}
+      onClose={closeNamespaceModal}
+    >
+      <NamespaceForm
+        namespace={namespaceInModal}
+        onSaved={() => {
+          closeNamespaceModal();
+          refreshNamespacesTable();
+        }}
+        onCancel={closeNamespaceModal}
+      />
+    </Modal>
+  );
+
   if (fetchCountNamespaces === 1 && namespaces?.data.length === 0) {
     return (
       <Bullseye>
-        <Welcome onPrimaryAction={openNamespaceModalForCreating} />
+        <Welcome onPrimaryAction={() => openNamespaceModalForCreating()} />
+        {namespaceModal}
       </Bullseye>
     );
   }
@@ -258,7 +277,7 @@ export const NamespaceList: React.FC<INamespaceListProps> = () => {
                       variant={ButtonVariant.primary}
                       onClick={openNamespaceModalForCreating}
                     >
-                      Nuevo namespace
+                      Crear namespace
                     </Button>
                   </ToolbarItem>
                 </ToolbarGroup>
@@ -272,31 +291,15 @@ export const NamespaceList: React.FC<INamespaceListProps> = () => {
                 </Title>
                 <EmptyStateBody>
                   Crea un namespace haciendo click en{" "}
-                  <strong>Nuevo namespace</strong>.
+                  <strong>Crear namespace</strong>.
                 </EmptyStateBody>
               </EmptyState>
             }
           />
         </PageSection>
       </ConditionalRender>
-
       <DeleteWithMatchModalContainer />
-
-      <Modal
-        title={!namespaceInModal ? "Crear namespace" : "Actualizar namespace"}
-        variant="medium"
-        isOpen={isNamespaceModalOpen}
-        onClose={closeNamespaceModal}
-      >
-        <NamespaceForm
-          namespace={namespaceInModal}
-          onSaved={() => {
-            closeNamespaceModal();
-            refreshNamespacesTable();
-          }}
-          onCancel={closeNamespaceModal}
-        />
-      </Modal>
+      {namespaceModal}
     </>
   );
 };

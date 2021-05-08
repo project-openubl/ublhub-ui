@@ -3,12 +3,13 @@ import { AxiosError, AxiosPromise, AxiosResponse } from "axios";
 
 import { Alert } from "@patternfly/react-core";
 
-import FormRenderer from "@data-driven-forms/react-form-renderer/dist/cjs/form-renderer";
-import Pf4FormTemplate from "@data-driven-forms/pf4-component-mapper/dist/cjs/form-template";
-import componentMapper from "@data-driven-forms/pf4-component-mapper/dist/cjs/component-mapper";
+import FormRenderer from "@data-driven-forms/react-form-renderer/form-renderer";
+import componentTypes from "@data-driven-forms/react-form-renderer/component-types";
+import componentMapper from "@data-driven-forms/pf4-component-mapper/component-mapper";
+import FormTemplate from "@data-driven-forms/pf4-component-mapper/form-template";
 
 import { Namespace } from "api/models";
-import { createNamespace, updateNamespace } from "api/rest";
+import { createNamespace, getNamespaces, updateNamespace } from "api/rest";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 
 interface IFormValue {
@@ -32,7 +33,7 @@ export const NamespaceForm: React.FC<INamespaceFormProps> = ({
   const formSchema = {
     fields: [
       {
-        component: "text-field",
+        component: componentTypes.TEXT_FIELD,
         name: "name",
         label: "Nombre",
         type: "text",
@@ -45,10 +46,22 @@ export const NamespaceForm: React.FC<INamespaceFormProps> = ({
             type: "min-length",
             threshold: 3,
           },
+          (value: string) => {
+            return getNamespaces({ filterText: value }, { page: 1, perPage: 5 })
+              .then(({ data }) => {
+                const exits =
+                  data.data.some((f) => f.name === value) &&
+                  namespace?.name !== value;
+                return exits ? "El nombre ya fue registrado" : undefined;
+              })
+              .catch(() => {
+                throw Error("Could not verify data");
+              });
+          },
         ],
       },
       {
-        component: "textarea",
+        component: componentTypes.TEXTAREA,
         name: "description",
         label: "Descripción",
         type: "text",
@@ -104,7 +117,7 @@ export const NamespaceForm: React.FC<INamespaceFormProps> = ({
         schema={formSchema}
         initialValues={formInitialValues}
         FormTemplate={(props) => (
-          <Pf4FormTemplate
+          <FormTemplate
             submitLabel={!namespace ? "Crear" : "Guardar"}
             cancelLabel="Cancelar"
             {...props}

@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DocumentStatus Renders without crashing 1`] = `
+<GhSpinner
+  className=" status-icon-loading-spinner"
+  color="#f0ab00"
+/>
+`;

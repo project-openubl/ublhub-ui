@@ -1,8 +1,11 @@
 import React from "react";
 import { mount } from "enzyme";
-import FormRenderer from "@data-driven-forms/react-form-renderer/dist/cjs/form-renderer";
-import componentMapper from "@data-driven-forms/pf4-component-mapper/dist/cjs/component-mapper";
-import FormTemplate from "@data-driven-forms/pf4-component-mapper/dist/cjs/form-template";
+
+import { FormRenderer } from "@data-driven-forms/react-form-renderer";
+import {
+  ComponentMapper,
+  FormTemplate,
+} from "@data-driven-forms/pf4-component-mapper";
 
 import newCompanySchema from "../schemaForm";
 import { NewCompanyFormValues } from "../new-company";
@@ -20,7 +23,7 @@ describe("<FormRendererTest />", () => {
     const wrapper = mount(
       <FormRenderer
         onSubmit={submitSpy}
-        componentMapper={componentMapper}
+        componentMapper={ComponentMapper}
         FormTemplate={FormTemplate}
         schema={newCompanySchema}
       />

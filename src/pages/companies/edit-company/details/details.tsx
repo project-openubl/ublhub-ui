@@ -4,9 +4,9 @@ import { AxiosError } from "axios";
 
 import { Card, CardBody } from "@patternfly/react-core";
 
-import FormRenderer from "@data-driven-forms/react-form-renderer/dist/cjs/form-renderer";
-import Pf4FormTemplate from "@data-driven-forms/pf4-component-mapper/dist/cjs/form-template";
-import componentMapper from "@data-driven-forms/pf4-component-mapper/dist/cjs/component-mapper";
+import FormRenderer from "@data-driven-forms/react-form-renderer/form-renderer";
+import componentMapper from "@data-driven-forms/pf4-component-mapper/component-mapper";
+import FormTemplate from "@data-driven-forms/pf4-component-mapper/form-template";
 
 import { useDispatch } from "react-redux";
 import { alertActions } from "store/alert";
@@ -95,7 +95,7 @@ export const Details: React.FC = () => {
             schema={detailsCompanySchema}
             initialValues={formInitialValues}
             FormTemplate={(props) => (
-              <Pf4FormTemplate submitLabel="Save" {...props} />
+              <FormTemplate submitLabel="Save" {...props} />
             )}
             componentMapper={componentMapper}
             onSubmit={handleOnSubmit}
