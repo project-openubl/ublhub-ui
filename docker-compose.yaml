@@ -77,6 +77,14 @@ services:
       QUARKUS_OIDC_AUTH_SERVER_URL: http://keycloak:8080/auth/realms/openubl
       QUARKUS_OIDC_CLIENT_ID: xsender-api
       QUARKUS_OIDC_CREDENTIALS_SECRET: secret
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      OPENUBL_STORAGE_S3_HOST: http://minio:9000
+      OPENUBL_STORAGE_S3_REGION: us-east-1
+      OPENUBL_STORAGE_BUCKET: project-openubl
+      OPENUBL_STORAGE_ACCESS_KEY: BQA2GEXO711FVBVXDWKM
+      OPENUBL_STORAGE_SECRET_ACCESS_KEY: uvgz3LCwWM3e400cDkQIH/y1Y4xgU4iV91CwFSPC
+      OPENUBL_STORAGE_TYPE: s3
+
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/api/q/health"]
       interval: 10s
