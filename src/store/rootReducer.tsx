@@ -1,12 +1,12 @@
 import { combineReducers } from "redux";
 import { StateType } from "typesafe-actions";
 
-import notifications from "@redhat-cloud-services/frontend-components-notifications/cjs/notifications";
+import { notificationsReducer } from "@redhat-cloud-services/frontend-components-notifications/redux";
 
 import {
-  companyContextStateKey,
-  companyContextReducer,
-} from "./company-context";
+  namespaceContextStateKey,
+  namespaceContextReducer,
+} from "./namespace-context";
 import {
   deleteWithMatchModalStateKey,
   deleteWithMatchModalReducer,
@@ -15,7 +15,7 @@ import {
 export type RootState = StateType<typeof rootReducer>;
 
 export const rootReducer = combineReducers({
-  notifications: notifications,
-  [companyContextStateKey]: companyContextReducer,
+  notifications: notificationsReducer,
+  [namespaceContextStateKey]: namespaceContextReducer,
   [deleteWithMatchModalStateKey]: deleteWithMatchModalReducer,
 });

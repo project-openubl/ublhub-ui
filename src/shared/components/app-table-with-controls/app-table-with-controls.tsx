@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 
 import {
   Toolbar,
@@ -15,6 +15,8 @@ import {
   IExtraColumnData,
   IRow,
   ISortBy,
+  OnCollapse,
+  OnExpand,
   SortByDirection,
 } from "@patternfly/react-table";
 import { FilterIcon } from "@patternfly/react-icons";
@@ -24,8 +26,6 @@ import { SimplePagination } from "../simple-pagination";
 
 export interface AppTableWithControlsProps {
   count: number;
-  items: any[];
-  itemsToRow: (items: any[]) => IRow[];
 
   pagination: {
     perPage?: number;
@@ -46,6 +46,10 @@ export interface AppTableWithControlsProps {
     extraData: IExtraColumnData
   ) => void;
 
+  onCollapse?: OnCollapse;
+  onExpand?: OnExpand;
+
+  rows: IRow[];
   columns: ICell[];
   actions?: IActions;
   actionResolver?: IActionsResolver;
@@ -67,14 +71,16 @@ export interface AppTableWithControlsProps {
 
 export const AppTableWithControls: React.FC<AppTableWithControlsProps> = ({
   count,
-  items,
-  itemsToRow,
 
   pagination,
   sortBy,
   handlePaginationChange,
   handleSortChange,
 
+  onCollapse,
+  onExpand,
+
+  rows,
   columns,
   actions,
   actionResolver,
@@ -93,8 +99,6 @@ export const AppTableWithControls: React.FC<AppTableWithControlsProps> = ({
   noSearchResultsState,
   errorState,
 }) => {
-  const rows = useMemo(() => itemsToRow(items), [items, itemsToRow]);
-
   return (
     <div style={{ backgroundColor: "var(--pf-global--BackgroundColor--100)" }}>
       <Toolbar
@@ -133,6 +137,8 @@ export const AppTableWithControls: React.FC<AppTableWithControlsProps> = ({
         loadingVariant={loadingVariant}
         sortBy={sortBy}
         onSort={handleSortChange}
+        onCollapse={onCollapse}
+        onExpand={onExpand}
         filtersApplied={filtersApplied}
         noDataState={noDataState}
         noSearchResultsState={noSearchResultsState}

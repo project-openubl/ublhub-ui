@@ -3,13 +3,19 @@
 exports[`CompanyDetails Renders without crashing 1`] = `
 <Card>
   <CardTitle>
-    Details
+    Detalle
   </CardTitle>
   <CardBody>
     <DescriptionList>
       <DescriptionListGroup>
         <DescriptionListTerm>
-          Name
+          RUC
+        </DescriptionListTerm>
+        <DescriptionListDescription />
+      </DescriptionListGroup>
+      <DescriptionListGroup>
+        <DescriptionListTerm>
+          Nombre
         </DescriptionListTerm>
         <DescriptionListDescription>
           my company
@@ -17,7 +23,7 @@ exports[`CompanyDetails Renders without crashing 1`] = `
       </DescriptionListGroup>
       <DescriptionListGroup>
         <DescriptionListTerm>
-          Description
+          Descripción
         </DescriptionListTerm>
         <DescriptionListDescription>
           my description

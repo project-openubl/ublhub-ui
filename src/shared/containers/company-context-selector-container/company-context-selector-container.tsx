@@ -4,35 +4,36 @@ import { useSelector } from "react-redux";
 import { SimpleContextSelector } from "shared/components";
 
 import { RootState } from "store/rootReducer";
-import { companyContextSelectors } from "store/company-context";
+import { namespaceContextSelectors } from "store/namespace-context";
 
-import { Company } from "api/models";
+import { Namespace } from "api/models";
 
-export interface CompanyContextSelectorContainerProps {
-  onChange: (company: Company) => void;
+export interface INamespaceContextSelectorContainerProps {
+  onChange: (namespace: Namespace) => void;
 }
 
-export const CompanyContextSelectorContainer: React.FC<CompanyContextSelectorContainerProps> = ({
+export const NamespaceContextSelectorContainer: React.FC<INamespaceContextSelectorContainerProps> = ({
   onChange,
 }) => {
-  const companies = useSelector((state: RootState) =>
-    companyContextSelectors.companies(state)
-  );
-  const currentCompany = useSelector((state: RootState) =>
-    companyContextSelectors.currentCompany(state)
+  const namespaces = useSelector((state: RootState) =>
+    namespaceContextSelectors.namespaces(state)
   );
 
-  const handleOnChange = (value: string) => {
-    const company = companies.find((f) => f.name === value);
-    if (company) {
-      onChange(company);
+  const currentNamespace = useSelector((state: RootState) =>
+    namespaceContextSelectors.currentNamespace(state)
+  );
+
+  const handleOnChange = (value: Namespace) => {
+    const namespace = namespaces.find((f) => f.id === value.id);
+    if (namespace) {
+      onChange(namespace);
     }
   };
 
   return (
     <SimpleContextSelector
-      value={currentCompany}
-      items={companies.map((f) => f.name)}
+      value={currentNamespace}
+      items={namespaces}
       onChange={handleOnChange}
     />
   );

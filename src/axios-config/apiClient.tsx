@@ -35,8 +35,8 @@ export class APIClient {
     return this.request<T>(path, body, "put", config);
   }
 
-  public static get<T>(path: string): AxiosPromise<T> {
-    return this.request<T>(path);
+  public static get<T>(path: string, config = {}): AxiosPromise<T> {
+    return this.request<T>(path, null, "get", config);
   }
 
   public static delete(path: string, config = {}) {

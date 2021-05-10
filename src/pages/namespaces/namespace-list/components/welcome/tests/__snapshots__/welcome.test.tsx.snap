@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Welcome Renders without crashing 1`] = `
+<EmptyState
+  variant="large"
+>
+  <EmptyStateIcon
+    icon={[Function]}
+  />
+  <Title
+    headingLevel="h4"
+    size="lg"
+  >
+    Bienvenido a XSender
+  </Title>
+  <EmptyStateBody>
+    XSender te permite enviar tus archivos XML a la SUNAT en gran escala. Empieza creando un namespace para tus empresas.
+  </EmptyStateBody>
+  <Button
+    onClick={[Function]}
+    variant="primary"
+  >
+    Crear namespace
+  </Button>
+  <EmptyStateSecondaryActions>
+    Para conocer más visita la
+    <a
+      href="https://project-openubl.github.io"
+      rel="noopener noreferrer"
+      target="_blank"
+    >
+      documentación.
+    </a>
+  </EmptyStateSecondaryActions>
+</EmptyState>
+`;

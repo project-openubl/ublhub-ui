@@ -1,1 +1,0 @@
-export { useFetchCompany } from "./useFetchCompany";

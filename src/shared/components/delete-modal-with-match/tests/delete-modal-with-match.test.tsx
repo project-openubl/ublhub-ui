@@ -32,7 +32,7 @@ describe("DeleteModalWithMatch", () => {
     );
 
     const cancelButton = wrapper.find(Button).at(2);
-    expect(cancelButton.props().children).toEqual("Cancel");
+    expect(cancelButton.props().children).toEqual("Cancelar");
 
     wrapper.find(Button).at(2).simulate("click");
     expect(mockOnCancel).toHaveBeenCalledTimes(1);
@@ -59,8 +59,8 @@ describe("DeleteModalWithMatch", () => {
     const deleteButton = wrapper.find(Button).at(1);
     const cancelButton = wrapper.find(Button).at(2);
 
-    expect(deleteButton.props().children).toEqual("Delete");
-    expect(cancelButton.props().children).toEqual("Cancel");
+    expect(deleteButton.props().children).toEqual("Eliminar");
+    expect(cancelButton.props().children).toEqual("Cancelar");
 
     expect(deleteButton.props().isDisabled).toEqual(true);
     expect(cancelButton.props().isDisabled).toEqual(false);

@@ -1,41 +1,57 @@
-import React, { useEffect } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import React, { useCallback, useEffect } from "react";
+import { RouteComponentProps, useParams } from "react-router-dom";
 
 import { Card, CardBody, Grid, GridItem } from "@patternfly/react-core";
 
-import { CompanytRoute } from "Paths";
+import { CompanyRoute, NamespaceRoute } from "Paths";
+import { getCompany } from "api/rest";
+import { Company } from "api/models";
 
-import { useFetchCompany } from "shared/hooks";
 import {
   AppPlaceholder,
   ConditionalRender,
   ErrorEmptyState,
 } from "shared/components";
+import { useFetch } from "shared/hooks";
 
 import { CompanyDetails } from "./components/company-details";
 import { CompanySunatDetails } from "./components/company-sunat-details";
 
-export interface OverviewProps extends RouteComponentProps<CompanytRoute> {}
+export interface OverviewProps extends RouteComponentProps<NamespaceRoute> {}
 
 export const Overview: React.FC<OverviewProps> = ({ match: { params } }) => {
-  const { company, isFetching, fetchError, fetchCompany } = useFetchCompany();
+  const { namespaceId, companyId } = useParams<CompanyRoute>();
+
+  const fetchCompany = useCallback(() => {
+    return getCompany(namespaceId, companyId);
+  }, [namespaceId, companyId]);
+
+  const {
+    data: company,
+    isFetching: isFetchingCompany,
+    fetchError: fetchErrorCompany,
+    requestFetch: refreshCompany,
+  } = useFetch<Company>({
+    defaultIsFetching: true,
+    onFetch: fetchCompany,
+  });
 
   useEffect(() => {
-    fetchCompany(params.company);
-  }, [params, fetchCompany]);
+    refreshCompany();
+  }, [refreshCompany]);
 
-  if (fetchError) {
+  if (fetchErrorCompany) {
     return (
       <Card>
         <CardBody>
-          <ErrorEmptyState error={fetchError} />
+          <ErrorEmptyState error={fetchErrorCompany} />
         </CardBody>
       </Card>
     );
   }
 
   return (
-    <ConditionalRender when={isFetching} then={<AppPlaceholder />}>
+    <ConditionalRender when={isFetchingCompany} then={<AppPlaceholder />}>
       {company && (
         <Grid hasGutter>
           <GridItem lg={4}>

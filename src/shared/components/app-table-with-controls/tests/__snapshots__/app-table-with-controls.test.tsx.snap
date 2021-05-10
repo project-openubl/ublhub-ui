@@ -51,31 +51,6 @@ exports[`AppTableWithControls Renders adding toolbar 1`] = `
     }
     isLoading={false}
     onSort={[MockFunction]}
-    rows={
-      Array [
-        Object {
-          "cells": Array [
-            Object {
-              "title": "first",
-            },
-          ],
-        },
-        Object {
-          "cells": Array [
-            Object {
-              "title": "second",
-            },
-          ],
-        },
-        Object {
-          "cells": Array [
-            Object {
-              "title": "third",
-            },
-          ],
-        },
-      ]
-    }
   />
   <SimplePagination
     count={120}
@@ -138,31 +113,6 @@ exports[`AppTableWithControls Renders without crashing 1`] = `
     }
     isLoading={false}
     onSort={[MockFunction]}
-    rows={
-      Array [
-        Object {
-          "cells": Array [
-            Object {
-              "title": "first",
-            },
-          ],
-        },
-        Object {
-          "cells": Array [
-            Object {
-              "title": "second",
-            },
-          ],
-        },
-        Object {
-          "cells": Array [
-            Object {
-              "title": "third",
-            },
-          ],
-        },
-      ]
-    }
   />
   <SimplePagination
     count={120}

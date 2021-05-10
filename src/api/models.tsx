@@ -1,3 +1,16 @@
+export type EntityEventType = "CREATED" | "UPDATED" | "DELETED";
+
+export interface WsMessage {
+  type: "event";
+  spec: EntityEvent;
+}
+
+export interface EntityEvent {
+  id: string;
+  event: EntityEventType;
+  entity: string;
+}
+
 export interface PageQuery {
   page: number;
   perPage: number;
@@ -26,8 +39,16 @@ export interface Links {
   previous: string;
   last: string;
 }
+
+export interface Namespace {
+  id?: string;
+  name: string;
+  description?: string;
+}
+
 export interface Company {
   id?: string;
+  ruc: string;
   name: string;
   description?: string;
   webServices: SUNATWsUrls;
@@ -45,15 +66,41 @@ export interface SUNATCredentials {
   password?: string;
 }
 
+export type DeliveryStatus =
+  | "SCHEDULED_TO_DELIVER"
+  | "NEED_TO_CHECK_TICKET"
+  | "COULD_NOT_BE_DELIVERED"
+  | "DELIVERED";
+
 export interface UBLDocument {
   id?: string;
-  deliveryStatus: string;
-  fileInfo: FileInfo;
+  createdOn: number;
+  inProgress: boolean;
+  error?: string;
+
+  fileContentValid?: boolean;
+  fileContentValidationError?: string;
+  fileContent?: UBLDocumentFileContent;
+
+  sunat?: UBLDocumentSunat;
+  sunatEvents: UBLDocumentEvent[];
 }
 
-export interface FileInfo {
+export interface UBLDocumentFileContent {
+  ruc: string;
   documentID: string;
   documentType: string;
-  filename: string;
-  ruc: string;
+}
+
+export interface UBLDocumentSunat {
+  code: string;
+  status: "ACEPTADO" | "RECHAZADO" | "EXCEPCION" | "BAJA" | "EN_PROCESO";
+  description: string;
+  ticket: string;
+}
+
+export interface UBLDocumentEvent {
+  status: "default" | "success" | "danger" | "warning" | "info";
+  description: string;
+  createdOn: number;
 }

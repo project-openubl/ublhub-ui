@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GhSpinner Renders without crashing 1`] = `
+<GhSpinnerIcon
+  className="pf-c-spinner pf-m-md speed"
+/>
+`;

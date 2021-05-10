@@ -20,6 +20,7 @@ const Template: Story<CompanySunatDetailsProps> = (args) => (
 export const Basic = Template.bind({});
 Basic.args = {
   company: {
+    ruc: "12345678910",
     name: "my company",
     description: "my description",
     webServices: {

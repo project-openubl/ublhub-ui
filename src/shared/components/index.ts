@@ -1,13 +1,17 @@
 export { AppPageSection } from "./app-page-section";
 export { AppPlaceholder } from "./app-placeholder";
 export { AppTable } from "./app-table";
+export { AppTableToolbarToggleGroup } from "./app-table-toolbar-toggle-group";
 export { AppTableWithControls } from "./app-table-with-controls";
-export { CompanyContextSelectorSection } from "./company-context-selector-section";
+export { NamespaceContextSelectorSection } from "./namespace-context-selector-section";
 export { ConditionalRender } from "./conditional-render";
 export { DeleteModalWithMatch } from "./delete-modal-with-match";
+export { DocumentStatus } from "./document-status";
 export { ErrorEmptyState } from "./error-empty-state";
 export { SearchFilter } from "./search-filter";
 export { SimpleContextSelector } from "./simple-context-selector";
 export { SimplePageSection } from "./simple-page-section";
 export { SimplePagination } from "./simple-pagination";
+export * from "./simple-select";
 export { UploadFilesDropzone } from "./upload-files-dropzone";
+export { WsWatcher } from "./ws-watcher";

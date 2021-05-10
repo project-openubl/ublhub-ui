@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Link, RouteComponentProps } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import {
-  Bullseye,
   Button,
   ButtonVariant,
   EmptyState,
@@ -16,9 +15,11 @@ import {
   ToolbarItem,
 } from "@patternfly/react-core";
 import {
+  cellWidth,
   IActions,
   ICell,
   IExtraData,
+  IRow,
   IRowData,
   sortable,
 } from "@patternfly/react-table";
@@ -34,19 +35,18 @@ import {
   SearchFilter,
   SimplePageSection,
 } from "shared/components";
-import {
-  useTableControls,
-  useFetchCompanies,
-  useDeleteCompany,
-} from "shared/hooks";
+import { useTableControls, useDelete, useFetch } from "shared/hooks";
 import { DeleteWithMatchModalContainer } from "shared/containers";
 
-import { formatPath, Paths } from "Paths";
-import { CompanySortBy, CompanySortByQuery } from "api/rest";
-import { Company, SortByQuery } from "api/models";
+import { formatPath, NamespaceRoute, Paths } from "Paths";
+import {
+  CompanySortBy,
+  CompanySortByQuery,
+  deleteCompany,
+  getCompanies,
+} from "api/rest";
+import { Company, SortByQuery, PageRepresentation } from "api/models";
 import { getAxiosErrorMessage } from "utils/modelUtils";
-
-import { Welcome } from "./components/welcome";
 
 const toSortByQuery = (
   sortBy?: SortByQuery
@@ -61,7 +61,7 @@ const toSortByQuery = (
       field = CompanySortBy.NAME;
       break;
     default:
-      throw new Error("Invalid column index=" + sortBy.index);
+      return undefined;
   }
 
   return {
@@ -70,28 +70,23 @@ const toSortByQuery = (
   };
 };
 
-const COMPANY_FIELD = "company";
+const ROW_VALUE = "rowValue";
 
 const getRow = (rowData: IRowData): Company => {
-  return rowData[COMPANY_FIELD];
+  return rowData[ROW_VALUE];
 };
 
-export interface CompanyListProps extends RouteComponentProps {}
+export const CompanyList: React.FC = () => {
+  const history = useHistory();
+  const { namespaceId } = useParams<NamespaceRoute>();
 
-export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
   const dispatch = useDispatch();
 
   const [filterText, setFilterText] = useState("");
 
-  const { deleteCompany } = useDeleteCompany();
-
-  const {
-    companies,
-    isFetching,
-    fetchError,
-    fetchCount,
-    fetchCompanies,
-  } = useFetchCompanies(true);
+  const { requestDelete: requestDeleteCompany } = useDelete({
+    onDelete: (ns: Company) => deleteCompany(namespaceId, ns.id!),
+  });
 
   const {
     paginationQuery,
@@ -100,52 +95,69 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
     handleSortChange,
   } = useTableControls();
 
-  const refreshTable = useCallback(() => {
-    fetchCompanies(
+  const fetchCompanies = useCallback(() => {
+    return getCompanies(
+      namespaceId,
       {
-        filterText,
+        filterText: filterText,
       },
       paginationQuery,
       toSortByQuery(sortByQuery)
     );
-  }, [filterText, paginationQuery, sortByQuery, fetchCompanies]);
+  }, [filterText, namespaceId, paginationQuery, sortByQuery]);
+
+  const {
+    data: companies,
+    isFetching: isFetchingCompanies,
+    fetchError: fetchErrorCompanies,
+    requestFetch: refreshCompanyTable,
+  } = useFetch<PageRepresentation<Company>>({
+    defaultIsFetching: true,
+    onFetch: fetchCompanies,
+  });
 
   useEffect(() => {
-    fetchCompanies(
-      {
-        filterText,
-      },
-      paginationQuery,
-      toSortByQuery(sortByQuery)
-    );
-  }, [filterText, paginationQuery, sortByQuery, fetchCompanies]);
+    refreshCompanyTable();
+  }, [filterText, paginationQuery, sortByQuery, refreshCompanyTable]);
+
+  // Table
 
   const columns: ICell[] = [
-    { title: "Name", transforms: [sortable] },
-    { title: "Description" },
+    { title: "RUC", transforms: [sortable, cellWidth(20)] },
+    { title: "Nombre", transforms: [sortable] },
+    { title: "Descripción" },
   ];
 
-  const itemsToRow = (items: Company[]) => {
-    return items.map((item) => ({
-      [COMPANY_FIELD]: item,
+  const rows: IRow[] = [];
+  companies?.data.forEach((item) => {
+    rows.push({
+      [ROW_VALUE]: item,
       cells: [
         {
           title: (
-            <Link to={formatPath(Paths.editCompany, { company: item.name })}>
-              {item.name}
+            <Link
+              to={formatPath(Paths.editCompany, {
+                namespaceId,
+                companyId: item.id,
+              })}
+            >
+              {item.ruc}
             </Link>
           ),
+        },
+        {
+          title: item.name,
         },
         {
           title: item.description,
         },
       ],
-    }));
-  };
+    });
+  });
 
   const actions: IActions = [
     {
-      title: "Edit",
+      title: "Editar",
       onClick: (
         event: React.MouseEvent,
         rowIndex: number,
@@ -153,11 +165,13 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
         extraData: IExtraData
       ) => {
         const row: Company = getRow(rowData);
-        history.push(formatPath(Paths.editCompany, { company: row.name }));
+        history.push(
+          formatPath(Paths.editCompany, { namespaceId, companyId: row.id })
+        );
       },
     },
     {
-      title: "Delete",
+      title: "Eliminar",
       onClick: (
         event: React.MouseEvent,
         rowIndex: number,
@@ -167,16 +181,16 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
         const row: Company = getRow(rowData);
         dispatch(
           deleteWithMatchModalActions.openModal({
-            title: "Delete company",
-            message: `Are you sure you want to delete the company ${row.name}`,
-            matchText: row.name,
+            title: "Eliminar empresa",
+            message: `¿Estás seguro de querer eliminar la empresa RUC=${row.ruc} (${row.name})?`,
+            matchText: row.ruc,
             onDelete: () => {
               dispatch(deleteWithMatchModalActions.processing());
-              deleteCompany(
+              requestDeleteCompany(
                 row,
                 () => {
                   dispatch(deleteWithMatchModalActions.closeModal());
-                  refreshTable();
+                  refreshCompanyTable();
                 },
                 (error) => {
                   dispatch(deleteWithMatchModalActions.closeModal());
@@ -192,75 +206,69 @@ export const CompanyList: React.FC<CompanyListProps> = ({ history }) => {
     },
   ];
 
-  const handleOnNewCompany = () => {
-    history.push(Paths.newCompany);
+  const redirectToNewCompanyPage = () => {
+    history.push(formatPath(Paths.newCompany, { namespaceId }));
   };
 
-  const handleOnFilterApplied = (filterText: string) => {
+  const applyFilterText = (filterText: string) => {
     setFilterText(filterText);
     handlePaginationChange({ page: 1 });
   };
 
-  if (fetchCount === 1 && companies?.data.length === 0) {
-    return (
-      <Bullseye>
-        <Welcome onPrimaryAction={handleOnNewCompany} />
-      </Bullseye>
-    );
-  }
-
   return (
     <>
       <ConditionalRender
-        when={isFetching && !(companies || fetchError)}
+        when={isFetchingCompanies && !(companies || fetchErrorCompanies)}
         then={<AppPlaceholder />}
       >
         <SimplePageSection
-          title="Companies"
-          description="Companies allow you to group your documents."
+          title="Empresas"
+          description="Registra tus empresas."
         />
         <PageSection>
           <AppTableWithControls
             count={companies ? companies.meta.count : 0}
-            items={companies ? companies.data : []}
-            itemsToRow={itemsToRow}
             pagination={paginationQuery}
             sortBy={sortByQuery}
             handlePaginationChange={handlePaginationChange}
             handleSortChange={handleSortChange}
             columns={columns}
+            rows={rows}
             actions={actions}
-            isLoading={isFetching}
-            loadingVariant="skeleton"
-            fetchError={fetchError}
+            isLoading={isFetchingCompanies}
+            loadingVariant="none"
+            fetchError={fetchErrorCompanies}
             filtersApplied={filterText.trim().length > 0}
             toolbarToggle={
               <ToolbarGroup variant="filter-group">
-                <SearchFilter onApplyFilter={handleOnFilterApplied} />
+                <SearchFilter onApplyFilter={applyFilterText} />
               </ToolbarGroup>
             }
             toolbar={
-              <ToolbarGroup variant="button-group">
-                <ToolbarItem>
-                  <Button
-                    type="button"
-                    aria-label="new-company"
-                    variant={ButtonVariant.primary}
-                    onClick={handleOnNewCompany}
-                  >
-                    New company
-                  </Button>
-                </ToolbarItem>
-              </ToolbarGroup>
+              <>
+                <ToolbarGroup variant="button-group">
+                  <ToolbarItem>
+                    <Button
+                      type="button"
+                      aria-label="new-company"
+                      variant={ButtonVariant.primary}
+                      onClick={redirectToNewCompanyPage}
+                    >
+                      Crear empresa
+                    </Button>
+                  </ToolbarItem>
+                </ToolbarGroup>
+              </>
             }
             noDataState={
               <EmptyState variant={EmptyStateVariant.small}>
                 <EmptyStateIcon icon={AddCircleOIcon} />
                 <Title headingLevel="h2" size="lg">
-                  No companies available
+                  No existen empresas
                 </Title>
                 <EmptyStateBody>
-                  Add a company by clicking on <strong>New company</strong>.
+                  Crea una empresa haciendo click en{" "}
+                  <strong>Crear empresa</strong>.
                 </EmptyStateBody>
               </EmptyState>
             }
