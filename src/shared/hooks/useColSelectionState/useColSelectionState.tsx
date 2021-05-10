@@ -66,7 +66,6 @@ export const useColSelectionState = <T,>({
     const otherSelectedCols = selectedCols.filter(
       (selected) => !isEqual(selected.row, row)
     );
-
     if (isSelecting) {
       setSelectedCols([...otherSelectedCols, { row, colIndex }]);
     } else {
@@ -76,9 +75,9 @@ export const useColSelectionState = <T,>({
 
   return {
     selectedCols,
-    isColSelected: isColSelected,
+    isColSelected,
     toggleSelectedCol: toggleColSelected,
-    toggleSelectedColSingle: toggleSelectedColSingle,
-    setSelectedCols: setSelectedCols,
+    toggleSelectedColSingle,
+    setSelectedCols,
   };
 };

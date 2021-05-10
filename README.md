@@ -72,3 +72,7 @@ Inicia el servidor en modo desarrollador
 yarn install
 yarn start
 ```
+
+Podrás abrir el servidor en http://localhost:3000
+- Usuario: admin
+- Password: admin

@@ -24,7 +24,7 @@ export enum Paths {
 
   documentList_empty = "/ns-document/:namespaceId/documents/select-company",
   documentList = "/ns-document/:namespaceId/documents",
-  newDocument = "/ns-document/:namespaceId/documents/~new",
+  uploadDocument = "/ns-document/:namespaceId/documents/~upload",
 }
 
 export interface OptionalCompanyRoute {

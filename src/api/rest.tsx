@@ -13,12 +13,15 @@ const USER_NAMESPACES = "/user/namespaces";
 const NAMESPACES = "/namespaces";
 
 const COMPANIES = "/namespaces/:namespaceId/companies";
-
-export const DOCUMENTS = `${COMPANIES}/:company/documents`;
+const DOCUMENTS = "/namespaces/:namespaceId/documents";
 
 type Direction = "asc" | "desc";
 
 const headers = { Accept: "application/json" };
+
+export const getUploadUrl = (namespaceId: string) => {
+  return `${DOCUMENTS.replace(":namespaceId", namespaceId)}/upload`;
+};
 
 const buildQuery = (params: any) => {
   const query: string[] = [];
@@ -192,15 +195,18 @@ export const getCompany = (
 export enum UBLDocumentSortBy {
   DOCUMENT_ID,
 }
+
 export interface UBLDocumentSortByQuery {
   field: UBLDocumentSortBy;
   direction?: Direction;
 }
 
 export const getDocuments = (
-  company: string,
+  namespaceId: string,
   filters: {
     filterText?: string;
+    ruc?: string[];
+    documentType?: string[];
   },
   pagination: PageQuery,
   sortBy?: UBLDocumentSortByQuery
@@ -212,36 +218,22 @@ export const getDocuments = (
       case UBLDocumentSortBy.DOCUMENT_ID:
         field = "documentID";
         break;
-      default:
-        throw new Error("Could not define SortBy field name");
     }
     sortByQuery = `${field}:${sortBy.direction}`;
   }
-
-  const query: string[] = [];
 
   const params = {
     offset: (pagination.page - 1) * pagination.perPage,
     limit: pagination.perPage,
     sort_by: sortByQuery,
+
     filterText: filters.filterText,
+    ruc: filters.ruc,
+    documentType: filters.documentType,
   };
 
-  Object.keys(params).forEach((key) => {
-    const value = (params as any)[key];
-
-    if (value !== undefined && value !== null) {
-      let queryParamValues: string[] = [];
-      if (Array.isArray(value)) {
-        queryParamValues = value;
-      } else {
-        queryParamValues = [value];
-      }
-      queryParamValues.forEach((v) => query.push(`${key}=${v}`));
-    }
-  });
-
+  const query: string[] = buildQuery(params);
   return APIClient.get(
-    `${DOCUMENTS.replace(":company", company)}?${query.join("&")}`
+    `${DOCUMENTS.replaceAll(":namespaceId", namespaceId)}?${query.join("&")}`
   );
 };

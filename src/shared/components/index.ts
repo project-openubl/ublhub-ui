@@ -1,6 +1,7 @@
 export { AppPageSection } from "./app-page-section";
 export { AppPlaceholder } from "./app-placeholder";
 export { AppTable } from "./app-table";
+export { AppTableToolbarToggleGroup } from "./app-table-toolbar-toggle-group";
 export { AppTableWithControls } from "./app-table-with-controls";
 export { NamespaceContextSelectorSection } from "./namespace-context-selector-section";
 export { ConditionalRender } from "./conditional-render";

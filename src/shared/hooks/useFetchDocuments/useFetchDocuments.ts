@@ -183,10 +183,7 @@ export const useFetchDocuments = (
               dispatch(fetchSuccess(data));
 
               const shouldReload = data.data.some((f) => {
-                return (
-                  f.sunatDeliveryStatus === "SCHEDULED_TO_DELIVER" ||
-                  f.sunatDeliveryStatus === "NEED_TO_CHECK_TICKET"
-                );
+                return f.inProgress;
               });
 
               if (shouldReload) {

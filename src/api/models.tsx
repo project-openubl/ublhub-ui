@@ -75,16 +75,14 @@ export type DeliveryStatus =
 export interface UBLDocument {
   id?: string;
   createdOn: number;
-
-  retries: number;
-  willRetryOn: number;
+  inProgress: boolean;
+  error?: string;
 
   fileContentValid?: boolean;
   fileContentValidationError?: string;
   fileContent?: UBLDocumentFileContent;
 
   sunat?: UBLDocumentSunat;
-  sunatDeliveryStatus: DeliveryStatus;
   sunatEvents: UBLDocumentEvent[];
 }
 

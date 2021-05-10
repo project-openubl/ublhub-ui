@@ -10,7 +10,7 @@ import { Paths } from "Paths";
 import { NamespaceContextSelector } from "shared/containers";
 
 const DocumentList = lazy(() => import("./document-list"));
-const NewDocument = lazy(() => import("./new-document"));
+const NewDocument = lazy(() => import("./upload-document"));
 
 export const Documents: React.FC = () => {
   return (
@@ -21,7 +21,7 @@ export const Documents: React.FC = () => {
       <Suspense fallback={<AppPlaceholder />}>
         <Switch>
           <Route path={Paths.documentList} component={DocumentList} exact />
-          <Route path={Paths.newDocument} component={NewDocument} />
+          <Route path={Paths.uploadDocument} component={NewDocument} />
         </Switch>
       </Suspense>
     </>

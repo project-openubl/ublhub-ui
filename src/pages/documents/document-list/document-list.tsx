@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { RouteComponentProps, useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { StatusIcon, StatusType } from "@konveyor/lib-ui";
 import Moment from "react-moment";
 
 import { useKeycloak } from "@react-keycloak/web";
-import useWebSocket from "react-use-websocket";
 
 import {
   Button,
@@ -17,14 +16,10 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  NotificationDrawer,
-  NotificationDrawerBody,
-  NotificationDrawerList,
-  NotificationDrawerListItem,
-  NotificationDrawerListItemBody,
-  NotificationDrawerListItemHeader,
   PageSection,
   Title,
+  ToolbarChip,
+  ToolbarFilter,
   ToolbarGroup,
   ToolbarItem,
 } from "@patternfly/react-core";
@@ -40,34 +35,39 @@ import {
 import {
   AddCircleOIcon,
   FileCodeIcon,
-  BullseyeIcon,
 } from "@patternfly/react-icons";
 
 import { DeleteWithMatchModalContainer } from "shared/containers";
 import {
   AppPlaceholder,
+  AppTableToolbarToggleGroup,
   AppTableWithControls,
   ConditionalRender,
   DocumentStatus,
   SearchFilter,
   SimplePageSection,
 } from "shared/components";
-import {
-  useTableControls,
-  useFetchDocuments,
-  useColSelectionState,
-} from "shared/hooks";
+import { useTableControls, useColSelectionState, useFetch } from "shared/hooks";
 
 import { NamespaceRoute, formatPath, Paths } from "Paths";
 import {
   UBLDocument,
   SortByQuery,
   UBLDocumentSunat,
-  WsMessage,
+  PageRepresentation,
 } from "api/models";
-import { UBLDocumentSortBy, UBLDocumentSortByQuery } from "api/rest";
+import {
+  getDocuments,
+  UBLDocumentSortBy,
+  UBLDocumentSortByQuery,
+} from "api/rest";
+import { SelectCompanyFilter } from "./components/select-company-filter";
+import { SelectDocumentTypeFilter } from "./components/select-document-type-filter";
 
-import sunatLogo from "images/sunat.png";
+enum FilterKey {
+  RUC = "RUC",
+  DOCUMENT_TYPE = "Tipo documento",
+}
 
 const toSortByQuery = (
   sortBy?: SortByQuery
@@ -82,7 +82,7 @@ const toSortByQuery = (
       field = UBLDocumentSortBy.DOCUMENT_ID;
       break;
     default:
-      throw new Error("Invalid column index=" + sortBy.index);
+      return undefined;
   }
 
   return {
@@ -91,10 +91,10 @@ const toSortByQuery = (
   };
 };
 
-const ENTITY_FIELD = "entity";
+const ROW_VALUE = "rowValue";
 
 const getRow = (rowData: IRowData): UBLDocument => {
-  return rowData[ENTITY_FIELD];
+  return rowData[ROW_VALUE];
 };
 
 const getStatusType = (ublDocument: UBLDocumentSunat): StatusType => {
@@ -119,21 +119,27 @@ const formatSunatStatus = (status: string) => {
   return withSpace.charAt(0).toUpperCase() + withSpace.slice(1);
 };
 
-export interface DocumentListProps extends RouteComponentProps {}
-
-export const DocumentList: React.FC<DocumentListProps> = () => {
+export const DocumentList: React.FC = () => {
   const history = useHistory();
-  const params = useParams<NamespaceRoute>();
+  const { namespaceId } = useParams<NamespaceRoute>();
+
   const { keycloak } = useKeycloak();
 
-  const [filterText, setFilterText] = useState("");
+  const filters = [
+    {
+      key: FilterKey.RUC,
+      name: "RUC",
+    },
+    {
+      key: FilterKey.DOCUMENT_TYPE,
+      name: "Tipo documento",
+    },
+  ];
 
-  const {
-    documents,
-    isFetching,
-    fetchError,
-    fetchDocumentsStream,
-  } = useFetchDocuments(true);
+  const [filterText, setFilterText] = useState("");
+  const [filtersValue, setFiltersValue] = useState<
+    Map<FilterKey, ToolbarChip[]>
+  >(new Map([]));
 
   const {
     paginationQuery,
@@ -142,92 +148,92 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
     handleSortChange,
   } = useTableControls();
 
-  const refreshTable = useCallback(() => {
-    fetchDocumentsStream(
-      params.namespaceId,
+  const fetchDocuments = useCallback(() => {
+    return getDocuments(
+      namespaceId,
       {
-        filterText,
+        filterText: filterText,
+        ruc: filtersValue.get(FilterKey.RUC)?.map((f) => f.key),
+        documentType: filtersValue
+          .get(FilterKey.DOCUMENT_TYPE)
+          ?.map((f) => f.key),
       },
       paginationQuery,
       toSortByQuery(sortByQuery)
     );
-  }, [params, filterText, paginationQuery, sortByQuery, fetchDocumentsStream]);
-
-  useEffect(() => {
-    fetchDocumentsStream(
-      params.namespaceId,
-      {
-        filterText,
-      },
-      paginationQuery,
-      toSortByQuery(sortByQuery)
-    );
-  }, [params, filterText, paginationQuery, sortByQuery, fetchDocumentsStream]);
-
-  const [socketUrl, setSocketUrl] = useState(
-    `ws://localhost:8080/companies/${params.namespaceId}/documents`
-  );
-  useEffect(() => {
-    if (params.namespaceId) {
-      setSocketUrl(`ws://localhost:8080/companies/${params.namespaceId}/documents`);
-    }
-  }, [params]);
+  }, [filterText, filtersValue, namespaceId, paginationQuery, sortByQuery]);
 
   const {
-    lastJsonMessage: eventMsg,
-    sendJsonMessage: sendEventMessage,
-  } = useWebSocket(socketUrl, {
-    onOpen: () => {
-      sendEventMessage({
-        authentication: {
-          token: keycloak.token,
-        },
-      });
-    },
-    shouldReconnect: (event: CloseEvent) => event.code !== 1011,
-    share: true,
+    data: documents,
+    isFetching: isFetchingDocuments,
+    fetchError: fetchErrorDocuments,
+    requestFetch: refreshDocumentsTable,
+  } = useFetch<PageRepresentation<UBLDocument>>({
+    defaultIsFetching: true,
+    onFetch: fetchDocuments,
   });
 
   useEffect(() => {
-    if (eventMsg) {
-      const event: WsMessage = eventMsg as WsMessage;
-
-      switch (event.spec.event) {
-        case "CREATED":
-          if (
-            paginationQuery.page === 1 &&
-            !sortByQuery &&
-            !(documents?.data || []).find((f) => f.id === event.spec.id)
-          ) {
-            refreshTable();
-          }
-          break;
-        case "DELETED":
-          if (documents && documents.data.find((f) => f.id === event.spec.id)) {
-            refreshTable();
-          }
-          break;
-      }
-    }
-  }, [eventMsg, documents, paginationQuery, sortByQuery, refreshTable]);
+    refreshDocumentsTable();
+  }, [filterText, paginationQuery, sortByQuery, refreshDocumentsTable]);
 
   //
 
-  const columns: ICell[] = [
-    {
-      title: "Id",
-      cellTransforms: [],
-      transforms: [cellWidth(15)],
-    },
-    {
-      title: "XML",
-      cellTransforms: [compoundExpand],
-      transforms: [cellWidth(40)],
-    },
-    { title: "SUNAT", cellTransforms: [compoundExpand], transforms: [] },
-    { title: "Events", cellTransforms: [compoundExpand], transforms: [] },
-    { title: "Created on", cellTransforms: [] },
-  ];
+  // const [socketUrl, setSocketUrl] = useState(
+  //   `ws://localhost:8080/namespaces/${namespaceId}/documents`
+  // );
+
+  // useEffect(() => {
+  //   if (namespaceId) {
+  //     setSocketUrl(`ws://localhost:8080/namespaces/${namespaceId}/documents`);
+  //   }
+  // }, [namespaceId]);
+
+  // const {
+  //   lastJsonMessage: eventMsg,
+  //   sendJsonMessage: sendEventMessage,
+  // } = useWebSocket(socketUrl, {
+  //   onOpen: () => {
+  //     sendEventMessage({
+  //       authentication: {
+  //         token: keycloak.token,
+  //       },
+  //     });
+  //   },
+  //   shouldReconnect: (event: CloseEvent) => event.code !== 1011,
+  //   share: true,
+  // });
+
+  // useEffect(() => {
+  //   if (eventMsg) {
+  //     const event: WsMessage = eventMsg as WsMessage;
+
+  //     switch (event.spec.event) {
+  //       case "CREATED":
+  //         if (
+  //           paginationQuery.page === 1 &&
+  //           !sortByQuery &&
+  //           !(documents?.data || []).find((f) => f.id === event.spec.id)
+  //         ) {
+  //           refreshDocumentsTable();
+  //         }
+  //         break;
+  //       case "DELETED":
+  //         if (documents && documents.data.find((f) => f.id === event.spec.id)) {
+  //           refreshDocumentsTable();
+  //         }
+  //         break;
+  //     }
+  //   }
+  // }, [
+  //   eventMsg,
+  //   documents,
+  //   paginationQuery,
+  //   sortByQuery,
+  //   refreshDocumentsTable,
+  // ]);
+
+  // Table
 
   const {
     isColSelected: isColumnExpanded,
@@ -237,51 +243,79 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
     isEqual: (a, b) => a.id === b.id,
   });
 
+  const columns: ICell[] = [
+    {
+      title: "Id",
+      cellTransforms: [],
+      transforms: [cellWidth(15)],
+    },
+    {
+      title: "RUC",
+      cellTransforms: [cellWidth(10)],
+      transforms: [],
+    },
+    {
+      title: "XML",
+      cellTransforms: [compoundExpand],
+      transforms: [],
+    },
+    {
+      title: "SUNAT",
+      cellTransforms: [compoundExpand],
+      // transforms: [cellWidth(10)],
+    },
+    {
+      title: "System",
+      cellTransforms: [compoundExpand],
+      // transforms: [cellWidth(10)],
+    },
+    { title: "Creado", cellTransforms: [] },
+  ];
+
+  const XMLColIndex = 2;
+  const SUNATColIndex = 3;
+  const SYSTEMColIndex = 4;
+
   const rows: IRow[] = [];
   documents?.data.forEach((item) => {
-    const is2ndColumnExpanded = isColumnExpanded(item, 1);
-    const is3rdColumnExpanded = isColumnExpanded(item, 2);
-    const is4thColumnExpanded = isColumnExpanded(item, 3);
+    const isXMLColumnExpanded = isColumnExpanded(item, XMLColIndex);
+    const isSUNATColumnExpanded = isColumnExpanded(item, SUNATColIndex);
+    const isSYSTEMColumnExpanded = isColumnExpanded(item, SYSTEMColIndex);
+
+    let systemColumnValue;
+    if (item.inProgress) {
+      systemColumnValue = <StatusIcon status="Loading" label="En proceso" />;
+    } else if (item.error) {
+      systemColumnValue = <StatusIcon status="Error" label="Error" />;
+    } else {
+      systemColumnValue = <StatusIcon status="Ok" label="Ok" />;
+    }
 
     rows.push({
-      [ENTITY_FIELD]: item,
-      isOpen: is2ndColumnExpanded && is3rdColumnExpanded && is4thColumnExpanded,
+      [ROW_VALUE]: item,
+      isOpen:
+        isXMLColumnExpanded && isSUNATColumnExpanded && isSYSTEMColumnExpanded,
       cells: [
         {
           title: (
             <TableText wrapModifier="truncate" tooltip={item.id}>
-              {(item.sunatDeliveryStatus === "SCHEDULED_TO_DELIVER" ||
-                item.sunatDeliveryStatus === "NEED_TO_CHECK_TICKET") && (
-                <>
-                  <DocumentStatus status="InProgress" />
-                  &nbsp;
-                </>
-              )}
-              {item.sunatDeliveryStatus === "DELIVERED" && (
-                <>
-                  <img
-                    src={sunatLogo}
-                    height="16"
-                    width="16"
-                    alt="SUNAT logo"
-                  />
-                  &nbsp;
-                </>
-              )}
               {item.id}
             </TableText>
           ),
         },
         {
+          title: item.fileContent?.ruc || "-",
+        },
+        {
           props: {
-            isOpen: is2ndColumnExpanded,
+            isOpen: isXMLColumnExpanded,
           },
           title: (
             <>
               {item.fileContentValid === true && item.fileContent && (
                 <>
                   <FileCodeIcon key="fileCode-icon" />{" "}
-                  {item.fileContent?.documentID}
+                  {item.fileContent.documentID}
                 </>
               )}
               {item.fileContentValid === false && (
@@ -295,7 +329,7 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
         },
         {
           props: {
-            isOpen: is3rdColumnExpanded,
+            isOpen: isSUNATColumnExpanded,
           },
           title: (
             <>
@@ -313,13 +347,9 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
         },
         {
           props: {
-            isOpen: is4thColumnExpanded,
+            isOpen: isSYSTEMColumnExpanded,
           },
-          title: (
-            <>
-              <BullseyeIcon key="bullseye-icon" /> {item.sunatEvents.length}
-            </>
-          ),
+          title: systemColumnValue,
         },
         {
           title: <Moment fromNow>{item.createdOn}</Moment>,
@@ -327,16 +357,16 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
       ],
     });
 
-    if (is2ndColumnExpanded) {
+    if (isXMLColumnExpanded) {
       rows.push({
         parent: rows.length - 1,
-        compoundParent: 1,
+        compoundParent: XMLColIndex,
         cells: [
           {
             title: (
               <DescriptionList className="pf-c-table__expandable-row-content">
                 <DescriptionListGroup>
-                  <DescriptionListTerm>Document type</DescriptionListTerm>
+                  <DescriptionListTerm>Tipo</DescriptionListTerm>
                   <DescriptionListDescription>
                     {item.fileContent?.documentType}
                   </DescriptionListDescription>
@@ -359,22 +389,23 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
         ],
       });
     }
-    if (is3rdColumnExpanded) {
+
+    if (isSUNATColumnExpanded) {
       rows.push({
         parent: rows.length - 1,
-        compoundParent: 2,
+        compoundParent: SUNATColIndex,
         cells: [
           {
             title: (
               <DescriptionList className="pf-c-table__expandable-row-content">
                 <DescriptionListGroup>
-                  <DescriptionListTerm>Status</DescriptionListTerm>
+                  <DescriptionListTerm>Estado</DescriptionListTerm>
                   <DescriptionListDescription>
                     {item.sunat?.status}
                   </DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
-                  <DescriptionListTerm>Code</DescriptionListTerm>
+                  <DescriptionListTerm>Código</DescriptionListTerm>
                   <DescriptionListDescription>
                     {item.sunat?.code}
                   </DescriptionListDescription>
@@ -388,7 +419,7 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
                   </DescriptionListGroup>
                 )}
                 <DescriptionListGroup>
-                  <DescriptionListTerm>Description</DescriptionListTerm>
+                  <DescriptionListTerm>Descripción</DescriptionListTerm>
                   <DescriptionListDescription>
                     {item.sunat?.description}
                   </DescriptionListDescription>
@@ -399,36 +430,23 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
         ],
       });
     }
-    if (is4thColumnExpanded) {
+
+    if (isSYSTEMColumnExpanded) {
       rows.push({
         parent: rows.length - 1,
-        compoundParent: 3,
-        noPadding: true,
+        compoundParent: SYSTEMColIndex,
+        noPadding: false,
         cells: [
           {
             title: (
-              <NotificationDrawer>
-                <NotificationDrawerBody>
-                  <NotificationDrawerList>
-                    {item.sunatEvents.map((event, index) => (
-                      <NotificationDrawerListItem
-                        key={index}
-                        variant={event.status}
-                        isRead
-                      >
-                        <NotificationDrawerListItemHeader
-                          variant={event.status}
-                          title={event.description}
-                          srTitle={event.description}
-                        ></NotificationDrawerListItemHeader>
-                        <NotificationDrawerListItemBody
-                          timestamp={<Moment fromNow>{item.createdOn}</Moment>}
-                        ></NotificationDrawerListItemBody>
-                      </NotificationDrawerListItem>
-                    ))}
-                  </NotificationDrawerList>
-                </NotificationDrawerBody>
-              </NotificationDrawer>
+              <DescriptionList className="pf-c-table__expandable-row-content">
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Error</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {item.error || "Ninguno"}
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+              </DescriptionList>
             ),
           },
         ],
@@ -450,13 +468,45 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
     toggleColumnExpanded(row, colIndex);
   };
 
-  //
+  const addFilter = (key: string, value: ToolbarChip | ToolbarChip[]) => {
+    const filterKey: FilterKey = key as FilterKey;
 
-  const handleOnNewCompany = () => {
-    history.push(formatPath(Paths.newDocument, { company: params.namespaceId }));
+    setFiltersValue((current) => {
+      if (Array.isArray(value)) {
+        return new Map(current).set(filterKey, value);
+      } else {
+        const currentChips: ToolbarChip[] = current.get(filterKey) || [];
+        return new Map(current).set(filterKey, [...currentChips, value]);
+      }
+    });
+
+    handlePaginationChange({ page: 1 });
   };
 
-  const handleOnFilterApplied = (filterText: string) => {
+  const deleteFilter = (key: string, value: (string | ToolbarChip)[]) => {
+    const filterKey: FilterKey = key as FilterKey;
+    setFiltersValue((current) =>
+      new Map(current).set(filterKey, value as ToolbarChip[])
+    );
+  };
+
+  const clearAllFilters = () => {
+    setFiltersValue((current) => {
+      const newVal = new Map(current);
+      Array.from(newVal.keys()).forEach((key) => {
+        newVal.set(key, []);
+      });
+      return newVal;
+    });
+  };
+
+  //
+
+  const redirectToUploadDocumentPage = () => {
+    history.push(formatPath(Paths.uploadDocument, { namespaceId }));
+  };
+
+  const applyFilterText = (filterText: string) => {
     setFilterText(filterText);
     handlePaginationChange({ page: 1 });
   };
@@ -464,10 +514,13 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
   return (
     <>
       <ConditionalRender
-        when={isFetching && !(documents || fetchError)}
+        when={isFetchingDocuments && !(documents || fetchErrorDocuments)}
         then={<AppPlaceholder />}
       >
-        <SimplePageSection title="Documents" />
+        <SimplePageSection
+          title="Documentos"
+          description="Lista de todos los XMLs enviados a la SUNAT."
+        />
         <PageSection>
           <AppTableWithControls
             count={documents ? documents.meta.count : 0}
@@ -478,25 +531,68 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
             onExpand={onExpandColumn}
             columns={columns}
             rows={rows}
-            isLoading={isFetching}
+            isLoading={isFetchingDocuments}
             loadingVariant="none"
-            fetchError={fetchError}
-            filtersApplied={filterText.trim().length > 0}
+            fetchError={fetchErrorDocuments}
+            clearAllFilters={clearAllFilters}
+            filtersApplied={
+              filterText.trim().length > 0 ||
+              Array.from(filtersValue.values()).reduce(
+                (previous, current) => [...previous, ...current],
+                []
+              ).length > 0
+            }
             toolbarToggle={
-              <ToolbarGroup variant="filter-group">
-                <SearchFilter onApplyFilter={handleOnFilterApplied} />
-              </ToolbarGroup>
+              <>
+                <ToolbarItem>
+                  <SearchFilter onApplyFilter={applyFilterText} />
+                </ToolbarItem>
+                <AppTableToolbarToggleGroup
+                  options={filters}
+                  filtersValue={filtersValue}
+                  onDeleteFilter={deleteFilter}
+                >
+                  <ToolbarGroup variant="filter-group">
+                    <ToolbarFilter
+                      chips={[]}
+                      deleteChip={() => {}}
+                      deleteChipGroup={() => {}}
+                      categoryName="Status"
+                    >
+                      <SelectCompanyFilter
+                        namespaceId={namespaceId}
+                        value={filtersValue.get(FilterKey.RUC)}
+                        onApplyFilter={(values) => {
+                          addFilter(FilterKey.RUC, values);
+                        }}
+                      />
+                    </ToolbarFilter>
+                    <ToolbarFilter
+                      chips={[]}
+                      deleteChip={() => {}}
+                      categoryName="Risk"
+                    >
+                      <SelectDocumentTypeFilter
+                        value={filtersValue.get(FilterKey.DOCUMENT_TYPE)}
+                        onApplyFilter={(values) => {
+                          addFilter(FilterKey.DOCUMENT_TYPE, values);
+                        }}
+                      />
+                    </ToolbarFilter>
+                  </ToolbarGroup>
+                </AppTableToolbarToggleGroup>
+              </>
             }
             toolbar={
               <ToolbarGroup variant="button-group">
                 <ToolbarItem>
                   <Button
                     type="button"
-                    aria-label="new-document"
+                    aria-label="upload-xml"
                     variant={ButtonVariant.primary}
-                    onClick={handleOnNewCompany}
+                    onClick={redirectToUploadDocumentPage}
                   >
-                    New document
+                    Importar XML
                   </Button>
                 </ToolbarItem>
               </ToolbarGroup>
@@ -505,10 +601,11 @@ export const DocumentList: React.FC<DocumentListProps> = () => {
               <EmptyState variant={EmptyStateVariant.small}>
                 <EmptyStateIcon icon={AddCircleOIcon} />
                 <Title headingLevel="h2" size="lg">
-                  No documents available
+                  No existen documentos
                 </Title>
                 <EmptyStateBody>
-                  Add a documents by clicking on <strong>New document</strong>.
+                  Importa tus archivos XML haciendo click en{" "}
+                  <strong>Importar XML</strong>.
                 </EmptyStateBody>
               </EmptyState>
             }
