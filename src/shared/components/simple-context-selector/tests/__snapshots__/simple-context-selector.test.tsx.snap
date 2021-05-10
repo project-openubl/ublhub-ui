@@ -11,11 +11,11 @@ exports[`SimpleContextSelector Renders without crashing 1`] = `
   onSelect={[Function]}
   onToggle={[Function]}
   ouiaSafe={true}
-  screenReaderLabel="Selected item:"
+  screenReaderLabel="Seleccione:"
   searchButtonAriaLabel="Search menu items"
   searchInputPlaceholder="Search"
   searchInputValue=""
-  toggleText="value1"
+  toggleText="ns1"
 >
   <ContextSelectorItem
     className=""
@@ -24,7 +24,7 @@ exports[`SimpleContextSelector Renders without crashing 1`] = `
     onClick={[Function]}
     sendRef={[Function]}
   >
-    value1
+    ns1
   </ContextSelectorItem>
   <ContextSelectorItem
     className=""
@@ -33,7 +33,7 @@ exports[`SimpleContextSelector Renders without crashing 1`] = `
     onClick={[Function]}
     sendRef={[Function]}
   >
-    value2
+    ns2
   </ContextSelectorItem>
   <ContextSelectorItem
     className=""
@@ -42,7 +42,7 @@ exports[`SimpleContextSelector Renders without crashing 1`] = `
     onClick={[Function]}
     sendRef={[Function]}
   >
-    value3
+    ns3
   </ContextSelectorItem>
 </ContextSelector>
 `;

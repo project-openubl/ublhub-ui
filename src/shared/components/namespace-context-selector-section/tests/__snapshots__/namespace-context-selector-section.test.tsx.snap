@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CompanyContextSelectorSection Renders without crashing 1`] = `
+exports[`NamespaceContextSelectorSection Renders without crashing 1`] = `
 <PageSection
   className="pageSection"
   variant="light"

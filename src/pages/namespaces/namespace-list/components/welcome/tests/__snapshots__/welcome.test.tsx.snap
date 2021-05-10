@@ -11,25 +11,25 @@ exports[`Welcome Renders without crashing 1`] = `
     headingLevel="h4"
     size="lg"
   >
-    Welcome to XSender
+    Bienvenido a XSender
   </Title>
   <EmptyStateBody>
-    XSender helps you to send your XML files to the SUNAT on a large-scale. Start by creating a company for your XMLs.
+    XSender te permite enviar tus archivos XML a la SUNAT en gran escala. Empieza creando un namespace para tus empresas.
   </EmptyStateBody>
   <Button
     onClick={[Function]}
     variant="primary"
   >
-    Create company
+    Crear namespace
   </Button>
   <EmptyStateSecondaryActions>
-    To learn more, visit the
+    Para conocer más visita la
     <a
       href="https://project-openubl.github.io"
       rel="noopener noreferrer"
       target="_blank"
     >
-      documentation.
+      documentación.
     </a>
   </EmptyStateSecondaryActions>
 </EmptyState>

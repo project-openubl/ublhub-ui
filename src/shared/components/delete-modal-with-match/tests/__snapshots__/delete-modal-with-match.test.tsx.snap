@@ -9,13 +9,13 @@ exports[`DeleteModalWithMatch Renders without crashing 1`] = `
         onClick={[Function]}
         variant="danger"
       >
-        Delete
+        Eliminar
       </Button>,
       <Button
         onClick={[Function]}
         variant="link"
       >
-        Cancel
+        Cancelar
       </Button>,
     ]
   }
@@ -41,9 +41,9 @@ exports[`DeleteModalWithMatch Renders without crashing 1`] = `
       Are you sure you want to delete this?
     </p>
     <p>
-      Type '
+      Escribe '
       delete
-      ' to confirm.
+      ' para confirmar.
     </p>
     <TextInput
       aria-label="Text input match"

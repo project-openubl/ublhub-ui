@@ -1,13 +1,20 @@
 import React from "react";
 import { mount, shallow } from "enzyme";
 import { SimpleContextSelector } from "../simple-context-selector";
+import { Namespace } from "api/models";
 
 describe("SimpleContextSelector", () => {
+  const namespaces: Namespace[] = [
+    { name: "ns1" },
+    { name: "ns2" },
+    { name: "ns3" },
+  ];
+
   it("Renders without crashing", () => {
     const wrapper = shallow(
       <SimpleContextSelector
-        value="value1"
-        items={["value1", "value2", "value3"]}
+        value={namespaces[0]}
+        items={namespaces}
         onChange={jest.fn()}
       />
     );
@@ -18,10 +25,7 @@ describe("SimpleContextSelector", () => {
     const onChangeSpy = jest.fn();
 
     const wrapper = mount(
-      <SimpleContextSelector
-        items={["value1", "value2", "value3"]}
-        onChange={onChangeSpy}
-      />
+      <SimpleContextSelector items={namespaces} onChange={onChangeSpy} />
     );
 
     wrapper.find(".pf-c-context-selector__toggle").simulate("click");
@@ -31,23 +35,20 @@ describe("SimpleContextSelector", () => {
       .simulate("click");
 
     expect(onChangeSpy).toHaveBeenCalledTimes(1);
-    expect(onChangeSpy).toBeCalledWith("value2");
+    expect(onChangeSpy).toBeCalledWith(namespaces[1]);
   });
 
   it("Filter items", () => {
     const onChangeSpy = jest.fn();
 
     const wrapper = mount(
-      <SimpleContextSelector
-        items={["value1", "value2", "value3", "myValue"]}
-        onChange={onChangeSpy}
-      />
+      <SimpleContextSelector items={namespaces} onChange={onChangeSpy} />
     );
 
     wrapper.find(".pf-c-context-selector__toggle").simulate("click");
 
     const searchInput = wrapper.find("input");
-    (searchInput.getDOMNode() as HTMLInputElement).value = "my";
+    (searchInput.getDOMNode() as HTMLInputElement).value = "1";
     searchInput.simulate("change");
     wrapper.update();
 
@@ -55,7 +56,7 @@ describe("SimpleContextSelector", () => {
       1
     );
     expect(wrapper.find(".pf-c-context-selector__menu-list-item").text()).toBe(
-      "myValue"
+      "ns1"
     );
   });
 });
