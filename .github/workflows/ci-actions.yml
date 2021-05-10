@@ -113,7 +113,7 @@ jobs:
         with:
           record: ${{ env.CYPRESS_RECORD_KEY != null }}
           tag: ${{ steps.define_tags.outputs.value }}
-          start: yarn run xsender:all
+          start: yarn run xsender:ui
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
           config: pageLoadTimeout=100000
