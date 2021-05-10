@@ -3,8 +3,6 @@ import { useHistory, useParams } from "react-router-dom";
 import { StatusIcon, StatusType } from "@konveyor/lib-ui";
 import Moment from "react-moment";
 
-import { useKeycloak } from "@react-keycloak/web";
-
 import {
   Button,
   ButtonVariant,
@@ -32,10 +30,7 @@ import {
   IRowData,
   TableText,
 } from "@patternfly/react-table";
-import {
-  AddCircleOIcon,
-  FileCodeIcon,
-} from "@patternfly/react-icons";
+import { AddCircleOIcon, FileCodeIcon } from "@patternfly/react-icons";
 
 import { DeleteWithMatchModalContainer } from "shared/containers";
 import {
@@ -122,8 +117,6 @@ const formatSunatStatus = (status: string) => {
 export const DocumentList: React.FC = () => {
   const history = useHistory();
   const { namespaceId } = useParams<NamespaceRoute>();
-
-  const { keycloak } = useKeycloak();
 
   const filters = [
     {
