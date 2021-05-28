@@ -59,7 +59,7 @@ export const SelectDocumentTypeFilter: React.FC<ISelectDocumentTypeFilterProps> 
       variant={SelectVariant.checkbox}
       aria-label="document-type"
       aria-labelledby="document-type"
-      placeholderText="Tipo documento"
+      placeholderText="Documento"
       maxHeight={DEFAULT_SELECT_MAX_HEIGHT}
       value={value
         .map((f) => documentTypes.find((b) => b.key === f.key))

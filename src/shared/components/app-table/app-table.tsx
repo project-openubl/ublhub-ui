@@ -4,37 +4,18 @@ import {
   Table,
   TableHeader,
   TableBody,
-  ICell,
   IRow,
-  IActions,
-  ISortBy,
-  IActionsResolver,
-  IAreActionsDisabled,
-  OnSort,
-  OnCollapse,
-  OnExpand,
+  TableProps,
 } from "@patternfly/react-table";
 
 import { StateNoData } from "./state-no-data";
 import { StateNoResults } from "./state-no-results";
 import { StateError } from "./state-error";
 
-export interface AppTableProps {
-  columns: ICell[];
-  rows: IRow[];
-  actions?: IActions;
-  actionResolver?: IActionsResolver;
-  areActionsDisabled?: IAreActionsDisabled;
-
+export interface IAppTableProps extends TableProps {
   isLoading: boolean;
   loadingVariant?: "skeleton" | "spinner" | "none";
   fetchError?: any;
-
-  sortBy?: ISortBy;
-  onSort?: OnSort;
-
-  onCollapse?: OnCollapse;
-  onExpand?: OnExpand;
 
   filtersApplied: boolean;
   noDataState?: any;
@@ -42,32 +23,28 @@ export interface AppTableProps {
   errorState?: any;
 }
 
-const ARIA_LABEL = "App table";
-
-export const AppTable: React.FC<AppTableProps> = ({
-  columns,
+export const AppTable: React.FC<IAppTableProps> = ({
+  cells,
   rows,
-  actions,
-  actionResolver,
-  areActionsDisabled,
+  "aria-label": ariaLabel = "main-table",
+
   isLoading,
   fetchError,
   loadingVariant = "skeleton",
-  sortBy,
-  onSort,
-  onCollapse,
-  onExpand,
+
   filtersApplied,
   noDataState,
   noSearchResultsState,
   errorState,
+
+  ...rest
 }) => {
   if (isLoading && loadingVariant !== "none") {
     let rows: IRow[] = [];
     if (loadingVariant === "skeleton") {
       rows = [...Array(10)].map(() => {
         return {
-          cells: [...Array(columns.length)].map(() => ({
+          cells: [...Array(cells.length)].map(() => ({
             title: <Skeleton />,
           })),
         };
@@ -93,7 +70,7 @@ export const AppTable: React.FC<AppTableProps> = ({
     }
 
     return (
-      <Table aria-label={ARIA_LABEL} cells={columns} rows={rows}>
+      <Table aria-label={ariaLabel} cells={cells} rows={rows}>
         <TableHeader />
         <TableBody />
       </Table>
@@ -103,7 +80,7 @@ export const AppTable: React.FC<AppTableProps> = ({
   if (fetchError) {
     return (
       <>
-        <Table aria-label={ARIA_LABEL} cells={columns} rows={[]}>
+        <Table aria-label={ariaLabel} cells={cells} rows={[]}>
           <TableHeader />
           <TableBody />
         </Table>
@@ -115,7 +92,7 @@ export const AppTable: React.FC<AppTableProps> = ({
   if (rows.length === 0) {
     return filtersApplied ? (
       <>
-        <Table aria-label={ARIA_LABEL} cells={columns} rows={[]}>
+        <Table aria-label={ariaLabel} cells={cells} rows={[]}>
           <TableHeader />
           <TableBody />
         </Table>
@@ -123,7 +100,7 @@ export const AppTable: React.FC<AppTableProps> = ({
       </>
     ) : (
       <>
-        <Table aria-label={ARIA_LABEL} cells={columns} rows={[]}>
+        <Table aria-label={ariaLabel} cells={cells} rows={[]}>
           <TableHeader />
           <TableBody />
         </Table>
@@ -133,18 +110,7 @@ export const AppTable: React.FC<AppTableProps> = ({
   }
 
   return (
-    <Table
-      aria-label={ARIA_LABEL}
-      cells={columns}
-      rows={rows}
-      actions={actions}
-      actionResolver={actionResolver}
-      areActionsDisabled={areActionsDisabled}
-      sortBy={sortBy}
-      onSort={onSort}
-      onCollapse={onCollapse}
-      onExpand={onExpand}
-    >
+    <Table aria-label={ariaLabel} cells={cells} rows={rows} {...rest}>
       <TableHeader />
       <TableBody />
     </Table>
