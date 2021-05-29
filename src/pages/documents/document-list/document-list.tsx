@@ -2,11 +2,16 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Moment from "react-moment";
 import useWebSocket from "react-use-websocket";
+import { saveAs } from "file-saver";
 import { useKeycloak } from "@react-keycloak/web";
+
+import { useDispatch } from "react-redux";
+import { alertActions } from "store/alert";
 
 import {
   Button,
   ButtonVariant,
+  Modal,
   PageSection,
   ToolbarChip,
   ToolbarFilter,
@@ -17,15 +22,16 @@ import {
 import {
   cellWidth,
   compoundExpand,
+  IAction,
   ICell,
   IExtraData,
   IRow,
   IRowData,
+  ISeparator,
   TableText,
 } from "@patternfly/react-table";
 import { FilterIcon } from "@patternfly/react-icons";
 
-import { DeleteWithMatchModalContainer } from "shared/containers";
 import {
   AppPlaceholder,
   AppTableWithControls,
@@ -43,7 +49,10 @@ import {
 import { NamespaceRoute, formatPath, Paths } from "Paths";
 import { UBLDocument, SortByQuery, PageRepresentation } from "api/models";
 import {
+  getDocumentCdrFile,
+  getDocumentFile,
   getDocuments,
+  retrySendDocument,
   UBLDocumentSortBy,
   UBLDocumentSortByQuery,
 } from "api/rest";
@@ -56,6 +65,21 @@ import { CellSUNATExpanded } from "./components/cell-sunat-expanded";
 import { CellSystemExpanded } from "./components/cell-system-expanded";
 import { SelectCompanyFilter } from "./components/select-company-filter";
 import { SelectDocumentTypeFilter } from "./components/select-document-type-filter";
+import { FileViewer } from "./components/file-viewer";
+import { getAxiosErrorMessage } from "utils/modelUtils";
+
+export const extractFilenameFrom = (disposition: string) => {
+  let filename = "";
+  if (disposition && disposition.indexOf("attachment") !== -1) {
+    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+    const matches = filenameRegex.exec(disposition);
+    if (matches != null && matches[1]) {
+      filename = matches[1].replace(/['"]/g, "");
+    }
+  }
+
+  return filename;
+};
 
 enum FilterKey {
   RUC = "RUC",
@@ -94,9 +118,15 @@ export const DocumentList: React.FC = () => {
   // Keycloak
   const { keycloak } = useKeycloak();
 
+  // Redux
+  const dispatch = useDispatch();
+
   // Router
   const history = useHistory();
   const { namespaceId } = useParams<NamespaceRoute>();
+
+  // Edit
+  const [rowToEdit, setRowToEdit] = useState<UBLDocument>();
 
   // Filters
 
@@ -224,6 +254,84 @@ export const DocumentList: React.FC = () => {
     { title: "System", cellTransforms: [compoundExpand] },
     { title: "Creado", cellTransforms: [] },
   ];
+
+  const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
+    const row: UBLDocument = getRow(rowData);
+    if (!row) {
+      return [];
+    }
+
+    const actions: (IAction | ISeparator)[] = [];
+
+    actions.push(
+      {
+        title: "Ver XML",
+        onClick: (
+          event: React.MouseEvent,
+          rowIndex: number,
+          rowData: IRowData
+        ) => {
+          const row: UBLDocument = getRow(rowData);
+          setRowToEdit(row);
+        },
+      },
+      {
+        title: "Descargar XML",
+        onClick: (
+          event: React.MouseEvent,
+          rowIndex: number,
+          rowData: IRowData
+        ) => {
+          const row: UBLDocument = getRow(rowData);
+          getDocumentFile(namespaceId, row.id!).then((response) => {
+            const contentDisposition = response.headers["content-disposition"];
+            const fileName = extractFilenameFrom(contentDisposition);
+            saveAs(new Blob([response.data]), fileName || "file.xml");
+          });
+        },
+      }
+    );
+
+    if (row.sunat?.hasCdr) {
+      actions.push({
+        title: "Descargar CDR",
+        onClick: (
+          event: React.MouseEvent,
+          rowIndex: number,
+          rowData: IRowData
+        ) => {
+          const row: UBLDocument = getRow(rowData);
+          getDocumentCdrFile(namespaceId, row.id!).then((response) => {
+            const contentDisposition = response.headers["content-disposition"];
+            const fileName = extractFilenameFrom(contentDisposition);
+            saveAs(new Blob([response.data]), fileName || "file.zip");
+          });
+        },
+      });
+    }
+
+    if (row.error) {
+      actions.push({
+        title: "Reenviar a SUNAT",
+        onClick: (
+          event: React.MouseEvent,
+          rowIndex: number,
+          rowData: IRowData
+        ) => {
+          const row: UBLDocument = getRow(rowData);
+          retrySendDocument(namespaceId, row.id!)
+            .then(() => {
+              dispatch(alertActions.addSuccessAlert("Reenvío programado"));
+            })
+            .catch((error) => {
+              dispatch(alertActions.addErrorAlert(getAxiosErrorMessage(error)));
+            });
+        },
+      });
+    }
+
+    return actions;
+  };
 
   const XMLColIndex = 2;
   const SUNATColIndex = 3;
@@ -357,6 +465,7 @@ export const DocumentList: React.FC = () => {
             onExpand={onExpandColumn}
             cells={columns}
             rows={rows}
+            actionResolver={actionResolver}
             isLoading={isFetchingDocuments}
             loadingVariant="none"
             fetchError={fetchErrorDocuments}
@@ -399,7 +508,17 @@ export const DocumentList: React.FC = () => {
           />
         </PageSection>
       </ConditionalRender>
-      <DeleteWithMatchModalContainer />
+
+      <Modal
+        isOpen={!!rowToEdit}
+        variant="large"
+        title={`Documento ${rowToEdit?.fileContent?.documentID}`}
+        onClose={() => setRowToEdit(undefined)}
+      >
+        {rowToEdit && (
+          <FileViewer namespaceId={namespaceId} ublDocument={rowToEdit} />
+        )}
+      </Modal>
     </>
   );
 };

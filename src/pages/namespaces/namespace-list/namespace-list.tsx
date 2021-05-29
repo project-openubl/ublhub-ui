@@ -140,8 +140,8 @@ export const NamespaceList: React.FC<INamespaceListProps> = () => {
   // Table
 
   const columns: ICell[] = [
-    { title: "Nombre", transforms: [sortable, cellWidth(40)] },
-    { title: "Descripción" },
+    { title: "Nombre", transforms: [sortable, cellWidth(45)] },
+    { title: "Descripción", transforms: [cellWidth(50)] },
   ];
 
   const rows: IRow[] = [];

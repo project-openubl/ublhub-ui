@@ -38,10 +38,12 @@ export const DeleteModalWithMatch: React.FC<DeleteModalWithMatchProps> = ({
   }, [inputMatchValue, matchText]);
 
   const handleDelete = () => {
+    setInputMatchValue("");
     onDelete();
   };
 
   const handleCancel = () => {
+    setInputMatchValue("");
     if (onCancel) {
       onCancel();
     }

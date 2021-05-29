@@ -18,10 +18,14 @@ export const CellSystemExpanded: React.FC<ICellSystemExpandedProps> = ({
   return (
     <DescriptionList className="pf-c-table__expandable-row-content">
       <DescriptionListGroup>
-        <DescriptionListTerm>Error</DescriptionListTerm>
+        <DescriptionListTerm>Número de reintentos</DescriptionListTerm>
         <DescriptionListDescription>
-          {item.error || "Ninguno"}
+          {item.retryCount}
         </DescriptionListDescription>
+      </DescriptionListGroup>
+      <DescriptionListGroup>
+        <DescriptionListTerm>Error</DescriptionListTerm>
+        <DescriptionListDescription>{item.error}</DescriptionListDescription>
       </DescriptionListGroup>
     </DescriptionList>
   );

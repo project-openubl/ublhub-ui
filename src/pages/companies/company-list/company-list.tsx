@@ -124,8 +124,8 @@ export const CompanyList: React.FC = () => {
 
   const columns: ICell[] = [
     { title: "RUC", transforms: [sortable, cellWidth(20)] },
-    { title: "Nombre", transforms: [sortable] },
-    { title: "Descripción" },
+    { title: "Nombre", transforms: [sortable, cellWidth(30)] },
+    { title: "Descripción", transforms: [sortable, cellWidth(45)] },
   ];
 
   const rows: IRow[] = [];

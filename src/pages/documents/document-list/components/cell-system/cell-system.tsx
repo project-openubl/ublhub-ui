@@ -1,4 +1,5 @@
 import React from "react";
+import Moment from "react-moment";
 import { StatusIcon } from "@konveyor/lib-ui";
 
 import { Flex, FlexItem } from "@patternfly/react-core";
@@ -31,6 +32,17 @@ export const CellSystem: React.FC<ICellSystemProps> = ({
     );
   } else if (item.error) {
     systemColumnValue = <StatusIcon status="Error" label="Error" />;
+  } else if (item.scheduledDelivery) {
+    systemColumnValue = (
+      <StatusIcon
+        status="Paused"
+        label={
+          <>
+            Retry <Moment fromNow>{item.scheduledDelivery}</Moment>
+          </>
+        }
+      />
+    );
   } else {
     systemColumnValue = <StatusIcon status="Ok" label="Ok" />;
   }

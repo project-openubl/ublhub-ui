@@ -13,8 +13,8 @@ const documentTypes: DocumenType[] = [
   { key: "Invoice", label: "Boleta/factura" },
   { key: "CreditNote", label: "Nota de crétido" },
   { key: "DebitNote", label: "Nota de débito" },
-  { key: "VoidedDocument", label: "Baja" },
-  { key: "SummaryDocument", label: "Resumen diario" },
+  { key: "VoidedDocuments", label: "Baja" },
+  { key: "SummaryDocuments", label: "Resumen diario" },
 ];
 
 const companyToToolbarChip = (value: DocumenType): ToolbarChip => ({
