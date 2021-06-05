@@ -30,7 +30,6 @@ exports[`AppTableWithControls Renders adding toolbar 1`] = `
         <SimplePagination
           count={120}
           isTop={true}
-          onChange={[MockFunction]}
           params={
             Object {
               "page": 1,
@@ -49,12 +48,21 @@ exports[`AppTableWithControls Renders adding toolbar 1`] = `
         },
       ]
     }
+    handleFilterTextChange={[MockFunction]}
+    handlePaginationChange={[MockFunction]}
+    handleSortChange={[MockFunction]}
     isLoading={false}
-    onSort={[MockFunction]}
+    items={
+      Array [
+        "first",
+        "second",
+        "third",
+      ]
+    }
+    itemsToRow={[Function]}
   />
   <SimplePagination
     count={120}
-    onChange={[MockFunction]}
     params={
       Object {
         "page": 1,
@@ -92,7 +100,6 @@ exports[`AppTableWithControls Renders without crashing 1`] = `
         <SimplePagination
           count={120}
           isTop={true}
-          onChange={[MockFunction]}
           params={
             Object {
               "page": 1,
@@ -111,12 +118,21 @@ exports[`AppTableWithControls Renders without crashing 1`] = `
         },
       ]
     }
+    handleFilterTextChange={[MockFunction]}
+    handlePaginationChange={[MockFunction]}
+    handleSortChange={[MockFunction]}
     isLoading={false}
-    onSort={[MockFunction]}
+    items={
+      Array [
+        "first",
+        "second",
+        "third",
+      ]
+    }
+    itemsToRow={[Function]}
   />
   <SimplePagination
     count={120}
-    onChange={[MockFunction]}
     params={
       Object {
         "page": 1,
