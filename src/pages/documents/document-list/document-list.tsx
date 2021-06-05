@@ -68,6 +68,15 @@ import { SelectDocumentTypeFilter } from "./components/select-document-type-filt
 import { FileViewer } from "./components/file-viewer";
 import { getAxiosErrorMessage } from "utils/modelUtils";
 
+const loc = window.location;
+let wsURI: string;
+if (loc.protocol === "https:") {
+  wsURI = "wss:";
+} else {
+  wsURI = "ws:";
+}
+wsURI += "//" + loc.host;
+
 export const extractFilenameFrom = (disposition: string) => {
   let filename = "";
   if (disposition && disposition.indexOf("attachment") !== -1) {
@@ -196,17 +205,18 @@ export const DocumentList: React.FC = () => {
     fetchError: fetchErrorDocuments,
     requestFetch: refreshDocumentsTable,
   } = useFetch<PageRepresentation<UBLDocument>>({
+    debounceWait: 100,
     defaultIsFetching: true,
     onFetch: fetchDocuments,
   });
 
   // WS events
   const [socketUrl, setSocketUrl] = useState(
-    `ws://localhost:8080/namespaces/${namespaceId}/documents`
+    `${wsURI}/namespaces/${namespaceId}/documents`
   );
 
   useEffect(() => {
-    setSocketUrl(`ws://localhost:8080/namespaces/${namespaceId}/documents`);
+    setSocketUrl(`${wsURI}/namespaces/${namespaceId}/documents`);
   }, [namespaceId]);
 
   const { lastMessage: wsEvent, sendJsonMessage: sendWsMessage } = useWebSocket(
