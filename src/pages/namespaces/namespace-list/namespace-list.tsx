@@ -140,8 +140,8 @@ export const NamespaceList: React.FC<INamespaceListProps> = () => {
   // Table
 
   const columns: ICell[] = [
-    { title: "Nombre", transforms: [sortable, cellWidth(40)] },
-    { title: "Descripción" },
+    { title: "Nombre", transforms: [sortable, cellWidth(45)] },
+    { title: "Descripción", transforms: [cellWidth(50)] },
   ];
 
   const rows: IRow[] = [];
@@ -263,22 +263,20 @@ export const NamespaceList: React.FC<INamespaceListProps> = () => {
             count={namespaces ? namespaces.meta.count : 0}
             pagination={paginationQuery}
             sortBy={sortByQuery}
-            handlePaginationChange={handlePaginationChange}
-            handleSortChange={handleSortChange}
-            columns={columns}
+            onPaginationChange={handlePaginationChange}
+            onSort={handleSortChange}
+            cells={columns}
             rows={rows}
             actions={actions}
             isLoading={isFetchingNamespaces}
             loadingVariant="skeleton"
             fetchError={fetchErrorNamespaces}
             filtersApplied={filterText.trim().length > 0}
-            toolbarToggle={
-              <ToolbarGroup variant="filter-group">
-                <SearchFilter onApplyFilter={applyFilterText} />
-              </ToolbarGroup>
-            }
             toolbar={
               <>
+                <ToolbarGroup variant="filter-group">
+                  <SearchFilter onApplyFilter={applyFilterText} />
+                </ToolbarGroup>
                 <ToolbarGroup variant="button-group">
                   <ToolbarItem>
                     <Button

@@ -79,7 +79,7 @@ export const SelectCompanyFilter: React.FC<ISelectCompanyFilterProps> = ({
       variant={SelectVariant.checkbox}
       aria-label="company"
       aria-labelledby="company"
-      placeholderText={"Empresa"}
+      placeholderText="Empresa"
       maxHeight={DEFAULT_SELECT_MAX_HEIGHT}
       value={value
         .map((f) => (companies?.data || []).find((b) => b.ruc === f.key))

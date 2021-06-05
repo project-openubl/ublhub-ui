@@ -124,8 +124,8 @@ export const CompanyList: React.FC = () => {
 
   const columns: ICell[] = [
     { title: "RUC", transforms: [sortable, cellWidth(20)] },
-    { title: "Nombre", transforms: [sortable] },
-    { title: "Descripción" },
+    { title: "Nombre", transforms: [sortable, cellWidth(30)] },
+    { title: "Descripción", transforms: [sortable, cellWidth(45)] },
   ];
 
   const rows: IRow[] = [];
@@ -230,22 +230,20 @@ export const CompanyList: React.FC = () => {
             count={companies ? companies.meta.count : 0}
             pagination={paginationQuery}
             sortBy={sortByQuery}
-            handlePaginationChange={handlePaginationChange}
-            handleSortChange={handleSortChange}
-            columns={columns}
+            onPaginationChange={handlePaginationChange}
+            onSort={handleSortChange}
+            cells={columns}
             rows={rows}
             actions={actions}
             isLoading={isFetchingCompanies}
             loadingVariant="none"
             fetchError={fetchErrorCompanies}
             filtersApplied={filterText.trim().length > 0}
-            toolbarToggle={
-              <ToolbarGroup variant="filter-group">
-                <SearchFilter onApplyFilter={applyFilterText} />
-              </ToolbarGroup>
-            }
             toolbar={
               <>
+                <ToolbarGroup variant="filter-group">
+                  <SearchFilter onApplyFilter={applyFilterText} />
+                </ToolbarGroup>
                 <ToolbarGroup variant="button-group">
                   <ToolbarItem>
                     <Button

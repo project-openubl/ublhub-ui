@@ -237,3 +237,54 @@ export const getDocuments = (
     `${DOCUMENTS.replaceAll(":namespaceId", namespaceId)}?${query.join("&")}`
   );
 };
+
+export const getDocumentFile = (
+  namespaceId: string,
+  documentId: string
+): AxiosPromise<string> => {
+  const url = `${DOCUMENTS.replaceAll(
+    ":namespaceId",
+    namespaceId
+  )}/${documentId}/file`;
+
+  return APIClient.get(url, {
+    headers: {
+      responseType: "blob",
+    },
+  });
+};
+
+export const getDocumentCdrFile = (
+  namespaceId: string,
+  documentId: string
+): AxiosPromise<string> => {
+  const url = `${DOCUMENTS.replaceAll(
+    ":namespaceId",
+    namespaceId
+  )}/${documentId}/cdr`;
+
+  return APIClient.get(url, {
+    responseType: "arraybuffer",
+    headers: {
+      responseType: "blob",
+    },
+  });
+};
+
+export const retrySendDocument = (
+  namespaceId: string,
+  documentId: string
+): AxiosPromise => {
+  const url = `${DOCUMENTS.replaceAll(
+    ":namespaceId",
+    namespaceId
+  )}/${documentId}/retry-send`;
+
+  return APIClient.post(
+    url,
+    { a: "s" },
+    {
+      headers: { Accept: "application/json" },
+    }
+  );
+};

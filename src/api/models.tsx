@@ -77,6 +77,8 @@ export interface UBLDocument {
   createdOn: number;
   inProgress: boolean;
   error?: string;
+  scheduledDelivery?: number;
+  retryCount: number;
 
   fileContentValid?: boolean;
   fileContentValidationError?: string;
@@ -97,6 +99,7 @@ export interface UBLDocumentSunat {
   status: "ACEPTADO" | "RECHAZADO" | "EXCEPCION" | "BAJA" | "EN_PROCESO";
   description: string;
   ticket: string;
+  hasCdr: boolean;
 }
 
 export interface UBLDocumentEvent {

@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 
 import { AppRoutes } from "./Routes";
 import "./App.scss";
@@ -11,12 +11,12 @@ import "@redhat-cloud-services/frontend-components-notifications/index.css";
 
 const App: React.FC = () => {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <DefaultLayout>
         <AppRoutes />
       </DefaultLayout>
       <NotificationsPortal />
-    </HashRouter>
+    </BrowserRouter>
   );
 };
 

@@ -12,9 +12,12 @@ export enum Paths {
   base = "/",
   notFound = "/not-found",
 
+  // Namespaces
   namespaceList = "/namespaces",
 
+  // Companies
   companyList_empty = "/ns-company/select-namespace",
+
   companyList = "/ns-company/:namespaceId/companies",
   newCompany = "/ns-company/:namespaceId/companies/~new",
 
@@ -22,7 +25,9 @@ export enum Paths {
   editCompany_overview = "/ns-company/:namespaceId/companies/:companyId/overview",
   editCompany_details = "/ns-company/:namespaceId/companies/:companyId/details",
 
-  documentList_empty = "/ns-document/:namespaceId/documents/select-company",
+  // Documents
+  documentList_empty = "/ns-document/select-company",
+
   documentList = "/ns-document/:namespaceId/documents",
   uploadDocument = "/ns-document/:namespaceId/documents/~upload",
 }

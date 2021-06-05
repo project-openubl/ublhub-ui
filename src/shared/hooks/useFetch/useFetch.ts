@@ -1,6 +1,7 @@
 import { useCallback, useReducer } from "react";
 import { AxiosError, AxiosPromise } from "axios";
 import { ActionType, createAsyncAction, getType } from "typesafe-actions";
+import { debounce } from "lodash";
 
 export const {
   request: fetchRequest,
@@ -66,6 +67,7 @@ const reducer = (state: State, action: Action): State => {
 
 export interface IArgs<T> {
   defaultIsFetching?: boolean;
+  debounceWait?: number;
   onFetch: () => AxiosPromise<T>;
 }
 
@@ -79,13 +81,13 @@ export interface IState<T> {
 
 export const useFetch = <T>({
   defaultIsFetching = false,
+  debounceWait,
   onFetch,
 }: IArgs<T>): IState<T> => {
   const [state, dispatch] = useReducer(reducer, defaultIsFetching, initReducer);
 
   const fetchHandler = useCallback(() => {
     dispatch(fetchRequest());
-
     onFetch()
       .then(({ data }) => {
         dispatch(fetchSuccess(data));
@@ -95,12 +97,27 @@ export const useFetch = <T>({
       });
   }, [onFetch]);
 
+  // eslint-disable-next-line
+  const fetchHandlerDebounce = useCallback(
+    debounce(() => {
+      dispatch(fetchRequest());
+      onFetch()
+        .then(({ data }) => {
+          dispatch(fetchSuccess(data));
+        })
+        .catch((error: AxiosError) => {
+          dispatch(fetchFailure(error));
+        });
+    }, debounceWait),
+    [onFetch, debounceWait]
+  );
+
   return {
     data: state.data,
     isFetching: state.isFetching,
     fetchError: state.fetchError,
     fetchCount: state.fetchCount,
-    requestFetch: fetchHandler,
+    requestFetch: debounceWait ? fetchHandlerDebounce : fetchHandler,
   };
 };
 

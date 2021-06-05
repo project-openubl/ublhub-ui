@@ -13,8 +13,8 @@ const documentTypes: DocumenType[] = [
   { key: "Invoice", label: "Boleta/factura" },
   { key: "CreditNote", label: "Nota de crétido" },
   { key: "DebitNote", label: "Nota de débito" },
-  { key: "VoidedDocument", label: "Baja" },
-  { key: "SummaryDocument", label: "Resumen diario" },
+  { key: "VoidedDocuments", label: "Baja" },
+  { key: "SummaryDocuments", label: "Resumen diario" },
 ];
 
 const companyToToolbarChip = (value: DocumenType): ToolbarChip => ({
@@ -59,7 +59,7 @@ export const SelectDocumentTypeFilter: React.FC<ISelectDocumentTypeFilterProps> 
       variant={SelectVariant.checkbox}
       aria-label="document-type"
       aria-labelledby="document-type"
-      placeholderText="Tipo documento"
+      placeholderText="Documento"
       maxHeight={DEFAULT_SELECT_MAX_HEIGHT}
       value={value
         .map((f) => documentTypes.find((b) => b.key === f.key))
