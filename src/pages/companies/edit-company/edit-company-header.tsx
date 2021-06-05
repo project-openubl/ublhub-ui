@@ -124,6 +124,13 @@ export const EditCompanyHeader: React.FC<EditCompanyHeaderProps> = () => {
                 companyId,
               }),
             },
+            {
+              title: "Certificados",
+              path: formatPath(Paths.editCompany_keys, {
+                namespaceId,
+                companyId,
+              }),
+            },
           ]}
         />
       </ConditionalRender>

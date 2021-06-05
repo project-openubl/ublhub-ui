@@ -1,5 +1,5 @@
 import { useCallback, useReducer } from "react";
-import { AxiosError, AxiosPromise } from "axios";
+import { AxiosPromise } from "axios";
 import { ActionType, createAsyncAction, getType } from "typesafe-actions";
 import { debounce } from "lodash";
 
@@ -11,12 +11,12 @@ export const {
   "useFetch/fetch/request",
   "useFetch/fetch/success",
   "useFetch/fetch/failure"
-)<void, any, AxiosError>();
+)<void, any, any>();
 
 type State = Readonly<{
   isFetching: boolean;
   data?: any;
-  fetchError?: AxiosError;
+  fetchError?: any;
   fetchCount: number;
 }>;
 
@@ -68,13 +68,14 @@ const reducer = (state: State, action: Action): State => {
 export interface IArgs<T> {
   defaultIsFetching?: boolean;
   debounceWait?: number;
-  onFetch: () => AxiosPromise<T>;
+  onFetch?: () => AxiosPromise<T>;
+  onFetchPromise?: () => Promise<T>;
 }
 
 export interface IState<T> {
   data?: T;
   isFetching: boolean;
-  fetchError?: AxiosError;
+  fetchError?: any;
   fetchCount: number;
   requestFetch: () => void;
 }
@@ -83,33 +84,43 @@ export const useFetch = <T>({
   defaultIsFetching = false,
   debounceWait,
   onFetch,
+  onFetchPromise,
 }: IArgs<T>): IState<T> => {
   const [state, dispatch] = useReducer(reducer, defaultIsFetching, initReducer);
 
-  const fetchHandler = useCallback(() => {
+  const executeFetch = useCallback(() => {
     dispatch(fetchRequest());
-    onFetch()
-      .then(({ data }) => {
+
+    // Execute
+    let promise;
+    if (onFetch) {
+      promise = onFetch().then(({ data }) => {
         dispatch(fetchSuccess(data));
-      })
-      .catch((error: AxiosError) => {
-        dispatch(fetchFailure(error));
       });
-  }, [onFetch]);
+    } else if (onFetchPromise) {
+      promise = onFetchPromise().then((data) => {
+        dispatch(fetchSuccess(data));
+      });
+    } else {
+      return;
+    }
+
+    // Handle error
+    promise.catch((error) => {
+      dispatch(fetchFailure(error));
+    });
+  }, [onFetch, onFetchPromise]);
+
+  const fetchHandler = useCallback(() => {
+    executeFetch();
+  }, [executeFetch]);
 
   // eslint-disable-next-line
   const fetchHandlerDebounce = useCallback(
     debounce(() => {
-      dispatch(fetchRequest());
-      onFetch()
-        .then(({ data }) => {
-          dispatch(fetchSuccess(data));
-        })
-        .catch((error: AxiosError) => {
-          dispatch(fetchFailure(error));
-        });
+      executeFetch();
     }, debounceWait),
-    [onFetch, debounceWait]
+    [executeFetch, debounceWait]
   );
 
   return {

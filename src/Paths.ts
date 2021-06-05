@@ -24,6 +24,9 @@ export enum Paths {
   editCompany = "/ns-company/:namespaceId/companies/:companyId",
   editCompany_overview = "/ns-company/:namespaceId/companies/:companyId/overview",
   editCompany_details = "/ns-company/:namespaceId/companies/:companyId/details",
+  editCompany_keys = "/ns-company/:namespaceId/companies/:companyId/keys",
+  editCompany_keys_new = "/ns-company/:namespaceId/companies/:companyId/keys/:providerId/~new",
+  editCompany_keys_edit = "/ns-company/:namespaceId/companies/:companyId/keys/:providerId/:componentId",
 
   // Documents
   documentList_empty = "/ns-document/select-company",
@@ -43,4 +46,13 @@ export interface NamespaceRoute {
 export interface CompanyRoute {
   namespaceId: string;
   companyId: string;
+}
+
+export interface NewKeyRoute extends CompanyRoute {
+  providerId: string;
+}
+
+export interface EditKeyRoute extends CompanyRoute {
+  providerId: string;
+  componentId: string;
 }
