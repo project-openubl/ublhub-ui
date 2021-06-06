@@ -11,6 +11,7 @@ import {
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
+  Label,
   SearchInput,
   Toolbar,
   ToolbarContent,
@@ -52,6 +53,7 @@ import {
 } from "api/rest";
 import { alertActions } from "store/alert";
 import { getAxiosErrorMessage } from "utils/modelUtils";
+import { DEFAULT_KEY_ALGORITHM } from "Constants";
 
 const ENTITY_FIELD = "entity";
 
@@ -171,18 +173,38 @@ export const KeyList: React.FC = () => {
   // Table
   const columns: ICell[] = [
     {
-      title: "Provider",
-      transforms: [cellWidth(40)],
+      title: "Nombre",
+      transforms: [cellWidth(15)],
       cellFormatters: [expandable],
     },
     {
-      title: "Type",
-      transforms: [cellWidth(20)],
+      title: "Proveedor",
+      transforms: [cellWidth(10)],
       cellFormatters: [],
     },
     {
-      title: "Priority",
-      transforms: [cellWidth(25)],
+      title: "Algoritmo",
+      transforms: [cellWidth(10)],
+      cellFormatters: [],
+    },
+    {
+      title: "Tipo",
+      transforms: [cellWidth(10)],
+      cellFormatters: [],
+    },
+    {
+      title: "Kid",
+      transforms: [cellWidth(30)],
+      cellFormatters: [],
+    },
+    {
+      title: "Prioridad",
+      transforms: [],
+      cellFormatters: [],
+    },
+    {
+      title: "Estado",
+      transforms: [],
       cellFormatters: [],
     },
   ];
@@ -250,8 +272,18 @@ export const KeyList: React.FC = () => {
     const isExpanded = isItemExpanded(item);
 
     const isActive = activeKeyMap
-      ? Array.from(activeKeyMap.values()).some((f) => f === item.id)
+      ? activeKeyMap.get(DEFAULT_KEY_ALGORITHM) === item.id
       : false;
+
+    let statusNode;
+    const status = keyMetadataMap?.get(item.id)?.status;
+    if (status === "ACTIVE") {
+      statusNode = <Label color="green">Active</Label>;
+    } else if (status === "PASSIVE") {
+      statusNode = <Label color="cyan">Passive</Label>;
+    } else {
+      statusNode = <Label color="orange">Disabled</Label>;
+    }
 
     rows.push({
       [ENTITY_FIELD]: item,
@@ -276,8 +308,27 @@ export const KeyList: React.FC = () => {
         },
         {
           title: (
+            <TableText wrapModifier="truncate">{item.providerId}</TableText>
+          ),
+        },
+        {
+          title: (
+            <TableText wrapModifier="truncate">
+              {keyMetadataMap?.get(item.id)?.algorithm}
+            </TableText>
+          ),
+        },
+        {
+          title: (
             <TableText wrapModifier="truncate">
               {keyMetadataMap?.get(item.id)?.type}
+            </TableText>
+          ),
+        },
+        {
+          title: (
+            <TableText wrapModifier="truncate">
+              {keyMetadataMap?.get(item.id)?.kid}
             </TableText>
           ),
         },
@@ -287,6 +338,9 @@ export const KeyList: React.FC = () => {
               {keyMetadataMap?.get(item.id)?.providerPriority}
             </TableText>
           ),
+        },
+        {
+          title: statusNode,
         },
       ],
     });

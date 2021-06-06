@@ -123,7 +123,7 @@ export interface KeyMetadataRepresentation {
   providerId: string;
   providerPriority: number;
   kid: string;
-  status: string;
+  status: "ACTIVE" | "PASSIVE" | "DISABLED";
   type: string;
   algorithm: string;
   publicKey: string;
