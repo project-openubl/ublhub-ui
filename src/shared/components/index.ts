@@ -5,6 +5,7 @@ export { AppTableToolbarToggleGroup } from "./app-table-toolbar-toggle-group";
 export { AppTableWithControls } from "./app-table-with-controls";
 export { NamespaceContextSelectorSection } from "./namespace-context-selector-section";
 export { ConditionalRender } from "./conditional-render";
+export { ConfirmDialog } from "./confirm-dialog";
 export { DeleteModalWithMatch } from "./delete-modal-with-match";
 export { DocumentStatus } from "./document-status";
 export { ErrorEmptyState } from "./error-empty-state";

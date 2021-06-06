@@ -7,6 +7,9 @@ import {
   PageQuery,
   PageRepresentation,
   Namespace,
+  KeysMetadataRepresentation,
+  ComponentRepresentation,
+  ServerInfoRepresentation,
 } from "./models";
 
 const USER_NAMESPACES = "/user/namespaces";
@@ -41,6 +44,12 @@ const buildQuery = (params: any) => {
   });
 
   return query;
+};
+
+// Server info
+
+export const getServerInfo = (): AxiosPromise<ServerInfoRepresentation> => {
+  return APIClient.get("/server-info");
 };
 
 //
@@ -187,6 +196,81 @@ export const getCompany = (
 ): AxiosPromise<Company> => {
   return APIClient.get(
     `${COMPANIES.replaceAll(":namespaceId", namespaceId)}/${companyId}`
+  );
+};
+
+export const getCompanyKeys = (
+  namespaceId: string,
+  companyId: string
+): AxiosPromise<KeysMetadataRepresentation> => {
+  return APIClient.get(
+    `${COMPANIES.replaceAll(":namespaceId", namespaceId)}/${companyId}/keys`
+  );
+};
+
+export const getCompanyComponents = (
+  namespaceId: string,
+  companyId: string
+): AxiosPromise<ComponentRepresentation[]> => {
+  return APIClient.get(
+    `${COMPANIES.replaceAll(
+      ":namespaceId",
+      namespaceId
+    )}/${companyId}/components`
+  );
+};
+
+export const createCompanyComponent = (
+  namespaceId: string,
+  companyId: string,
+  component: ComponentRepresentation
+): AxiosPromise<ComponentRepresentation> => {
+  return APIClient.post(
+    `${COMPANIES.replaceAll(
+      ":namespaceId",
+      namespaceId
+    )}/${companyId}/components`,
+    component
+  );
+};
+
+export const updateCompanyComponent = (
+  namespaceId: string,
+  companyId: string,
+  component: ComponentRepresentation
+): AxiosPromise<ComponentRepresentation> => {
+  return APIClient.put(
+    `${COMPANIES.replaceAll(
+      ":namespaceId",
+      namespaceId
+    )}/${companyId}/components/${component.id}`,
+    component
+  );
+};
+
+export const getCompanyComponent = (
+  namespaceId: string,
+  companyId: string,
+  componentId: string
+): AxiosPromise<ComponentRepresentation> => {
+  return APIClient.get(
+    `${COMPANIES.replaceAll(
+      ":namespaceId",
+      namespaceId
+    )}/${companyId}/components/${componentId}`
+  );
+};
+
+export const deleteCompanyComponent = (
+  namespaceId: string,
+  companyId: string,
+  componentId: string
+): AxiosPromise => {
+  return APIClient.delete(
+    `${COMPANIES.replaceAll(
+      ":namespaceId",
+      namespaceId
+    )}/${companyId}/components/${componentId}`
   );
 };
 
