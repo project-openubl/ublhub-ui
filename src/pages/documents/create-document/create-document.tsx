@@ -19,7 +19,7 @@ import { CodeEditor, Language } from "@patternfly/react-code-editor";
 import { SimplePageSection } from "shared/components";
 
 import { NamespaceRoute, formatPath, Paths } from "Paths";
-import { DocumentType } from "api/models";
+import { DocumentType, InputModel } from "api/models";
 
 import { DEFAULT_INVOICE } from "./templates/invoice/invoice";
 import { DEFAULT_CREDIT_NOTE } from "./templates/creditnote/creditnote";
@@ -27,6 +27,7 @@ import { DEFAULT_CREDIT_NOTE } from "./templates/creditnote/creditnote";
 import { ToolbarDocument } from "./components/toolbar-document";
 
 import "./editor.scss";
+import { createDocument } from "api/rest";
 
 type DocumentListType = {
   [key in DocumentType]: {
@@ -64,31 +65,11 @@ export const CreateDocument: React.FC = () => {
 
   // Editor
   const [code, setCode] = useState("");
-  const [carlos, setCarlos] = useState("");
-
-  // const onSave = useCallback(() => {
-    
-  // }, []);
-
-  // const onEditorDidMount = useCallback(
-  //   (editor: any, monaco: any) => {
-  //     editor.layout();
-  //     editor.focus();
-  //     monaco.editor.getModels()[0].updateOptions({ tabSize: 2 });
-  //     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, onSave);
-  //   },
-  //   [onSave]
-  // );
-  
-  const onSave = () => {
-    console.log(carlos);
-  };
 
   const onEditorDidMount = (editor: any, monaco: any) => {
     editor.layout();
     editor.focus();
     monaco.editor.getModels()[0].updateOptions({ tabSize: 2 });
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, onSave);
   };
 
   // Document type
@@ -103,6 +84,24 @@ export const CreateDocument: React.FC = () => {
 
   // Form
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<any>();
+
+  const onSave = () => {
+    try {
+      const obj = yaml.load(code);
+      setIsSubmitting(true);
+      createDocument(namespaceId, obj as InputModel<any>)
+        .then(() => {
+          setIsSubmitting(false);
+        })
+        .catch((error) => {
+          setIsSubmitting(false);
+          setSubmitError(error);
+        });
+    } catch (error) {
+      setSubmitError(error);
+    }
+  };
 
   return (
     <>
@@ -154,7 +153,7 @@ export const CreateDocument: React.FC = () => {
                       isCopyEnabled
                       isDownloadEnabled
                       isLanguageLabelVisible
-                      onChange={(value) => setCarlos(value || "")}
+                      onChange={(value) => setCode(value || "")}
                       onEditorDidMount={onEditorDidMount}
                       height={
                         contentRect.bounds

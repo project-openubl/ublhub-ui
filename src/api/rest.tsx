@@ -10,6 +10,7 @@ import {
   KeysMetadataRepresentation,
   ComponentRepresentation,
   ServerInfoRepresentation,
+  InputModel,
 } from "./models";
 
 const USER_NAMESPACES = "/user/namespaces";
@@ -322,6 +323,16 @@ export const getDocuments = (
   );
 };
 
+export const createDocument = (
+  namespaceId: string,
+  inputModel: InputModel<any>
+): AxiosPromise => {
+  const url = `${DOCUMENTS.replaceAll(":namespaceId", namespaceId)}`;
+  return APIClient.post(url, inputModel, {
+    headers: { Accept: "application/json" },
+  });
+};
+
 export const getDocumentFile = (
   namespaceId: string,
   documentId: string
@@ -366,7 +377,7 @@ export const retrySendDocument = (
 
   return APIClient.post(
     url,
-    { a: "s" },
+    {},
     {
       headers: { Accept: "application/json" },
     }

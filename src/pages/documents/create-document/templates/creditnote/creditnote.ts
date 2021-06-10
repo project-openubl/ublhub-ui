@@ -6,7 +6,7 @@ export const DEFAULT_CREDIT_NOTE: InputModel<CreditNoteInputModel> = {
     serie: "FC01",
     numero: 1,
     serieNumeroComprobanteAfectado: "F001-1",
-    descripcionSustento: "tu descripción sustento",
+    descripcionSustentoDeNota: "tu descripción sustento",
     proveedor: {
       ruc: "11111111111",
       razonSocial: "Razón social del emisor",

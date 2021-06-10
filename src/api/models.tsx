@@ -193,7 +193,7 @@ export interface CreditNoteInputModel {
   serie: string;
   numero: number;
   serieNumeroComprobanteAfectado: string;
-  descripcionSustento: string
+  descripcionSustentoDeNota: string
   proveedor: {
     ruc: string;
     razonSocial: string;
