@@ -33,6 +33,7 @@ export enum Paths {
 
   documentList = "/ns-document/:namespaceId/documents",
   uploadDocument = "/ns-document/:namespaceId/documents/~upload",
+  createDocument = "/ns-document/:namespaceId/documents/~new",
 }
 
 export interface OptionalCompanyRoute {
