@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "GitHub Actions"
+      include: "scope"
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-name: "@cypress/*"
+        dependency-type: "direct"
+      - dependency-name: "cypress*"
+        dependency-type: "direct"
