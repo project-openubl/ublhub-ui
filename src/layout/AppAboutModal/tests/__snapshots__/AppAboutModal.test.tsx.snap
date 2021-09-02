@@ -62,7 +62,7 @@ exports[`AppAboutModal 1`] = `
     <Flex>
       <FlexItem>
         <a
-          href="https://github.com/project-openubl/xsender-server"
+          href="https://github.com/project-openubl/ublhub"
           rel="noopener noreferrer"
           target="_blank"
         >
@@ -111,7 +111,7 @@ exports[`AppAboutModal 1`] = `
       </FlexItem>
       <FlexItem>
         <a
-          href="https://github.com/project-openubl/xsender-server/issues"
+          href="https://github.com/project-openubl/ublhub/issues"
           rel="noopener noreferrer"
           target="_blank"
         >

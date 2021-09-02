@@ -73,7 +73,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
       backend:
-        image: quay.io/projectopenubl/xsender-server:master
+        image: quay.io/projectopenubl/ublhub:master
         ports:
           - 8080:8080
         env:
@@ -151,7 +151,7 @@ jobs:
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
           registry: docker.pkg.github.com
-          name: project-openubl/xsender-server-ui/xsender-server-ui
+          name: project-openubl/ublhub-ui/ublhub-ui
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           dockerfile: Dockerfile
@@ -160,7 +160,7 @@ jobs:
       - name: Push to Docker Hub
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: projectopenubl/xsender-server-ui
+          name: projectopenubl/ublhub-ui
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           dockerfile: Dockerfile
@@ -170,7 +170,7 @@ jobs:
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
           registry: quay.io
-          name: projectopenubl/xsender-server-ui
+          name: projectopenubl/ublhub-ui
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_PASSWORD }}
           dockerfile: Dockerfile

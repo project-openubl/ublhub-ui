@@ -75,7 +75,7 @@ export const AppAboutModal: React.FC<AppAboutModalProps> = ({
         <Flex>
           <FlexItem>
             <a
-              href="https://github.com/project-openubl/xsender-server"
+              href="https://github.com/project-openubl/ublhub"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -107,7 +107,7 @@ export const AppAboutModal: React.FC<AppAboutModalProps> = ({
           </FlexItem>
           <FlexItem>
             <a
-              href="https://github.com/project-openubl/xsender-server/issues"
+              href="https://github.com/project-openubl/ublhub/issues"
               rel="noopener noreferrer"
               target="_blank"
             >
