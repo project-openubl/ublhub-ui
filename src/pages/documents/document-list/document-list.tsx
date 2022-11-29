@@ -450,6 +450,10 @@ export const DocumentList: React.FC = () => {
     history.push(formatPath(Paths.uploadDocument, { namespaceId }));
   };
 
+  const redirectToCreateDocumentPage = () => {
+    history.push(formatPath(Paths.createDocument, { namespaceId }));
+  };
+
   const applyFilterText = (filterText: string) => {
     setFilterText(filterText);
     handlePaginationChange({ page: 1 });
@@ -507,9 +511,19 @@ export const DocumentList: React.FC = () => {
                       type="button"
                       aria-label="upload-xml"
                       variant={ButtonVariant.primary}
+                      onClick={redirectToCreateDocumentPage}
+                    >
+                      Nuevo
+                    </Button>
+                  </ToolbarItem>
+                  <ToolbarItem>
+                    <Button
+                      type="button"
+                      aria-label="upload-xml"
+                      variant={ButtonVariant.secondary}
                       onClick={redirectToUploadDocumentPage}
                     >
-                      Importar XML
+                      Importar
                     </Button>
                   </ToolbarItem>
                 </ToolbarGroup>

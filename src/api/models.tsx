@@ -165,3 +165,49 @@ export interface ConfigPropertyRepresentation {
   options: string[];
   secret: boolean;
 }
+
+// Documents
+export type DocumentType = "INVOICE" | "CREDIT_NOTE";
+
+export interface InputModel<T> {
+  kind: DocumentType;
+  spec: T;
+}
+
+export interface InvoiceInputModel {
+  serie: string;
+  numero: number;
+  proveedor: {
+    ruc: string;
+    razonSocial: string;
+  };
+  cliente: {
+    tipoDocumentoIdentidad: string;
+    numeroDocumentoIdentidad: string;
+    nombre: string;
+  };
+  detalle: DocumentLineInputModel[];
+}
+
+export interface CreditNoteInputModel {
+  serie: string;
+  numero: number;
+  serieNumeroComprobanteAfectado: string;
+  descripcionSustentoDeNota: string
+  proveedor: {
+    ruc: string;
+    razonSocial: string;
+  };
+  cliente: {
+    tipoDocumentoIdentidad: string;
+    numeroDocumentoIdentidad: string;
+    nombre: string;
+  };
+  detalle: DocumentLineInputModel[];
+}
+
+export interface DocumentLineInputModel {
+  descripcion: string;
+  cantidad: number;
+  precioUnitario: number;
+}
